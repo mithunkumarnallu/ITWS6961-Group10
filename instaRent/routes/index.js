@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/managehome', function(req, res, next) {
-  res.render('Role Selection', { title: 'instaRent' });
+  res.render('Role Selection.html', { title: 'instaRent' });
 });
 
 module.exports = router;

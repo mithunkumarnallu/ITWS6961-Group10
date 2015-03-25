@@ -1,0 +1,149 @@
+{% extends 'partials/layout.html' %}
+ 
+{% block myHead %}
+    <link href="/stylesheets/myStyle.css" rel="stylesheet"/>
+    <script src="/javascripts/roles_selection_popup.js"></script>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places"></script>
+{% endblock %}
+
+{% block myBody %}
+
+    <div id="page-content-wrapper">
+      <div class="container-fluid" style="margin-top: 4%">        
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>Locate your Home!</h1>
+                <!-- Responsive iFrame -->
+                <div class="Flexible-container">
+                    <iframe frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.ch/maps?f=q&amp;q=Troy,NY&amp;ie=UTF8&amp;output=embed&amp;iwloc=near"></iframe>
+                </div>
+                <br/>                
+            </div>
+        </div>
+      </div>
+    </div>
+    
+        <style>
+            .pac-container {
+                z-index: 99999999;
+            }
+        </style>
+    
+    <div style="display: None;" ng-controller="ModalDemoCtrl">
+        <script type="text/ng-template" id="myModalContent.html">
+            <div class="modal-header">
+                <h3 class="modal-title">Add your humble adobe!</h3>
+            </div>
+            <div class="modal-body">
+
+                <form class="form-horizontal" >
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="userType" class="col-lg-3 control-label">Who are you?</label>
+                            <div class="btn-group col-lg-9" id="userType" ng-init="radioModel='Landlord'">
+                                <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Landlord'">Landlord</label>
+                                <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Tenant'">Tenant</label>                
+                            </div>
+                        </div>
+
+                        <section ng-show="radioModel == 'Landlord'">
+                            <div class="form-group">
+                                <label for="description" class="col-lg-3 control-label">Description:</label> 
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="description" placeholder="Enter short description"></input>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="address" class="col-lg-3 control-label">Address:</label> 
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="address" placeholder="Enter Street address"></input>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div ng-show="radioModel == 'Tenant'">
+                            <div class="form-group">
+                                <label for="description" class="col-lg-3 control-label">Description:</label> 
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="description" placeholder="Enter short description"></input>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="address" class="col-lg-3 control-label">Address:</label> 
+                                <div class="col-lg-9">
+                                    <tenant-Container>
+                                        <input type="text" class="form-control" id="autocomplete" autocomplete="on" placeholder="Enter Street address">
+                                        </input>
+                                    </tenant-Container>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="landlordId" class="col-lg-3 control-label">Landlord email:</label> 
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="landlordId" placeholder="Enter Landlord's email address"></input>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="leasePeriodStart" class="col-lg-3 control-label">Lease Start Date:</label> 
+                                <div class="col-lg-9">
+                                    <p class="input-group">            
+                                        <input type="text" id="leasePeriodStart" class="form-control" datepicker-popup="{{format}}" ng-model="startDate" 
+                                        is-open="startOpened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="openStartDate($event)">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="leasePeriodEnd" class="col-lg-3 control-label">Lease End Date:</label> 
+                                <div class="col-lg-9">
+                                    <p class="input-group">            
+                                        <input type="text" id="leasePeriodEnd" class="form-control" datepicker-popup="{{format}}" ng-model="endDate" is-open="endOpened"
+                                            datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="openEndDate($event)">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </button>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="securityDeposit" class="col-lg-3 control-label">Security Deposit:</label> 
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="securityDeposit" placeholder="Enter the Security Deposit"></input>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="rentPerMonth" class="col-lg-3 control-label">Lease Period:</label> 
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="leasePeriod" placeholder="Enter the lease period"></input>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tenantIds" class="col-lg-3 control-label">Add Other tenants:</label> 
+                                <div class="col-lg-9">
+                                    <input type="text" class="form-control" id="tenantIds" placeholder="Enter other tenants email ids"></input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="ok()">OK</button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+      </div>    
+    <script type="text/javascript">(function () {
+        return window.SIG_EXT = {};
+      })();
+    </script>
+
+{% endblock %}
