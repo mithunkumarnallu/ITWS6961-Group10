@@ -29,7 +29,92 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
     $scope.getHomes = function() {
         console.log($http.get("/getHomes"));
     };
+    
+    $scope.homes = [];//[{address: "123, 123, 123"},{address: "234, 234, 234"}];
 
+    function addMapMarkers() {
+        addMap();
+        if(areMarkersToBeAdded) {
+            
+            //get landlord homes and add markers
+            $http.get("/managehome/getLandlordHomes")
+            .success(function(data, status){
+                $scope.homes = $scope.homes.concat(data.response);
+                data.response.forEach(function(home) {
+                    //$.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address='+data.response[x]+'&sensor=false', null, function (loc) {                    
+                    $http.get('http://maps.googleapis.com/maps/api/geocode/json?address='+home.address+'&sensor=false')
+                    .success(function (loc, status) {
+                        
+                        (function(loc, home) {
+                            //console.log(home);
+                            var infoWindow = new google.maps.InfoWindow( {
+                                //content: "<div class='info_content'><h3>Landlord at:</h3> <p>" + home.address + "</p><label ng-click=open('lg') class='btn btn-primary'>Set Home</label>"
+                                content: "<div class='info_content'><h3>Landlord at:</h3> <p>" + home.address + "</p><label onclick=setHome('"+ home.id +"','" + home.userType + "') class='btn btn-primary'>Set Home</label>"
+                            });
+                            var p = loc.results[0].geometry.location
+                            var latlng = new google.maps.LatLng(p.lat, p.lng);
+                            var marker = new google.maps.Marker({
+                                position: latlng,
+                                map: map
+                            });
+
+                            //Add an info window to the marker and in click of a button on it, set the user's current home to it and redirect him to dashboard
+                            //Allow each marker to have an info window    
+                            google.maps.event.addListener(marker, 'click', (function(marker, infoWindow) {
+                                
+                                return createClickListener(infoWindow, marker);
+                            })(marker, infoWindow));
+                        })(loc, home);
+
+                    });
+                }            
+            )})
+            .error(function(data, status) {
+                console.log(data);            
+            });
+            
+            //get tenant homes and add markers
+            $http.get("/managehome/getTenantHomes")
+            .success(function(data, status){
+                $scope.homes = $scope.homes.concat(data.response);
+                console.log($scope.homes);            
+                data.response.forEach(function(home) {
+                    //$.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address='+data.response[x]+'&sensor=false', null, function (loc) {                    
+                    $http.get('http://maps.googleapis.com/maps/api/geocode/json?address='+home.address+'&sensor=false')
+                    .success(function (loc, status) {
+                        
+                        (function(loc, home) {
+                            //console.log(home);
+                            var infoWindow = new google.maps.InfoWindow( {
+                                //content: "<div class='info_content'><h3>Landlord at:</h3> <p>" + home.address + "</p><label ng-click=open('lg') class='btn btn-primary'>Set Home</label>"
+                                content: "<div class='info_content'><h3>Tenant at:</h3> <p>" + home.address + "</p><label onclick=setHome('"+ home.id +"','" + home.userType + "') class='btn btn-primary'>Set Home</label>"
+                            });
+                            var p = loc.results[0].geometry.location
+                            var latlng = new google.maps.LatLng(p.lat, p.lng);
+                            var marker = new google.maps.Marker({
+                                position: latlng,
+                                map: map
+                            });
+
+                            //Add an info window to the marker and in click of a button on it, set the user's current home to it and redirect him to dashboard
+                            //Allow each marker to have an info window    
+                            google.maps.event.addListener(marker, 'click', (function(marker, infoWindow) {
+                                
+                                return createClickListener(infoWindow, marker);
+                            })(marker, infoWindow));
+                        })(loc, home);
+
+                    });
+                }            
+            )})
+            .error(function(data, status) {
+                console.log(data);            
+            });
+        }
+    }
+
+    addMapMarkers();
+    
     $scope.open = function (size) {
 
         var modalInstance = $modal.open({
@@ -83,11 +168,11 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
         console.log(getHomeParams())
         $http.post("/managehome/addhome", getHomeParams())
         .success(function(data, status){
-            console.log("In success handler");
             $scope.myError = "";
             $scope.isError = false;
-            $modalInstance.close();
-            console.log(data);
+            areMarkersToBeAdded = true;
+            addMapMarkers($http);
+            $modalInstance.close();  
         })
         .error(function(data, status) {
             console.log(data);
@@ -163,4 +248,62 @@ function regsiterForAutoComplete(element) {
     var autocomplete = new google.maps.places.Autocomplete(
       /** @type {HTMLInputElement} */element[0],
       { types: ['geocode'] });
+}
+
+var map = null;
+var areMarkersToBeAdded = true;
+
+function createClickListener(infoWindow, marker) {
+    return function() {
+        //var address = data.response[i];
+
+        //infoWindow.setContent("<div class='info_content'><h3>Landlord at:</h3> <p>" + address + "</p>");
+        infoWindow.open(map, marker);
+    };
+}
+
+
+
+function setHome(homeId, userType) {
+    console.log("In setHome " + userType + " " + homeId);
+    
+    $.post("/managehome/setDefaultHome", {id: homeId, userType: userType})
+    .done(function(data, status) {
+        console.log("Successully set home");
+        window.location.replace("/");
+    })
+    .fail(function(err, status) {
+        console.log(err);
+    });
+
+};
+
+function addInfoWindows(loc, address, userType) {
+    console.log(address);
+    var infoWindow = new google.maps.InfoWindow( {
+        content: "<div class='info_content'><h3> " + userType + " at:</h3> <p>" + address + "</p>"
+    });
+    var p = loc.results[0].geometry.location
+    var latlng = new google.maps.LatLng(p.lat, p.lng);
+    marker = new google.maps.Marker({
+        position: latlng,
+        map: map
+    });
+
+    //Add an info window to the marker and in click of a button on it, set the user's current home to it and redirect him to dashboard
+    //Allow each marker to have an info window    
+    google.maps.event.addListener(marker, 'click', (function(marker, infoWindow) {   
+        return createClickListener(infoWindow, marker);
+    }));
+}
+
+function addMap() {
+    if(!map) {
+        var myLatlng = new google.maps.LatLng(37.6,-95.665);
+        var mapOptions = {
+            zoom: 4,
+            center: myLatlng
+        };
+        map = new google.maps.Map(document.getElementById("mapHolder"), mapOptions);    
+    }
 }
