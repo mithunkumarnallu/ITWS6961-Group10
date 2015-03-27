@@ -9,26 +9,32 @@
 
 {% block myBody %}
 
-    <div id="page-content-wrapper">
-      <div class="container-fluid" style="margin-top: 4%">        
-        <div class="row">
-            <div class="col-lg-12">
-                <h1>Locate your Home!</h1>
-                <!-- Responsive iFrame -->
-                <div class="Flexible-container">
-                    <iframe frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.ch/maps?f=q&amp;q=Troy,NY&amp;ie=UTF8&amp;output=embed&amp;iwloc=near"></iframe>
+<div ng-app="ui.managehomes">
+    <div id="page-content-wrapper" ng-controller="ModalDemoCtrl">
+        <div class="container-fluid" style="margin-top: 4%">        
+            <div class="row">
+                <div class="col-lg-10">
+                    <h1>Locate your Home!</h1>
                 </div>
-                <br/>                
+                <div class="col-lg-2" style="margin-top: 2%">                        
+                    <label class="btn btn-primary" ng-click="open('lg')">Add home</label>
+                    <label class="btn btn-primary">Update home</label>                                        
+                </div>                
+            </div>
+            <div class="row">
+                <!-- Responsive iFrame -->
+                <div class="Flexible-container" style="margin-top: 2%">
+                    <iframe frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.ch/maps?f=q&amp;q=USA&amp;ie=UTF8&amp;output=embed"></iframe>
+                </div>
             </div>
         </div>
-      </div>
     </div>
     
-        <style>
-            .pac-container {
-                z-index: 99999999;
-            }
-        </style>
+    <style>
+        .pac-container {
+            z-index: 99999999;
+        }
+    </style>
     
     <div style="display: None;" ng-controller="ModalDemoCtrl">
         <script type="text/ng-template" id="myModalContent.html">
@@ -51,29 +57,32 @@
                             <div class="form-group">
                                 <label for="description" class="col-lg-3 control-label">Description:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="description" placeholder="Enter short description"></input>
+                                    <input type="text" class="form-control" id="description" ng-model="owner_description" placeholder="Enter short description"></input>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="address" class="col-lg-3 control-label">Address:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="address" placeholder="Enter Street address"></input>
+                                    <landlord-Container>
+                                        <input type="text" class="form-control" id="owner_address" ng-model="owner_address" 
+                                        placeholder="Enter Street address"></input>
+                                    </landlord-Container>
                                 </div>
                             </div>
                         </section>
 
-                        <div ng-show="radioModel == 'Tenant'">
+                        <section ng-show="radioModel == 'Tenant'">
                             <div class="form-group">
                                 <label for="description" class="col-lg-3 control-label">Description:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="description" placeholder="Enter short description"></input>
+                                    <input type="text" class="form-control" id="description" ng-model="tenant_description" placeholder="Enter short description"></input>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="address" class="col-lg-3 control-label">Address:</label> 
                                 <div class="col-lg-9">
                                     <tenant-Container>
-                                        <input type="text" class="form-control" id="autocomplete" autocomplete="on" placeholder="Enter Street address">
+                                        <input type="text" class="form-control" id="tenant_address" ng-model="tenant_address" autocomplete="on" placeholder="Enter Street address">
                                         </input>
                                     </tenant-Container>
                                 </div>
@@ -81,15 +90,16 @@
                             <div class="form-group">
                                 <label for="landlordId" class="col-lg-3 control-label">Landlord email:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="landlordId" placeholder="Enter Landlord's email address"></input>
+                                    <input type="text" class="form-control" id="landlordId" ng-model="tenant_landlordEmail" placeholder="Enter Landlord's email address"></input>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="leasePeriodStart" class="col-lg-3 control-label">Lease Start Date:</label> 
                                 <div class="col-lg-9">
                                     <p class="input-group">            
-                                        <input type="text" id="leasePeriodStart" class="form-control" datepicker-popup="{{format}}" ng-model="startDate" 
-                                        is-open="startOpened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                                        <input type="text" id="leasePeriodStart" class="form-control" datepicker-popup="{{format}}" 
+                                        ng-model="tenant_leaseStartDate" is-open="startOpened" datepicker-options="dateOptions" 
+                                        ng-required="true" close-text="Close" />
                                         <span class="input-group-btn">
                                             <button type="button" class="btn btn-default" ng-click="openStartDate($event)">
                                                 <i class="glyphicon glyphicon-calendar"></i>
@@ -102,7 +112,7 @@
                                 <label for="leasePeriodEnd" class="col-lg-3 control-label">Lease End Date:</label> 
                                 <div class="col-lg-9">
                                     <p class="input-group">            
-                                        <input type="text" id="leasePeriodEnd" class="form-control" datepicker-popup="{{format}}" ng-model="endDate" is-open="endOpened"
+                                        <input type="text" id="leasePeriodEnd" class="form-control" datepicker-popup="{{format}}" ng-model="tenant_leaseEndDate" is-open="endOpened"
                                             datepicker-options="dateOptions" ng-required="true" close-text="Close" />
                                         <span class="input-group-btn">
                                             <button type="button" class="btn btn-default" ng-click="openEndDate($event)">
@@ -116,21 +126,23 @@
                             <div class="form-group">
                                 <label for="securityDeposit" class="col-lg-3 control-label">Security Deposit:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="securityDeposit" placeholder="Enter the Security Deposit"></input>
+                                    <input type="text" class="form-control" id="securityDeposit" ng-model="tenant_securityDeposit" placeholder="Enter the Security Deposit"></input>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="rentPerMonth" class="col-lg-3 control-label">Lease Period:</label> 
+                                <label for="rentPerMonth" class="col-lg-3 control-label">Rent per month:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="leasePeriod" placeholder="Enter the lease period"></input>
+                                    <input type="text" class="form-control" id="rentPerMonth" ng-model="tenant_rentPerMonth" placeholder="Enter the rent per month"></input>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="tenantIds" class="col-lg-3 control-label">Add Other tenants:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="tenantIds" placeholder="Enter other tenants email ids"></input>
+                                    <input type="text" class="form-control" id="tenantIds" ng-model="tenant_tenantsEmails" placeholder="Enter other tenants email ids"></input>
                                 </div>
                             </div>
+                        </section>
+                        <div class="form-group col-lg-12 alert alert-danger alert-error" ng-bind="myError" ng-show="isError" id="error">                            
                         </div>
                     </div>
                 </form>
@@ -145,5 +157,5 @@
         return window.SIG_EXT = {};
       })();
     </script>
-
+</div>
 {% endblock %}
