@@ -32,7 +32,7 @@ function getUserHomeAddresses(userId, res) {
 		
 		var addresses = [];
 		for(var i = 0; i < data.length; i++) {
-			addresses.push(data[i].address);
+			addresses.push({address: data[i].address, id: data[i]._id, userType: data[i].userType});
 		}
 		res.send({status: "Success", response: addresses});
 	});

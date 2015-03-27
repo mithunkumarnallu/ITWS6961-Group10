@@ -15,9 +15,19 @@ router.get('/', function(req, res, next) {
   res.render('Role Selection.html', { title: 'instaRent' });
 });
 
-router.get('/gethomes', function(req, res, next) {
+router.get('/getLandlordHomes', function(req, res, next) {
 	var userId = userHelper.getUserId(req);
 	HomeHandler.getUserHomeAddresses(userId, res);	
+});
+
+router.get('/getTenantHomes', function(req, res, next) {
+	var userId = userHelper.getUserId(req);
+	MoreHomeInfoHandler.getUserHomeAddresses(userId, res);	
+});
+
+router.post('/setDefaultHome', function(req, res, next) {
+	var userId = userHelper.getUserId(req);
+	res.send(userHelper.setDefaultHome(userId, req.body));
 });
 
 router.post('/addhome', function(req, res, next) {
