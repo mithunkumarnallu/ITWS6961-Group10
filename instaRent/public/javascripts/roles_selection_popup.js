@@ -32,7 +32,7 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
     
     $scope.homes = [];//[{address: "123, 123, 123"},{address: "234, 234, 234"}];
 
-    function addMapMarkers() {
+    $scope.addMapMarkers = function() {
         addMap();
         if(areMarkersToBeAdded) {
             
@@ -113,7 +113,7 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
         }
     }
 
-    addMapMarkers();
+    $scope.addMapMarkers();
     
     $scope.open = function (size) {
 
@@ -171,7 +171,7 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
             $scope.myError = "";
             $scope.isError = false;
             areMarkersToBeAdded = true;
-            addMapMarkers($http);
+            $scope.addMapMarkers();
             $modalInstance.close();  
         })
         .error(function(data, status) {
