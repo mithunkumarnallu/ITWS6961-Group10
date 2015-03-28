@@ -6,8 +6,7 @@ angular.module('ui.managehomes').directive("tenantContainer", function() {
                 //elem.find("#address").("autocomplete","on");
                 //elem.find("#address")[0].attr("autocomplete","on");
                 //console.log(elem.find("#tenant_address"));
-                regsiterForAutoComplete(elem.find("#tenant_address"));
-                regsiterForAutoComplete(elem.find("#owner_address"));
+                regsiterForAutoComplete(scope, elem.find("#tenant_address"));                
             }
         };
     }
@@ -18,7 +17,7 @@ angular.module('ui.managehomes').directive("landlordContainer", function() {
         link: function(scope, elem, attrs, ngModel) {
                 //elem.find("#address").("autocomplete","on");
                 //elem.find("#address")[0].attr("autocomplete","on");
-                regsiterForAutoComplete(elem.find("#owner_address"));
+                regsiterForAutoComplete(scope, elem.find("#owner_address"));
             }
         };
     }
@@ -257,7 +256,6 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
             });
         }
         //$modalInstance.getHomes();
-
     };
 
     function getHomeParams(){
@@ -319,12 +317,20 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
     
 }]);
 
-function regsiterForAutoComplete(element) {
+function regsiterForAutoComplete(scope, element) {
   // Create the autocomplete object, restricting the search
   // to geographical location types.
     var autocomplete = new google.maps.places.Autocomplete(
       /** @type {HTMLInputElement} */element[0],
       { types: ['geocode'] });
+    
+    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+        console.log(autocomplete.getPlace());
+        if(scope.radioModel == "Landlord")
+            scope.owner_address = autocomplete.getPlace().formatted_address;
+        else
+            scope.tenant_address = autocomplete.getPlace().formatted_address;
+    });
 }
 
 var map = null;
