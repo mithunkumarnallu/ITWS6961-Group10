@@ -5,7 +5,7 @@ angular.module('ui.managehomes').directive("tenantContainer", function() {
         link: function(scope, elem, attrs, ngModel) {
                 //elem.find("#address").("autocomplete","on");
                 //elem.find("#address")[0].attr("autocomplete","on");
-                console.log(elem.find("#tenant_address"));
+                //console.log(elem.find("#tenant_address"));
                 regsiterForAutoComplete(elem.find("#tenant_address"));
                 regsiterForAutoComplete(elem.find("#owner_address"));
             }
@@ -35,7 +35,7 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
     $scope.addMapMarkers = function() {
         addMap();
         if(areMarkersToBeAdded) {
-            
+            $scope.homes = [];
             //get landlord homes and add markers
             $http.get("/managehome/getLandlordHomes")
             .success(function(data, status){
@@ -115,6 +115,33 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
 
     $scope.addMapMarkers();
     
+    $scope.openForUpdate = function(address, userType) {
+        $scope.isHomeUpdate = true;
+        $scope.address = address;
+        $scope.radioModel = userType;
+        console.log(userType);
+
+        var modalInstance = $modal.open({
+          templateUrl: 'myModalContent.html',
+          controller: 'ModalInstanceCtrl',
+          scope: $scope,
+          size: 'lg',
+          resolve: {
+          
+          }
+        });
+
+        modalInstance.result.then(function () {
+            $scope.isHomeUpdate = false;
+            $scope.address = "";
+            //$scope.disabled = false; 
+        }, function () {
+            $scope.isHomeUpdate = false;
+            $scope.address = "";
+            //$scope.disabled = false;
+        });
+    };
+
     $scope.open = function (size) {
 
         var modalInstance = $modal.open({
@@ -140,12 +167,14 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
 // It is not the same as the $modal service used above.
 
 angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$http', '$modalInstance', function ($scope, $http, $modalInstance) {
-    // Create the autocomplete object, restricting the search
-    // to geographical location types.
-    //var autocomplete = new google.maps.places.Autocomplete(
-      /** @type {HTMLInputElement} */
-    //$('#address'),
-    //  { types: ['geocode'] });
+    
+    //Tenant variables
+    $scope.tenant_description = "";
+    $scope.tenant_address = "";
+    $scope.tenant_landlordEmail = "";
+    $scope.tenant_securityDeposit;
+    $scope.tenant_rentPerMonth;
+    $scope.tenant_tenantsEmails;
     $scope.tenant_leaseStartDate = new Date();
     $scope.tenant_leaseEndDate = new Date();
     
@@ -157,6 +186,8 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
     $scope.myError = "";
     $scope.isError = false;
 
+    $scope.isDisabled = false;
+
     $scope.dateOptions = {
         formatYear: 'yy',
         startingDay: 1
@@ -164,21 +195,67 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
 
     $scope.format = 'dd-MMMM-yyyy';
     
+    if($scope.isHomeUpdate) {
+        //Set the scope variables and set their enability
+        $scope.isDisabled = true;   
+        var homeInfo = getHome($scope.address);
+        console.log(homeInfo);
+        if(homeInfo) {
+            if($scope.radioModel == "Landlord") {
+                //console.log("Setting isDisabled as true");
+                $scope.owner_description = homeInfo.description;
+                $scope.owner_address = homeInfo.address;
+            } else {
+                $scope.tenant_description = homeInfo.description;
+                $scope.tenant_address = homeInfo.address;
+                $scope.tenant_landlordEmail = homeInfo.landlordEmail;
+                $scope.tenant_securityDeposit = homeInfo.securityDeposit;
+                $scope.tenant_rentPerMonth = homeInfo.rentPerMonth;
+                $scope.tenant_tenantsEmails = homeInfo.tenantsEmails;
+                $scope.tenant_leaseStartDate = homeInfo.leaseStartDate;
+                $scope.tenant_leaseEndDate = homeInfo.leaseEndDate;       
+            }
+        }
+    }
+
+    function getHome(address) {
+        for(var i = 0; i < $scope.homes.length; i++) {
+            if($scope.homes[i].address == address)
+                return $scope.homes[i]; 
+        }
+    }
+
     $scope.ok = function () {
-        console.log(getHomeParams())
-        $http.post("/managehome/addhome", getHomeParams())
-        .success(function(data, status){
-            $scope.myError = "";
-            $scope.isError = false;
-            areMarkersToBeAdded = true;
-            $scope.addMapMarkers();
-            $modalInstance.close();  
-        })
-        .error(function(data, status) {
-            console.log(data);
-            $scope.myError = data;
-            $scope.isError = true;
-        });
+        if($scope.isHomeUpdate) {
+            $http.post("/managehome/updatehome", getHomeParams())
+            .success(function(data, status) {
+                console.log("Update returned");
+                $scope.myError = "";
+                $scope.isError = false;
+                areMarkersToBeAdded = true;
+                $scope.addMapMarkers();
+                $modalInstance.close();  
+            })
+            .error(function(data, status) {
+                console.log(data);
+                $scope.myError = data;
+                $scope.isError = true;
+            });
+        } else {
+            $http.post("/managehome/addhome", getHomeParams())
+            .success(function(data, status){
+                $scope.myError = "";
+                $scope.isError = false;
+                areMarkersToBeAdded = true;
+                $scope.addMapMarkers();
+                $modalInstance.close();  
+            })
+            .error(function(data, status) {
+                console.log(data);
+                $scope.myError = data;
+                $scope.isError = true;
+            });
+        }
         //$modalInstance.getHomes();
 
     };
@@ -192,7 +269,7 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
             };
         else
             return {
-                userTye: $scope.radioModel,
+                userType: $scope.radioModel,
                 description: $scope.tenant_description,
                 address: $scope.tenant_address,
                 landlordEmail: $scope.tenant_landlordEmail,

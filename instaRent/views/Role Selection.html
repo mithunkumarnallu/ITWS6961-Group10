@@ -29,9 +29,8 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right" role="menu">
                             <li ng-repeat="home in homes">
-                                <a href="#" ng-click="open('lg')"><span ng-bind="home.address"></span></a>
+                                <a href="#" ng-click="openForUpdate(home.address, home.userType)"><span ng-bind="home.address"></span></a>
                             </li>
-                                                        
                         </ul>
                     </div>
                     <!--<label class="btn btn-primary">Update home</label>-->
@@ -65,9 +64,9 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="userType" class="col-lg-3 control-label">Who are you?</label>
-                            <div class="btn-group col-lg-9" id="userType" ng-init="radioModel='Landlord'">
-                                <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Landlord'">Landlord</label>
-                                <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Tenant'">Tenant</label>                
+                            <div class="btn-group col-lg-9" id="userType">
+                                <label class="btn btn-primary" ng-disabled="isDisabled" ng-model="radioModel" btn-radio="'Landlord'">Landlord</label>
+                                <label class="btn btn-primary" ng-disabled="isDisabled" ng-model="radioModel" btn-radio="'Tenant'">Tenant</label>
                             </div>
                         </div>
 
@@ -82,7 +81,7 @@
                                 <label for="address" class="col-lg-3 control-label">Address:</label> 
                                 <div class="col-lg-9">
                                     <landlord-Container>
-                                        <input type="text" class="form-control" id="owner_address" ng-model="owner_address" 
+                                        <input type="text" ng-disabled="isDisabled" class="form-control" id="owner_address" ng-model="owner_address" 
                                         placeholder="Enter Street address"></input>
                                     </landlord-Container>
                                 </div>
@@ -100,7 +99,7 @@
                                 <label for="address" class="col-lg-3 control-label">Address:</label> 
                                 <div class="col-lg-9">
                                     <tenant-Container>
-                                        <input type="text" class="form-control" id="tenant_address" ng-model="tenant_address" autocomplete="on" placeholder="Enter Street address">
+                                        <input type="text" ng-disabled="isDisabled" class="form-control" id="tenant_address" ng-model="tenant_address" autocomplete="on" placeholder="Enter Street address">
                                         </input>
                                     </tenant-Container>
                                 </div>
@@ -108,7 +107,7 @@
                             <div class="form-group">
                                 <label for="landlordId" class="col-lg-3 control-label">Landlord email:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="landlordId" ng-model="tenant_landlordEmail" placeholder="Enter Landlord's email address"></input>
+                                    <input type="text" ng-disabled="isDisabled" class="form-control" id="landlordId" ng-model="tenant_landlordEmail" placeholder="Enter Landlord's email address"></input>
                                 </div>
                             </div>
                             <div class="form-group">
