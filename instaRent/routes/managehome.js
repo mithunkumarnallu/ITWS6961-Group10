@@ -45,18 +45,49 @@ router.post('/addhome', function(req, res, next) {
 		//Add more home info into the MoreHomeInfo model
 		var moreHomeInfo = new MoreHomeInfo({
 			userId: userId,
+			description: req.body.description,
+			userType: req.body.userType,
 			address: req.body.address,
 			landlordEmail: req.body.landlordEmail,
 			leaseStartDate: req.body.leaseStartDate,
 			leaseEndDate: req.body.leaseEndDate, 
 			securityDeposit: req.body.securityDeposit,
-			rentPerMonth: req.body.rentPerMonth
-			
-			//tenantsEmails: req.body.tenantsEmails
+			rentPerMonth: req.body.rentPerMonth,
+			tenantsEmails: req.body.tenantsEmails
 		});
 		MoreHomeInfoHandler.checkAndSave(moreHomeInfo, res);
 	}
 	console.log(req.body);	
+});
+
+router.post('/updatehome', function(req, res, next) {
+  	var userId = userHelper.getUserId(req);
+	if(req.body.userType == "Landlord"){
+		var home = {
+			userId: userId,
+			address: req.body.address,
+			description: req.body.description,
+			userType: req.body.userType
+		};
+		console.log(home); 
+		HomeHandler.update(home, res);
+	} else {
+		//Add more home info into the MoreHomeInfo model
+		var moreHomeInfo = {
+			userId: userId,
+			description: req.body.description,
+			userType: req.body.userType,
+			address: req.body.address,
+			landlordEmail: req.body.landlordEmail,
+			leaseStartDate: req.body.leaseStartDate,
+			leaseEndDate: req.body.leaseEndDate, 
+			securityDeposit: req.body.securityDeposit,
+			rentPerMonth: req.body.rentPerMonth,
+			tenantsEmails: req.body.tenantsEmails
+		};
+		MoreHomeInfoHandler.update(moreHomeInfo, res);
+	}
+	//console.log(req.body);	
 });
 
 module.exports = router;

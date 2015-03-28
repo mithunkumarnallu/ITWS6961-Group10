@@ -18,10 +18,23 @@ function checkAndSave(home, res) {
 			res.status(409).send("Error: Address already exists");
 		else
 			home.save(function(err, saved) {
-				if(err)
+				if(err)	{
 					res.status(409).send("Error Adding home");
-				res.send("Success");
+				}
+				else
+					res.send("Success");
 			});	
+	});	
+}; 
+
+function update(home, res) {
+	//console.log(home);
+	Home.update({userId: home.userType,  address : home.address}, home, {}, function(err, numEffected) {
+		//console.log(data);
+		if(err || numEffected == 0)
+			res.status(409).send("Error: Could not find existing home");
+		else
+			res.send("Success");	
 	});	
 }; 
 
@@ -32,12 +45,14 @@ function getUserHomeAddresses(userId, res) {
 		
 		var addresses = [];
 		for(var i = 0; i < data.length; i++) {
-			addresses.push({address: data[i].address, id: data[i]._id, userType: data[i].userType});
+			addresses.push({address: data[i].address, id: data[i]._id, userType: "Landlord"});
 		}
-		res.send({status: "Success", response: addresses});
+		res.send({status: "Success", response: data});
+		//res.send({status: "Success", response: addresses});
 	});
 };
 
+exports.update = update;
 exports.getUserHomeAddresses = getUserHomeAddresses;
 exports.checkAndSave = checkAndSave;
 exports.Home = Home; 
