@@ -1,6 +1,7 @@
 userHelper = function() {};
 
 userHelper.prototype.getUserId = function(data) {
+    console.log(data);
 	return "123456";
 };
 

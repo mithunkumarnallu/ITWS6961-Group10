@@ -1,17 +1,49 @@
 var express = require('express');
+
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
+//var routes = require('./routes/index');
 var users = require('./routes/users');
 var manageHomeRoutes = require('./routes/managehome');
 
 var swig = require("swig");
 
+//Nitish dependencies
+//var mongoose = require('mongoose');
+var expressSession = require('express-session');
+var mongooseSession = require('mongoose-session');  
+var accountRoutes = require('./routes/account');
+var cors=require("cors");
+var json = require('jsonfile');
+
 var app = express();
+
+//nitish
+app.use(cors());
+var mongoose = require("./models/mongoose_connector").mongoose;
+var db = require("./models/mongoose_connector").db;
+console.log("mongoose obj");
+
+//nitish
+var dbName = 'instaRent';
+var connectionString = 'mongodb://localhost:60000/' + dbName;
+
+//mongoose.connect(connectionString);
+
+app.use(expressSession({
+        key: 'session',
+        secret: '128013A7-5B9F-4CC0-BD9E-4480B2D3EFE9',
+        store: new mongooseSession(mongoose),
+        resave: true,
+        saveUninitialized: true
+    })
+);
+console.log("mongoose after session");
+
 
 // view engine setup
 app.engine('html', swig.renderFile);
@@ -26,9 +58,25 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+//app.use('/', routes);
 app.use('/users', users);
 app.use('/managehome', manageHomeRoutes);
+
+
+//nitish routes
+app.use('/api', accountRoutes);
+
+app.get('/signup',function(req,res)
+{ 
+    console.log("in signup");
+res.render('signup.html');
+    
+});
+
+app.get('/login',function(req,res)
+{ 
+res.render('login.html');
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -61,5 +109,6 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+console.log("mongoose end");
 
 module.exports = app;
