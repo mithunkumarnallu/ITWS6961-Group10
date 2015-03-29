@@ -48,7 +48,7 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
                             //console.log(home);
                             var infoWindow = new google.maps.InfoWindow( {
                                 //content: "<div class='info_content'><h3>Landlord at:</h3> <p>" + home.address + "</p><label ng-click=open('lg') class='btn btn-primary'>Set Home</label>"
-                                content: "<div class='info_content'><h3>Landlord at:</h3> <p>" + home.address + "</p><label onclick=setHome('"+ home.id +"','" + home.userType + "') class='btn btn-primary'>Set Home</label>"
+                                content: "<div class='info_content'><h3>Landlord at:</h3> <p>" + home.address + "</p><label onclick=setHome('"+ home._id +"','" + home.userType + "') class='btn btn-primary'>Set Home</label>"
                             });
                             var p = loc.results[0].geometry.location
                             var latlng = new google.maps.LatLng(p.lat, p.lng);

@@ -55,8 +55,9 @@ AccountController.prototype.logon = function(email, password,res) {
 						foreignId: user.foreignId
                     });
 
-                    me.session.userProfileMsodel = userProfileModel;
+                    me.session.userProfileModel = userProfileModel;
 					me.session.id = me.uuid.v4();
+                    //me.session.cookie={userId: user.email};
 					console.log("session: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId );
                     console.log("logon ajax res.send");
                      res.send(
