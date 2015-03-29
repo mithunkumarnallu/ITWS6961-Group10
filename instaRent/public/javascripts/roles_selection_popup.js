@@ -238,6 +238,7 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
         var homeInfo = getHome($scope.address);
         console.log(homeInfo);
         if(homeInfo) {
+
             if($scope.radioModel == "Landlord") {
                 //console.log("Setting isDisabled as true");
                 $scope.owner_description = homeInfo.description;
@@ -301,7 +302,8 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
             return {
                 userType: $scope.radioModel,
                 description: $scope.owner_description,
-                address: $scope.owner_address
+                address: $scope.owner_address,
+                homeId: getHome($scope.owner_address)._id
             };
         else
             return {
@@ -313,7 +315,8 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
                 leaseEndDate: $scope.tenant_leaseEndDate,   
                 securityDeposit: $scope.tenant_securityDeposit,
                 rentPerMonth: $scope.tenant_rentPerMonth,
-                tenantsEmails: $scope.tenant_tenantsEmails
+                tenantsEmails: $scope.tenant_tenantsEmails,
+                homeId: getHome($scope.tenant_address)._id
             };
     }
 
