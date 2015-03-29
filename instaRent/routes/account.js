@@ -1,3 +1,5 @@
+var mailer = require("../methods/mailerHandler");
+
 var express = require('express'),
     router = express.Router(),
     AccountController = require('../methods/account.js'),
@@ -16,7 +18,7 @@ var express = require('express'),
 	
 	
 	
-	router.route('/account/register').post(function (req, res) { 
+router.route('/account/register').post(function (req, res) { 
 	/*router.post('/account/register',function (req, res) {*/
 	var me = this;
     console.log("received password: "+req.body.password +" "+ req.body.passwordConfirm);
@@ -75,6 +77,10 @@ var express = require('express'),
 						foreignId: user.foreignId
                     };
 					console.log("user profile model created in register: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId + " Name: "+  userProfileModel.firstName );
+                    console.log(mailer.sendAccountConfirmationMail);
+                    //Mithun's code to handle email confirmation
+                    mailer.sendAccountConfirmationMail(req, res, newUser);
+
                     res.send({success: true, extras: {userProfileModel: userProfileModel}});
 				}
 				else {
@@ -86,18 +92,18 @@ var express = require('express'),
 	});
   });	
 	
-	router.route('/account/logon')
+router.route('/account/logon').post(function (req, res) {
 
-    .post(function (req, res) {
+    var accountController = new AccountController(User, req.session);
 
-        var accountController = new AccountController(User, req.session);
+    var userLogon = new UserLogon(req.body);
+    console.log("userLogon: "+userLogon.email+" "+userLogon.password)
+    accountController.logon(userLogon.email, userLogon.password, res);
+        
+        
+});
 
-        var userLogon = new UserLogon(req.body);
-        console.log("userLogon: "+userLogon.email+" "+userLogon.password)
-        accountController.logon(userLogon.email, userLogon.password, res);
-            
-            
-    });
-	
-	module.exports = router;
+
+
+module.exports = router;
    

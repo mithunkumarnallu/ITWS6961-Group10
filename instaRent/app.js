@@ -19,6 +19,7 @@ var mongooseSession = require('mongoose-session');
 var accountRoutes = require('./routes/account');
 var cors=require("cors");
 var json = require('jsonfile');
+var mailer = require('express-mailer');
 
 var app = express();
 
@@ -27,6 +28,18 @@ app.use(cors());
 var mongoose = require("./models/mongoose_connector").mongoose;
 var db = require("./models/mongoose_connector").db;
 console.log("mongoose obj");
+
+mailer.extend(app, {
+  from: 'noreplyinstarent@gmail.com',
+  host: 'smtp.gmail.com', // hostname
+  secureConnection: true, // use SSL
+  port: 465, // port for secure SMTP
+  transportMethod: 'SMTP', // default is SMTP. Accepts anything that nodemailer accepts
+  auth: {
+    user: 'noreplyinstarent@gmail.com',
+    pass: 'instarent123'
+  }
+});
 
 //nitish
 var dbName = 'instaRent';
