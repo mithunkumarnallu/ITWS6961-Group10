@@ -5,8 +5,9 @@ var UserSchema = new Schema({
  firstName: String,
  lastName: String,
  phoneNo: String,
- foreignId: String,                   //Check this??
+ foreignId: String,                   
  role: String,
+ isVerified: Boolean,    
  passwordHash: String,
  passwordSalt: String
 });
