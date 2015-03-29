@@ -37,6 +37,7 @@ var express = require('express'),
 		phoneNo:   req.body.phone,
 		foreignId:  "",
 		role:      "",
+        isVerified: false,
         passwordHash: crypto.pbkdf2Sync(req.body.password, passwordSaltIn, cryptoIterations, cryptoKeyLen),
         passwordSalt: passwordSaltIn
     });
@@ -72,9 +73,10 @@ var express = require('express'),
                         lastName: user.lastName,
 						phoneNo: user.phoneNo,
 						role: user.role,
+                        isVerified: user.isVerified,
 						foreignId: user.foreignId
                     };
-					console.log("user profile model created in register: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId + " Name: "+  userProfileModel.firstName );
+					console.log("user profile model created in register: verify: "+userProfileModel.isVerified+" foreignId: "+userProfileModel.foreignId + " Name: "+  userProfileModel.firstName );
                     res.send({success: true, extras: {userProfileModel: userProfileModel}});
 				}
 				else {
