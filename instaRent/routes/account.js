@@ -78,7 +78,6 @@ router.route('/account/register').post(function (req, res) {
                         isVerified: user.isVerified,
 						foreignId: user.foreignId
                     };
-<<<<<<< HEAD
 					console.log("user profile model created in register: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId + " Name: "+  userProfileModel.firstName );
                     console.log(mailer.sendAccountConfirmationMail);
                     //Mithun's code to handle email confirmation
