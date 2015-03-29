@@ -52,11 +52,13 @@ AccountController.prototype.logon = function(email, password,res) {
                         lastName: user.lastName,
 						phoneNo: user.phoneNo,
 						role: user.role,
+                        isVerified: user.isVerified,
 						foreignId: user.foreignId
                     });
 
-                    me.session.userProfileMsodel = userProfileModel;
+                    me.session.userProfileModel = userProfileModel;
 					me.session.id = me.uuid.v4();
+                    //me.session.cookie={userId: user.email};
 					console.log("session: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId );
                     console.log("logon ajax res.send");
                      res.send(
@@ -88,24 +90,24 @@ AccountController.prototype.logoff = function () {
     return;
 };
 
-AccountController.prototype.register = function (newUser, res) {
+/*AccountController.prototype.register = function (newUser, res) {
     var me = this;
     me.userModel.findOne({ email: newUser.email }, function (err, user) {
 
         if (err) {
-           /* return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } }));*/
+           
 		   res.send({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } });
         }
 
         if (user) {
-            /*return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.EMAIL_ALREADY_EXISTS } }));*/
+            
 			res.send({ success: false, extras: { msg: me.ApiMessages.EMAIL_ALREADY_EXISTS } });
         } else {
 
             newUser.save(function (err, user, numberAffected) {
 
                 if (err) {
-                    /*return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } })); */
+                    
 					console.log(err);
 					res.send({ success: false, extras: { msg: me.ApiMessages.DB_ERROR }});
                 }
@@ -121,7 +123,7 @@ AccountController.prototype.register = function (newUser, res) {
 						foreignId: user.foreignId
                     });
 
-                    /*
+                    
 					return callback(err, new me.ApiResponse({
                         success: true, extras: {
                             userProfileModel: userProfileModel
@@ -133,16 +135,15 @@ AccountController.prototype.register = function (newUser, res) {
                     mailer.sendAccountConfirmationMail(res, newUser);
 
                     console.log("user profile model created in register: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId );
-					var obj = new me.ApiResponse({ success: true, extras: {userProfileModel: userProfileModel}});
-					
+					var obj = new me.ApiResponse({ success: true, extras: {userProfileModel: userProfileModel}});					
 					console.log("returning from register()");
 					res.set("Access-Control-Allow-Origin", "*");
 					var json_obj=JSON.stringify(obj);
 					res.send(json_obj);
 					/*res.send({success: true, extras: {
-					userProfileModel: userProfileModel}});*/
+					userProfileModel: userProfileModel}});
                 } else {
-                    /*return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.COULD_NOT_CREATE_USER } }));*/
+                    /*return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.COULD_NOT_CREATE_USER } }));
 					res.send({ success: false, extras: { msg: me.ApiMessages.COULD_NOT_CREATE_USER } });
                 }             
 
@@ -150,9 +151,9 @@ AccountController.prototype.register = function (newUser, res) {
         }
 
     });
-};
+};  */
 
-AccountController.prototype.getUserFromUserRegistration = function(userRegistrationModel) {
+/*AccountController.prototype.getUserFromUserRegistration = function(userRegistrationModel) {
     var me = this;
     console.log(userRegistrationModel.password +" "+ userRegistrationModel.passwordConfirm);
     if (userRegistrationModel.password !== userRegistrationModel.passwordConfirm) {
@@ -177,7 +178,7 @@ AccountController.prototype.getUserFromUserRegistration = function(userRegistrat
     });
 
     return new me.ApiResponse({ success: true, extras: { user: user } });
-}
+}*/
 
 
 
