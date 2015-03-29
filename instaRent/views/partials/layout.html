@@ -4,6 +4,9 @@
     {% include "head.html" %}
     {% block myHead %}
     {% endblock %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="https://checkout.stripe.com/checkout.js"></script>
+    
 </head>
 <body>
      <header>
@@ -51,6 +54,10 @@
 	                <li>
 	                    <a href="#">Events</a>
 	                </li>
+	                 <li>
+	                    <a id="pay" href="#">Pay your rent</a>
+	                </li>
+	       
 	                <li>
 	                    <a href="#">About</a>
 	                </li>
@@ -60,6 +67,7 @@
 	                <li>
 	                    <a href="#">Contact</a>
 	                </li>
+	                
 	            </ul>
 	        </div>
 	        {% block myBody %}
@@ -68,5 +76,53 @@
 	    <!-- /#sidebar-wrapper -->
 	</header>
 	{% include "footer.html" %}
+	<script>
+    // Define handler to be called when Stripe returns a card token
+    var rent = 0;
+    function onReceiveToken(token, args) {
+        // Submit token to server so it can charge the card
+        $.ajax({
+            url: '/payments/charge',
+            type: 'POST',
+            data: {
+                stripeToken: token.id
+            }
+        });
+    }
+
+ 	function dynamicRent(){
+
+ 		$.ajax({      	    
+    				type: "GET",
+    				url: '/payments/getRent',
+	
+    				success: function (responseData, status) {
+    					rent = responseData.response;
+    					console.log(rent);
+    					var checkout = StripeCheckout.configure({
+				    
+        				key: 'pk_test_jwW7JFcTZaD8HmJdFZgeh4TR',
+        				token: onReceiveToken,
+						image: '',
+				        name: 'InstaRent.com',
+				        description: 'Pay rent to John Doe',
+				        amount: rent*100
+    					});
+
+    					checkout.open();
+    					
+
+    				}
+				});   
+
+ 	}
+  
+    
+
+    $('#pay').on('click', function() {
+        dynamicRent();
+        return false;
+    });
+</script>
 </body>
 </html>
