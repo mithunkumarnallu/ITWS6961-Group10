@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
+var mailer = require("../methods/mailerHandler");
+
 var Home = require("../models/home").Home;
 var HomeHandler = require("../models/home");
 //HomeHandler = new HomeHandler();
@@ -13,6 +15,12 @@ userHelper = new userHelper();
 
 router.get('/', function(req, res, next) {
   res.render('Role Selection.html', { title: 'instaRent' });
+});
+
+router.get('/mail', function(req, res, next) {
+  	//console.log(mailer.sendMail);
+  	mailer.sendMail(res);
+  	//console.log("printing mailer: " + res.mailer.send);
 });
 
 router.get('/getLandlordHomes', function(req, res, next) {

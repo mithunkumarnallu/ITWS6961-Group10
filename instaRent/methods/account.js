@@ -1,4 +1,4 @@
-
+var mailer = require("../methods/mailerHandler");
 
 var AccountController = function (userModel, session) {
 
@@ -128,8 +128,12 @@ AccountController.prototype.register = function (newUser, res) {
                         }
                     }));
 					*/
-					console.log("user profile model created in register: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId );
-					var obj=new me.ApiResponse({ success: true, extras: {userProfileModel: userProfileModel}});
+					console.log("Calling sendAccountConfirmationMail");
+                    //Mithun's code to handle email confirmation
+                    mailer.sendAccountConfirmationMail(res, newUser);
+
+                    console.log("user profile model created in register: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId );
+					var obj = new me.ApiResponse({ success: true, extras: {userProfileModel: userProfileModel}});
 					
 					console.log("returning from register()");
 					res.set("Access-Control-Allow-Origin", "*");
