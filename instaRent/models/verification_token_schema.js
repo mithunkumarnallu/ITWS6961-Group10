@@ -2,6 +2,7 @@ var mongoose = require("./mongoose_connector").mongoose;
 var db = require("./mongoose_connector").db;
 var uuid = require('node-uuid');
 var Schema = mongoose.Schema;
+var userModel = require("./user");
 
 // Verification token model
 var verificationTokenSchema = new Schema({
@@ -25,16 +26,21 @@ exports.verifyUser = function(token, done) {
     VerificationTokenModel.findOne({token: token}, function (err, doc){
         if (err) 
         	return done(err);
-        return done();
-        /*
+        //return done();
+        
         userModel.findOne({_id: doc._userId}, function (err, user) {
-            if (err) return done(err);
-            user["verified"] = true;
+            if (err)
+            {
+            	console.log(err);
+            	return done(err);
+            } 
+            user.isVerified = true;
+            
             user.save(function(err) {
+                console.log("Verified user");
                 done(err);
             })
         })
-		*/
     })
 };
 

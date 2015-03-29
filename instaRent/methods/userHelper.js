@@ -19,10 +19,6 @@ userHelper.prototype.setDefaultHome = function(userId, homeInfo) {
             console.log("setDefaultHome: numberAffected: "+numberAffected);   
         }
     });
-               
-            
-    
-        
 };
 
 module.exports = userHelper;
