@@ -1,39 +1,77 @@
 var mongoose = require("./mongoose_connector").mongoose;
 var db = require("./mongoose_connector").db;
+var homeInfo = require("./home");
+var userHelper = require("../methods/userHelper");
+userHelper = new userHelper();
+var Home = require("../models/home").Home;
+var HomeHandler = require("../models/home");
 
 var moreHomeInfo = new mongoose.Schema({
-  userId: String,
-  description: String,
-  userType: String,
+  //homeId: String,
   address: String,
   landlordEmail: String,
   leaseStartDate: Date,
   leaseEndDate: Date,
   rentPerMonth: Number,
+  rentPerMonthPerUser: Number,
   securityDeposit: Number,
   tenantsEmails: String
 });
 
 var MoreHomeInfo = mongoose.model('MoreHomeInfo', moreHomeInfo);
 
-function checkAndSave(home, res) {
-	
-	MoreHomeInfo.find({userId : home.userId, address : home.address}, function(err, data) {
+function checkAndSave(moreHome, req, res, overwrite) {
+	console.log(moreHome);
+	var userId = userHelper.getUserId(req);
+	console.log("In more_home_info's check and save" + moreHome);
+	MoreHomeInfo.findOne({address : moreHome.address}, function(err, data) {
 		console.log(data);
-		if(err || data.length > 0)
-			res.status(409).send("Error: Address already exists");
-		else
-			home.save(function(err, saved) {
+		if(err)
+			res.status(409).send("Error: Adding home");
+		else if(data && !overwrite) {
+			res.status(409).send("Error: Home already exists");
+		}
+		else if(data) {
+			//update the record in database
+			MoreHomeInfo.update({address : moreHome.address}, moreHome, {}, function(err, numEffected) {
+				console.log(numEffected);
+				if(err || numEffected == 0) {
+					console.log(err);
+					res.status(409).send("Error: Could not add home");
+				}
+				else {
+					var home = {
+						userId: userId,
+						homeId: data._id,
+						description: req.body.description,
+						userType: req.body.userType
+					}; 
+					HomeHandler.checkAndSave(home, res, true);
+				}
+			});
+		} 
+		else {
+			moreHome = new MoreHomeInfo(moreHomeInfo);
+			moreHome.save(function(err, moreHome) {
 				if(err)
 					res.status(409).send("Error Adding home");
-				res.send("Success");
-			});	
+				else {	
+					var home = {
+						userId: userId,
+						homeId: moreHome._id,
+						description: req.body.description,
+						userType: req.body.userType
+					}; 
+					HomeHandler.checkAndSave(home, res, true);
+				}
+			});
+		}	
 	});	
 }; 
 
 function update(home, res) {
 	//console.log(home);
-	MoreHomeInfo.update({userId: home.userId, address : home.address}, home, {}, function(err, numEffected) {
+	MoreHomeInfo.update({_id: home._id, address : home.address, userType: home.userType}, home, {}, function(err, numEffected) {
 		//console.log(data);
 		if(err || numEffected == 0) {
 			console.log(err);
@@ -44,19 +82,94 @@ function update(home, res) {
 	});	
 }; 
 
+
+//gets landlord as well as tenant home addresses
 function getUserHomeAddresses(userId, res) {
-	MoreHomeInfo.find({userId: userId}, function(err, data) {		
-		if(err || data.length == 0)
+	homeInfo.Home.find({userId: userId, userType: "Landlord"}, function(err, data) {		
+		if(err)
 			res.status(409).send({status: "Error", response: "Error: No homes added!"});
-		else
-        {
-		  var addresses = [];
-		  for(var i = 0; i < data.length; i++) {
-                addresses.push({address: data[i].address, id: data[i]._id, userType: "Tenant"});
+		else if(data.length == 0) {
+			var result = [];
+			homeInfo.Home.find({userId: userId, userType: "Tenant"}, function(err, data) {
+				console.log("Tenant home ids are: " + JSON.stringify(data));				
+				if(err)
+					res.status(409).send({status: "Error", response: "Error: No homes added!"});
+				else if(data.length == 0) {
+					res.send({status: "Success", response: result});
+				}
+				else {
+					var homeIds = [];
+					for(var i = 0; i < data.length; i++) {
+		                homeIds.push({_id: data[i].homeId});
+		            }
+		            MoreHomeInfo.find({$or: homeIds}, function(err, tenantHomes) {
+						//console.log("Tenant homes are: " + JSON.stringify(tenantHomes));	
+						if(err)
+							res.status(409).send({status: "Error", response: "Error in getting homes!"});	
+						else {
+							for(var i = 0; i < tenantHomes.length; i++) {
+								var tenantHome = JSON.parse(JSON.stringify(tenantHomes[i]));
+								tenantHome.userType = "Tenant";
+								tenantHome.description = data[i].description;
+								//console.log("Pusing " + tenantHome + " into result");
+								result.push(tenantHome);
+							}
+							res.send({status: "Success", response: result});
+						}
+					});
+				}
+			});
+		}
+		else {
+			var result = [];
+			var homeIds = [];
+			for(var i = 0; i < data.length; i++) {
+                homeIds.push({_id: data[i].homeId});
             }
-            res.send({status: "Success", response: data});
-//res.send({status: "Success", response: addresses});
-        }
+            
+            MoreHomeInfo.find({$or: homeIds}, function(err, landlordHomes) {
+				//console.log("Landlord homes are: " + JSON.stringify(landlordHomes));	
+				if(err)
+					res.status(409).send({status: "Error", response: "Error in getting homes!"});	
+				else {
+					for(var i = 0; i < landlordHomes.length; i++) {
+						var landlordHome = JSON.parse(JSON.stringify(landlordHomes[i])); //Object.create(landlordHomes[i]);
+						landlordHome["userType"] = "Landlord";
+						landlordHome["description"] = data[i].description;
+						result.push(landlordHome);
+					}
+					homeInfo.Home.find({userId: userId, userType: "Tenant"}, function(err, data) {
+					console.log("Tenant home ids are: " + JSON.stringify(data));				
+					if(err)
+						res.status(409).send({status: "Error", response: "Error: No homes added!"});
+					else if(data.length == 0) {
+						res.send({status: "Success", response: result});
+					}
+					else {
+						var homeIds = [];
+						for(var i = 0; i < data.length; i++) {
+			                homeIds.push({_id: data[i].homeId});
+			            }
+			            MoreHomeInfo.find({$or: homeIds}, function(err, tenantHomes) {
+							//console.log("Tenant homes are: " + JSON.stringify(tenantHomes));	
+							if(err)
+								res.status(409).send({status: "Error", response: "Error in getting homes!"});	
+							else {
+								for(var i = 0; i < tenantHomes.length; i++) {
+									var tenantHome = JSON.parse(JSON.stringify(tenantHomes[i]));
+									tenantHome.userType = "Tenant";
+									tenantHome.description = data[i].description;
+									//console.log("Pusing " + tenantHome + " into result");
+									result.push(tenantHome);
+								}
+								res.send({status: "Success", response: result});
+							}
+						});
+					}
+				});
+            }
+        });
+        } 
 	});
 };
 
