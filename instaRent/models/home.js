@@ -1,6 +1,9 @@
 var mongoose = require("./mongoose_connector").mongoose;
 var db = require("./mongoose_connector").db;
 
+var MoreHomeInfo = require("../models/more_home_info").MoreHomeInfo;
+var MoreHomeInfoHandler = require("../models/more_home_info");
+
 var homeSchema = new mongoose.Schema({
   userId: String,
   homeId: String,
@@ -45,7 +48,18 @@ function update(home, res) {
 			res.status(409).send("Error: Could not find existing home");
 		else
 			res.send("Success");	
-	});	
+	});
+	/*
+	MoreHomeInfo.findOne({address: home.address}, function(err, data) {
+		Home.update({userId: home.userId,  homeId : home.homeId}, home, {}, function(err, numEffected) {
+			//console.log(data);
+			if(err || numEffected == 0)
+				res.status(409).send("Error: Could not find existing home");
+			else
+				res.send("Success");	
+		});
+	});
+	*/	
 }; 
 
 function getUserHomeAddresses(userId, res) {

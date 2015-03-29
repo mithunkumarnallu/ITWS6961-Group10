@@ -69,19 +69,25 @@ function checkAndSave(moreHome, req, res, overwrite) {
 	});	
 }; 
 
-function update(home, res) {
+function update(home, userId, req, res) {
 	//console.log(home);
-	MoreHomeInfo.update({_id: home._id, address : home.address, userType: home.userType}, home, {}, function(err, numEffected) {
+	MoreHomeInfo.update({_id: home.homeId, address : home.address}, home, {}, function(err, numEffected) {
 		//console.log(data);
 		if(err || numEffected == 0) {
 			console.log(err);
 			res.status(409).send("Error: Could not find existing home");
 		}
-		else
-			res.send("Success");	
+		else {
+			var moreHomeInfo = {
+				userId: userId,
+				address: req.body.address,
+				description: req.body.description,
+				homeId: req.body.homeId
+			};
+			HomeHandler.update(moreHomeInfo, res);
+		}
 	});	
 }; 
-
 
 //gets landlord as well as tenant home addresses
 function getUserHomeAddresses(userId, res) {
