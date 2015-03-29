@@ -38,7 +38,9 @@ function sendAccountConfirmationMail(req, res, user) {
 		    return 'Email Sent';
 		});	
 	});
-}	
+};
+
+	
 
 exports.sendMail = sendMail;
 exports.sendAccountConfirmationMail = sendAccountConfirmationMail;

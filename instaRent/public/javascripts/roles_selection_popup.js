@@ -35,6 +35,43 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
         addMap();
         if(areMarkersToBeAdded) {
             $scope.homes = [];
+            $http.get("/managehome/getHomes")
+            .success(function(data, status){
+                $scope.homes = $scope.homes.concat(data.response);
+                data.response.forEach(function(home) {
+                    //$.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address='+data.response[x]+'&sensor=false', null, function (loc) {                    
+                    $http.get('http://maps.googleapis.com/maps/api/geocode/json?address='+home.address+'&sensor=false')
+                    .success(function (loc, status) {
+                        
+                        (function(loc, home) {
+                            //console.log(home);
+                            var infoWindow = new google.maps.InfoWindow( {
+                                //content: "<div class='info_content'><h3>Landlord at:</h3> <p>" + home.address + "</p><label ng-click=open('lg') class='btn btn-primary'>Set Home</label>"
+                                content: "<div class='info_content'><h3>" + home.userType + " at:</h3> <p>" + home.address + "</p><label onclick=setHome('"+ home._id +"','" + home.userType + "') class='btn btn-primary'>Set Home</label>"
+                            });
+                            var p = loc.results[0].geometry.location
+                            var latlng = new google.maps.LatLng(p.lat, p.lng);
+                            var marker = new google.maps.Marker({
+                                position: latlng,
+                                map: map
+                            });
+
+                            //Add an info window to the marker and in click of a button on it, set the user's current home to it and redirect him to dashboard
+                            //Allow each marker to have an info window    
+                            google.maps.event.addListener(marker, 'click', (function(marker, infoWindow) {
+                                
+                                return createClickListener(infoWindow, marker);
+                            })(marker, infoWindow));
+                        })(loc, home);
+
+                    });
+                }            
+            )})
+            .error(function(data, status) {
+                console.log(data);            
+            });
+
+            /*
             //get landlord homes and add markers
             $http.get("/managehome/getLandlordHomes")
             .success(function(data, status){
@@ -109,6 +146,7 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
             .error(function(data, status) {
                 console.log(data);            
             });
+            */
         }
     }
 
