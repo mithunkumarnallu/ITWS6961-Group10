@@ -9,4 +9,7 @@ userHelper.prototype.setDefaultHome = function(userId, homeInfo) {
 	return {status: "Success", response : {}};
 };
 
+userHelper.prototype.getDefaultHome = function (userId) {
+	return "55147c99f627d4383a70f632";
+}
 module.exports = userHelper;

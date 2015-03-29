@@ -58,7 +58,19 @@ function getUserHomeAddresses(userId, res) {
 	});
 };
 
+function getrentPerMonth(homeId,res){
+	MoreHomeInfo.findOne({_id:homeId}, function(err, data){
+		if(err || data.length == 0)
+			res.status(409).send({status: "Error", response: "Error: No such home!"});
+
+		res.send({status: "Success", response: data.rentPerMonth});
+	});
+
+
+}
+
 exports.update = update;
 exports.getUserHomeAddresses = getUserHomeAddresses;
 exports.checkAndSave = checkAndSave;
 exports.MoreHomeInfo = MoreHomeInfo;
+exports.getrentPerMonth = getrentPerMonth;
