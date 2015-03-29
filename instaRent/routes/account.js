@@ -39,6 +39,7 @@ router.route('/account/register').post(function (req, res) {
 		phoneNo:   req.body.phone,
 		foreignId:  "",
 		role:      "",
+        isVerified: false,
         passwordHash: crypto.pbkdf2Sync(req.body.password, passwordSaltIn, cryptoIterations, cryptoKeyLen),
         passwordSalt: passwordSaltIn
     });
@@ -74,13 +75,14 @@ router.route('/account/register').post(function (req, res) {
                         lastName: user.lastName,
 						phoneNo: user.phoneNo,
 						role: user.role,
+                        isVerified: user.isVerified,
 						foreignId: user.foreignId
                     };
+<<<<<<< HEAD
 					console.log("user profile model created in register: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId + " Name: "+  userProfileModel.firstName );
                     console.log(mailer.sendAccountConfirmationMail);
                     //Mithun's code to handle email confirmation
                     mailer.sendAccountConfirmationMail(req, res, newUser);
-
                     res.send({success: true, extras: {userProfileModel: userProfileModel}});
 				}
 				else {

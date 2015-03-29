@@ -52,7 +52,8 @@ app.use(expressSession({
         secret: '128013A7-5B9F-4CC0-BD9E-4480B2D3EFE9',
         store: new mongooseSession(mongoose),
         resave: true,
-        saveUninitialized: true
+        saveUninitialized: true,
+        cookie: {}
     })
 );
 console.log("mongoose after session");

@@ -48,13 +48,15 @@ function getUserHomeAddresses(userId, res) {
 	MoreHomeInfo.find({userId: userId}, function(err, data) {		
 		if(err || data.length == 0)
 			res.status(409).send({status: "Error", response: "Error: No homes added!"});
-		
-		var addresses = [];
-		for(var i = 0; i < data.length; i++) {
-			addresses.push({address: data[i].address, id: data[i]._id, userType: "Tenant"});
-		}
-		res.send({status: "Success", response: data});
-		//res.send({status: "Success", response: addresses});
+		else
+        {
+		  var addresses = [];
+		  for(var i = 0; i < data.length; i++) {
+                addresses.push({address: data[i].address, id: data[i]._id, userType: "Tenant"});
+            }
+            res.send({status: "Success", response: data});
+//res.send({status: "Success", response: addresses});
+        }
 	});
 };
 
