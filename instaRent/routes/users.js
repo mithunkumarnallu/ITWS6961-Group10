@@ -9,9 +9,9 @@ router.get('/', function(req, res, next) {
 
 router.get("/verify/:token", function (req, res, next) {
     var token = req.params.token;
-    console.log("Verifying user user");
+    //console.log("Verifying user user");
     verificationToken.verifyUser(token, function(err) {
-        console.log("Verified user");
+        
         if (err) 
         	return res.redirect("verification-failure");
         res.redirect("/login");
