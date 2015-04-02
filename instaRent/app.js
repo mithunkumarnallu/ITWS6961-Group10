@@ -92,6 +92,12 @@ app.get('/login',function(req,res)
 res.render('login.html');
 });
 
+// Amy routes
+app.get('/settings', function(req, res) {
+  console.log("in settings");
+  res.render('settings.html');
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
