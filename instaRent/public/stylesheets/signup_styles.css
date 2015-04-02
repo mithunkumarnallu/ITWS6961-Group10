@@ -1,0 +1,33 @@
+body{
+	background-image: url("/images/back4.jpg");
+	min-height:100%;
+	
+}
+.centered-form{
+	margin-top: 60px;
+}
+
+.centered-form .panel{
+	background: rgba(255, 255, 255, 0.8);
+	box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;
+}
+
+#text{
+  margin-top: 2.8%;
+
+}
+
+.container{
+ background-image:url("background.jpg");
+}
+
+h4{
+color: #332914;
+letter-spacing:2px;
+font-weight: bold;
+
+}
+
+
+
+
