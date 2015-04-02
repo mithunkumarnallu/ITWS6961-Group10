@@ -92,10 +92,18 @@ app.get('/login',function(req,res)
 res.render('login.html');
 });
 
+<<<<<<< Updated upstream
 // Amy routes
 app.get('/settings', function(req, res) {
   console.log("in settings");
   res.render('settings.html');
+=======
+//Luying routes
+app.get('/dashboard', function(req,res)
+{
+  console.log("success");
+  res.render('dashboard.html');
+>>>>>>> Stashed changes
 });
 
 // catch 404 and forward to error handler
