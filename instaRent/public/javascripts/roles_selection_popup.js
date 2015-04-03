@@ -6,8 +6,7 @@ angular.module('ui.managehomes').directive("tenantContainer", function() {
                 //elem.find("#address").("autocomplete","on");
                 //elem.find("#address")[0].attr("autocomplete","on");
                 //console.log(elem.find("#tenant_address"));
-                regsiterForAutoComplete(elem.find("#tenant_address"));
-                regsiterForAutoComplete(elem.find("#owner_address"));
+                regsiterForAutoComplete(scope, elem.find("#tenant_address"));                
             }
         };
     }
@@ -18,7 +17,7 @@ angular.module('ui.managehomes').directive("landlordContainer", function() {
         link: function(scope, elem, attrs, ngModel) {
                 //elem.find("#address").("autocomplete","on");
                 //elem.find("#address")[0].attr("autocomplete","on");
-                regsiterForAutoComplete(elem.find("#owner_address"));
+                regsiterForAutoComplete(scope, elem.find("#owner_address"));
             }
         };
     }
@@ -36,6 +35,43 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
         addMap();
         if(areMarkersToBeAdded) {
             $scope.homes = [];
+            $http.get("/managehome/getHomes")
+            .success(function(data, status){
+                $scope.homes = $scope.homes.concat(data.response);
+                data.response.forEach(function(home) {
+                    //$.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address='+data.response[x]+'&sensor=false', null, function (loc) {                    
+                    $http.get('http://maps.googleapis.com/maps/api/geocode/json?address='+home.address+'&sensor=false')
+                    .success(function (loc, status) {
+                        
+                        (function(loc, home) {
+                            //console.log(home);
+                            var infoWindow = new google.maps.InfoWindow( {
+                                //content: "<div class='info_content'><h3>Landlord at:</h3> <p>" + home.address + "</p><label ng-click=open('lg') class='btn btn-primary'>Set Home</label>"
+                                content: "<div class='info_content'><h3>" + home.userType + " at:</h3> <p>" + home.address + "</p><label onclick=setHome('"+ home._id +"','" + home.userType + "') class='btn btn-primary'>Set Home</label>"
+                            });
+                            var p = loc.results[0].geometry.location
+                            var latlng = new google.maps.LatLng(p.lat, p.lng);
+                            var marker = new google.maps.Marker({
+                                position: latlng,
+                                map: map
+                            });
+
+                            //Add an info window to the marker and in click of a button on it, set the user's current home to it and redirect him to dashboard
+                            //Allow each marker to have an info window    
+                            google.maps.event.addListener(marker, 'click', (function(marker, infoWindow) {
+                                
+                                return createClickListener(infoWindow, marker);
+                            })(marker, infoWindow));
+                        })(loc, home);
+
+                    });
+                }            
+            )})
+            .error(function(data, status) {
+                console.log(data);            
+            });
+
+            /*
             //get landlord homes and add markers
             $http.get("/managehome/getLandlordHomes")
             .success(function(data, status){
@@ -49,7 +85,7 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
                             //console.log(home);
                             var infoWindow = new google.maps.InfoWindow( {
                                 //content: "<div class='info_content'><h3>Landlord at:</h3> <p>" + home.address + "</p><label ng-click=open('lg') class='btn btn-primary'>Set Home</label>"
-                                content: "<div class='info_content'><h3>Landlord at:</h3> <p>" + home.address + "</p><label onclick=setHome('"+ home.id +"','" + home.userType + "') class='btn btn-primary'>Set Home</label>"
+                                content: "<div class='info_content'><h3>Landlord at:</h3> <p>" + home.address + "</p><label onclick=setHome('"+ home._id +"','" + home.userType + "') class='btn btn-primary'>Set Home</label>"
                             });
                             var p = loc.results[0].geometry.location
                             var latlng = new google.maps.LatLng(p.lat, p.lng);
@@ -110,6 +146,7 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
             .error(function(data, status) {
                 console.log(data);            
             });
+            */
         }
     }
 
@@ -201,6 +238,7 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
         var homeInfo = getHome($scope.address);
         console.log(homeInfo);
         if(homeInfo) {
+
             if($scope.radioModel == "Landlord") {
                 //console.log("Setting isDisabled as true");
                 $scope.owner_description = homeInfo.description;
@@ -257,7 +295,6 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
             });
         }
         //$modalInstance.getHomes();
-
     };
 
     function getHomeParams(){
@@ -265,7 +302,8 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
             return {
                 userType: $scope.radioModel,
                 description: $scope.owner_description,
-                address: $scope.owner_address
+                address: $scope.owner_address,
+                homeId: getHome($scope.owner_address)._id
             };
         else
             return {
@@ -277,7 +315,8 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
                 leaseEndDate: $scope.tenant_leaseEndDate,   
                 securityDeposit: $scope.tenant_securityDeposit,
                 rentPerMonth: $scope.tenant_rentPerMonth,
-                tenantsEmails: $scope.tenant_tenantsEmails
+                tenantsEmails: $scope.tenant_tenantsEmails,
+                homeId: getHome($scope.tenant_address)._id
             };
     }
 
@@ -319,12 +358,20 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
     
 }]);
 
-function regsiterForAutoComplete(element) {
+function regsiterForAutoComplete(scope, element) {
   // Create the autocomplete object, restricting the search
   // to geographical location types.
     var autocomplete = new google.maps.places.Autocomplete(
       /** @type {HTMLInputElement} */element[0],
       { types: ['geocode'] });
+    
+    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+        console.log(autocomplete.getPlace());
+        if(scope.radioModel == "Landlord")
+            scope.owner_address = autocomplete.getPlace().formatted_address;
+        else
+            scope.tenant_address = autocomplete.getPlace().formatted_address;
+    });
 }
 
 var map = null;
