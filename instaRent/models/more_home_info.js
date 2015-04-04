@@ -51,7 +51,7 @@ function checkAndSave(moreHome, req, res, overwrite) {
 			});
 		} 
 		else {
-			moreHome = new MoreHomeInfo(moreHomeInfo);
+			moreHome = new MoreHomeInfo(moreHome);
 			moreHome.save(function(err, moreHome) {
 				if(err)
 					res.status(409).send("Error Adding home");

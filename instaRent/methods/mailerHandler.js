@@ -40,7 +40,10 @@ function sendAccountConfirmationMail(req, res, user) {
 	});
 };
 
+function sendInvitationEmail(req, res, user, home) {
+	console.log("In sendAccountConfirmationMail");
 	
+}
 
 exports.sendMail = sendMail;
 exports.sendAccountConfirmationMail = sendAccountConfirmationMail;

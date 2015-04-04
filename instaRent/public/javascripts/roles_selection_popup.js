@@ -298,26 +298,34 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
     };
 
     function getHomeParams(){
-        if($scope.radioModel == "Landlord")
-            return {
+        var homePars = {};
+        if($scope.radioModel == "Landlord") {
+            homeParams = {
                 userType: $scope.radioModel,
                 description: $scope.owner_description,
-                address: $scope.owner_address,
-                homeId: getHome($scope.owner_address)._id
+                address: $scope.owner_address
             };
-        else
-            return {
+            var home = getHome($scope.owner_address);
+            if(home)
+                homeParams.homeId = home._id;
+        }
+        else {
+            homeParams = {
                 userType: $scope.radioModel,
                 description: $scope.tenant_description,
                 address: $scope.tenant_address,
                 landlordEmail: $scope.tenant_landlordEmail,
                 leaseStartDate: $scope.tenant_leaseStartDate,
-                leaseEndDate: $scope.tenant_leaseEndDate,   
+                leaseEndDate: $scope.tenant_leaseEndDate,
                 securityDeposit: $scope.tenant_securityDeposit,
                 rentPerMonth: $scope.tenant_rentPerMonth,
                 tenantsEmails: $scope.tenant_tenantsEmails,
-                homeId: getHome($scope.tenant_address)._id
             };
+            var home = getHome($scope.tenant_address);
+            if (home)
+                homeParams.homeId = home._id;
+        }
+        return homeParams;
     }
 
     $scope.cancel = function () {
