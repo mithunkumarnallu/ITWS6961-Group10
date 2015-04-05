@@ -13,6 +13,10 @@ var homeSchema = new mongoose.Schema({
 
 var Home = mongoose.model('Home', homeSchema);
 
+function saveHome(home, callback) {
+    home.save(callback);
+}
+
 function checkAndSave(home, res, overwrite) {
 	
 	Home.findOne({userId : home.userId, homeId : home.homeId}, function(err, data) {
@@ -81,4 +85,5 @@ function getUserHomeAddresses(userId, res) {
 exports.update = update;
 exports.getUserHomeAddresses = getUserHomeAddresses;
 exports.checkAndSave = checkAndSave;
-exports.Home = Home; 
+exports.Home = Home;
+exports.saveHome = saveHome;

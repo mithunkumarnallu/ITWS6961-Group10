@@ -110,6 +110,7 @@ router.post('/updatehome', function(req, res, next) {
 		moreHomeInfo = {
 			userId: userId,
 			address: req.body.address,
+            landlordEmail: req.body.landlordEmail,
 			leaseStartDate: req.body.leaseStartDate,
 			leaseEndDate: req.body.leaseEndDate, 
 			securityDeposit: req.body.securityDeposit,
