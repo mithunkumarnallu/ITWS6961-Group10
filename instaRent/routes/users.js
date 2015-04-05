@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var verificationToken = require("../models/verification_token_schema");
+var invitationHandler = require("../models/invitation_schema");
+var userHelper = require("../methods/userHelper");
+userHelper = new userHelper();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -16,6 +19,15 @@ router.get("/verify/:token", function (req, res, next) {
         	return res.redirect("verification-failure");
         res.redirect("/login");
     });
+});
+
+router.get("/confirmHouse/:homeId", function (req, res, next) {
+   if(userHelper.isUserLoggedIn(req)) {
+       invitationHandler.addUserToHome(userHelper.getUserId(req));
+       res.redirect("/managehome");
+   } else {
+        res.redirect("/login");
+   }
 });
 
 module.exports = router;
