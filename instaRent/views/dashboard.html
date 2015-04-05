@@ -19,7 +19,7 @@
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="./stylesheets/sidebar.css" rel="stylesheet">
 
-    <title>InstaRent Admin</title>
+    <title>InstaRent Dashboard</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="./stylesheets/bootstrap.min.css" rel="stylesheet">
@@ -40,24 +40,13 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <!-- AngularJS -->
-    <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="/javascripts/dashboard.js"></script>
 
-    <script language="JavaScript">
-    function mdy(todaysdate) {
-    //calls the function mdy why to get our date
-    return todaysdate.getMonth()+1+"/"+todaysdate.getDate()
-    }
-    </script>
-    
 </head>
 
 <body>
 
-    <div id="wrapper">
-
-        <!-- Navigation -->
-        <header>
+    <header>
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
          
@@ -79,12 +68,12 @@
           </ul>
         </div>
       </div>
-    </nav> 
-     <div id="wrapper">
+    </nav>
 
+    <div id="wrapper">
         <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
+        <div id="sidebar-wrapper" class="navbar-collapse">
+            <ul class="nav sidebar-nav">
                 <li class="sidebar-brand">
                     <a href="#">
                         Start Bootstrap
@@ -113,45 +102,9 @@
                 </li>
             </ul>
         </div>
-        {% block body %}
-        {% endblock %}
-    </div>
         <!-- /#sidebar-wrapper -->
-</header>
-            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-            <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav side-nav">
-                    <li class="active">
-                        <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
-                    </li>
-                    
-                    <li>
-                        <a href="#"><i class="fa fa-fw fa-edit"></i> Complaints Board</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-fw fa-desktop"></i> Finding Houses</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-fw fa-wrench"></i> Settings</a>
-                    </li>
-                    <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Payments <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="demo" class="collapse">
-                            <li>
-                                <a href="#">Rent Payments</a>
-                            </li>
-                            <li>
-                                <a href="#">Payments for Repairment</a>
-                            </li>
-                        </ul>
-                    </li>
-                    
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </nav>
 
-        <div id="page-wrapper" ng-app="">
+        <div id="page-wrapper" >
 
             <div class="container-fluid">
 
@@ -159,7 +112,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            <small  ng-init ="UserName = 'Peter'">{{UserName}}</small>  Welcome back! 
+                            <small id = "firstName" > {{obj.userName.firstName }} Peter</small>  Welcome back! 
                             <!--to distinguish the landlord and renter-->
                         </h1>
                         <ol class="breadcrumb">
@@ -189,7 +142,8 @@
                                     </div>
                                     <div class="col-xs-9 text-right" >
                                         <div class="huge" >
-                                            <small ng-app = "" ng-init = "Complaints = '0' ">{{ Complaints }}</small></div>
+                                            <small>{{ obj.activeComplaints }}Comp</small>
+                                        </div>
                                         <div>New Complaints!</div>
                                     </div>
                                 </div>
@@ -197,7 +151,11 @@
                             <a href="#">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                    <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show"></i>
+                                        <!--Complaints-->
+                                        <p id = "ActiveComplaints">
+                                            Roof is leaking
+                                        </p></span>
                                     <div class="clearfix"></div>
                                 </div>
                             </a>
@@ -210,8 +168,10 @@
                                     <div class="col-xs-3">
                                         <i class="fa fa-tasks fa-5x"></i>
                                     </div>
-                                    <div class="col-xs-9 text-right"  ng-init = "Rent = '0'">
-                                        <div class="huge">${{ Rent }}</div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class="huge" >
+                                            <small>{{ obj.RentDue }}$900</small>
+                                        </div>
                                         <div>Rent fees</div>
                                     </div>
                                 </div>
@@ -219,7 +179,11 @@
                             <a href="#">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                    <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show"></i>
+                                        <!--Rents-->
+                                        <p id = "Rents">
+                                            $900
+                                        </p></span>
                                     <div class="clearfix"></div>
                                 </div>
                             </a>
@@ -233,15 +197,21 @@
                                         <i class="fa fa-shopping-cart fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge" >1 st</div>
-                                        <div>Pay Rents</div>
+                                        <div class="huge" >
+                                            <small>{{obj.RentDueIn}} 30 Days</div>
+                                        <div>Days to pay</div>
                                     </div>
                                 </div>
                             </div>
                             <a href="#">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                    <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show"></i>
+                                        <!--Due day-->
+                                        <p id = "DueDay">
+                                            April 30th
+                                        </p>
+                                    </span>
                                     <div class="clearfix"></div>
                                 </div>
                             </a>
@@ -263,7 +233,13 @@
                             <a href="#">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                    <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show"></i>
+                                        <!--Landlord info include ="name" + "email"-->
+                                        <p id = "LandlordInfo">
+                                            Peter Fox</br>
+                                            Email: peter@insta.com
+                                        </p>
+                                    </span>
                                     <div class="clearfix"></div>
                                 </div>
                             </a>
@@ -276,15 +252,15 @@
 
         </div>
         <!-- /#page-wrapper -->
+
         <footer>
             <div class="navbar navbar-default navbar-fixed-bottom">
                 <div class="container">
                     <p class="navbar-text"><i class="fa fa-copyright"></i> InstaRent 2015</p>
                 </div>
             </div>
-        </footer><!-- footer -->
-    </div>
-    <!-- /#wrapper -->
+        </footer>
+        <!-- footer -->
 
     
     
