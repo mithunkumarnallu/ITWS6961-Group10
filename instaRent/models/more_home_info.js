@@ -179,15 +179,13 @@ function getUserHomeAddresses(userId, res) {
 	});
 };
 
-function getrentPerMonth(homeId,res){
-	MoreHomeInfo.findOne({_id:homeId}, function(err, data){
-		if(err || data.length == 0)
-			res.status(409).send({status: "Error", response: "Error: No such home!"});
+function getrentPerMonth(homeObj,res){
+    MoreHomeInfo.findOne({_id:homeObj}, function(err, data){
+        if(err || data.length == 0)
+            res.status(409).send({status: "Error", response: "Error: No such home!"});
 
-		res.send({status: "Success", response: data.rentPerMonth});
-	});
-
-
+        res.send({status: "Success", response: data.rentPerMonthPerUser});
+    });
 }
 
 exports.update = update;

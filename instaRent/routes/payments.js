@@ -28,13 +28,25 @@ var MoreHomeInfo = require("../models/more_home_info");
 var userHelper = require("../methods/userHelper");
 userHelper = new userHelper();
 
+function getHomeDetails(res,err,data){
+    if(err){
+        console.log(err);
+    }
+    else{
+        MoreHomeInfo.getrentPerMonth(data.foreignId,res);
+    }
+}
+
 router.get('/getRent', function(req, res, next){
+    if(userHelper.ownerIdentity(req)=="Landlord")
+        console.log("Landlord cannot pay rent");
+    else {
+        console.log("inGetrent");
+        userHelper.getDefaultHome(userHelper.getUserId(req), res, getHomeDetails);
+    }
+    //MoreHomeInfo.getrentPerMonth(homeID,res);
 
-    var homeID = userHelper.getDefaultHome(req);
-    MoreHomeInfo.getrentPerMonth(homeID,res);
-
-    });
-
+});
 
 
 module.exports = router;
