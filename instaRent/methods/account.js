@@ -1,4 +1,5 @@
 var mailer = require("../methods/mailerHandler");
+var invitationHandler = require("../models/invitation_schema");
 
 var AccountController = function (userModel, session) {
 
@@ -60,6 +61,10 @@ AccountController.prototype.logon = function(email, password,res) {
 					me.session.id = me.uuid.v4();
                     //me.session.cookie={userId: user.email};
 					console.log("session: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId );
+
+                    //Add any outstanding homes of the user to his/her home collection
+                    invitationHandler.addUserToHome(user.email);
+
                     console.log("logon ajax res.send");
                      res.send(
 					     {success: true, extras: { userProfileModel:userProfileModel, sessionId: me.session.id }});

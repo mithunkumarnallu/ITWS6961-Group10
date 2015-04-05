@@ -5,6 +5,7 @@ var userHelper = require("../methods/userHelper");
 userHelper = new userHelper();
 var Home = require("../models/home").Home;
 var HomeHandler = require("../models/home");
+var mailHandler = require("../methods/mailerHandler");
 
 var moreHomeInfo = new mongoose.Schema({
   //homeId: String,
@@ -19,6 +20,31 @@ var moreHomeInfo = new mongoose.Schema({
 });
 
 var MoreHomeInfo = mongoose.model('MoreHomeInfo', moreHomeInfo);
+
+//Send emails to fellow tenants and landlord by parsing moreHome object
+function sendInvitationsToUsers(mailer, userType, moreHome) {
+    if(userType == "Tenant") {
+        var tenantEmails = getTenantEmails(moreHome);
+        for (var i = 0; i < tenantEmails.length; i++) {
+            if("_id" in moreHome)
+                mailHandler.sendInvitation(mailer, tenantEmails[i], "Tenant", moreHome._id, moreHome.address);
+            else
+                mailHandler.sendInvitation(mailer, tenantEmails[i], "Tenant", moreHome.homeId, moreHome.address);
+        }
+        if("_id" in moreHome)
+            mailHandler.sendInvitation(mailer, moreHome.landlordEmail, "Landlord", moreHome._id, moreHome.address);
+        else
+            mailHandler.sendInvitation(mailer, moreHome.landlordEmail, "Landlord", moreHome.homeId, moreHome.address);
+    }
+}
+
+function getTenantEmails(moreHome) {
+    var tenantEmails = moreHome.tenantsEmails.split(";");
+    for(var i = 0; i < tenantEmails.length; i++) {
+        tenantEmails[i] = tenantEmails[i].trim();
+    }
+    return tenantEmails;
+}
 
 function checkAndSave(moreHome, req, res, overwrite) {
 	console.log(moreHome);
@@ -40,6 +66,7 @@ function checkAndSave(moreHome, req, res, overwrite) {
 					res.status(409).send("Error: Could not add home");
 				}
 				else {
+                    sendInvitationsToUsers(res.mailer, req.body.userType, data);
 					var home = {
 						userId: userId,
 						homeId: data._id,
@@ -55,8 +82,9 @@ function checkAndSave(moreHome, req, res, overwrite) {
 			moreHome.save(function(err, moreHome) {
 				if(err)
 					res.status(409).send("Error Adding home");
-				else {	
-					var home = {
+				else {
+                    sendInvitationsToUsers(res.mailer, req.body.userType, moreHome);
+                    var home = {
 						userId: userId,
 						homeId: moreHome._id,
 						description: req.body.description,
@@ -78,7 +106,8 @@ function update(home, userId, req, res) {
 			res.status(409).send("Error: Could not find existing home");
 		}
 		else {
-			var moreHomeInfo = {
+            sendInvitationsToUsers(res.mailer,req.body.userType, home);
+            var moreHomeInfo = {
 				userId: userId,
 				address: req.body.address,
 				description: req.body.description,
