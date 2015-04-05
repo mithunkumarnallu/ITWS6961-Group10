@@ -21,7 +21,16 @@ userHelper.prototype.setDefaultHome = function(userId, homeInfo) {
     });
 };
 
-userHelper.prototype.getDefaultHome = function (userId) {
-	return "55147c99f627d4383a70f632";
+userHelper.prototype.getDefaultHome = function (userId,res,callback) {
+
+    User.findOne({email:userId}, function (err, data) {
+
+        callback(res,err,data);
+    });
+
+}
+
+userHelper.prototype.ownerIdentity = function (data) {
+    return data.session.userProfileModel.role;
 }
 module.exports = userHelper;
