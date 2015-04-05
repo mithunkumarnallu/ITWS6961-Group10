@@ -319,7 +319,7 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
                 leaseEndDate: $scope.tenant_leaseEndDate,
                 securityDeposit: $scope.tenant_securityDeposit,
                 rentPerMonth: $scope.tenant_rentPerMonth,
-                tenantsEmails: $scope.tenant_tenantsEmails,
+                tenantsEmails: $scope.tenant_tenantsEmails
             };
             var home = getHome($scope.tenant_address);
             if (home)

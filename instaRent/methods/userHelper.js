@@ -7,6 +7,9 @@ userHelper.prototype.getUserId = function(data) {
     console.log("returning userId: "+data.session.userProfileModel.email);
 	return data.session.userProfileModel.email;
 };
+userHelper.prototype.isUserLoggedIn = function(data) {
+    return data.session.userProfileModel;
+};
 
 userHelper.prototype.setDefaultHome = function(userId, homeInfo) {
 	//Set the home id and user type in the user related database
