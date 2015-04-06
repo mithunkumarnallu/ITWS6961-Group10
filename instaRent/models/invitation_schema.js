@@ -19,11 +19,15 @@ var invitationSchema = new Schema({
 
 invitationSchema.methods.createInvitation = function (mailer, homeAddress, done) {
     var invitation = this;
-    invitation.save( function (err, data) {
-        if (err)
-            return done(err);
-        return done(null, mailer, homeAddress, data);
-        console.log("create Invitation", invitation);
+    InvitationModel.findOne({emailId: this.emailId, _homeId: this._homeId}, function(err,data) {
+        if(!err && !data) {
+            invitation.save( function (err, data) {
+                if (err)
+                    return done(err);
+                return done(null, mailer, homeAddress, data);
+                console.log("create Invitation", invitation);
+            });
+        }
     });
 };
 
