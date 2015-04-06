@@ -1,6 +1,7 @@
 //console.log("In mailHandler");
 var verificationToken = require("../models/verification_token_schema");
 var invitationHandler = require("../models/invitation_schema");
+var homeHandler = require("../models/home");
 
 function sendMail(res) {
 	console.log(res.mailer.send);
@@ -59,8 +60,10 @@ function sendInvitationEmail(err, mailer, homeAddress, data) {
 
 function sendInvitation(mailer, emailId, userType, homeId, homeAddress) {
 	console.log("In sendAccountConfirmationMail");
-	var InvitationObject = new invitationHandler.InvitationModel({emailId: emailId, userType: userType, _homeId: homeId});
-    InvitationObject.createInvitation(mailer, homeAddress, sendInvitationEmail);
+    homeHandler.isHomeAddedToUser(emailId, homeId, function(emailId, homeId) {
+        var InvitationObject = new invitationHandler.InvitationModel({emailId: emailId, userType: userType, _homeId: homeId});
+        InvitationObject.createInvitation(mailer, homeAddress, sendInvitationEmail);
+    });
 }
 
 exports.sendMail = sendMail;
