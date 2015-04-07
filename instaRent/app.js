@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 //var routes = require('./routes/index');
 var users = require('./routes/users');
 var manageHomeRoutes = require('./routes/managehome');
+var tenantPayments = require('./routes/payments');
 
 var swig = require("swig");
 
@@ -80,6 +81,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //app.use('/', routes);
 app.use('/users', users);
 app.use('/managehome', manageHomeRoutes);
+app.use('/payments', tenantPayments);
 
 
 //nitish routes
@@ -100,60 +102,28 @@ res.render('login.html');
 
 
 // Amy routes
+getUserDetails = function() {
+  //return userHelper.getUserDetails();
+  return {email:"amyzhaosicong@gmail.com", firstName:"Amy", lastName:"Zhao", phoneNumber:"5182698510"};
+
+};
 app.get('/settings', function(req, res) {
   console.log("in settings");
-  res.render('settings.html');
+  res.render('settings.html', getUserDetails());
+});
+app.get('/settings_password', function(req, res) {
+  console.log("in settings_password");
+  res.render('settings_password.html');
 });
 
-//Luying routes
-getTenantDetails = function() {
-  //return userHelper.getTenantDetails
-  return {
-    userName: "Peter",
-    activeComplaints: "2",
-    rentDue: "900",
-    rentDueIn: "30",
-    landlord: {
-      name: "Plotka",
-      email: "Plotka4@rpi.edu",
-      phone: "518269810"
-    },
-    userRole: "Tenant"
-  };
-}
 
-getLandlordDetails = function() {
-  //return userHelper.getLandlordDetails
-  return {
-    userName: "Plotka",
-    activeComplaints: "3",
-    rentDue: "1800",
-    rentDueIn: "30",
-    rents:[{
-      name: "Peter",
-      email: "peter4@rpi.edu",
-      phone: "5186056957"
-    },
-    {
-      name: "Roger",
-      email: "Roger4@rpi.edu",
-      phone: "5189087863"
-    }],
-    userRole: "Landlord",
-    rentStatus: [{
-      name: "Peter",
-      rentPaidOn: "10",
-    },{
-      name: "Roger",
-      rentPaidOn: "14",
-    }],
-    rentToBePaid: "2"
-  };
-}
+
+
+//Luying routes
 app.get('/dashboard', function(req,res)
 {
   console.log("success");
-  res.render('dashboard.html',getTenantDetails());
+  res.render('dashboard.html');
 
 });
 
@@ -188,6 +158,4 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-console.log("mongoose end");
-
 module.exports = app;
