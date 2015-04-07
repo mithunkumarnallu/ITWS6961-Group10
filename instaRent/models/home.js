@@ -89,6 +89,8 @@ function isHomeAddedToUser(emailId, homeId, callback) {
     });
 };
 
+
+
 function getHomeId(userId,res){
   Home.find({userId:userId},function(err,data){
     if(err||data.length==0)
