@@ -128,10 +128,11 @@
 	margin-top:10px;
 }
 
-img {
-	margin-top:15px;
+
+#password_btn {
+    margin-top:50px;
 }
 
-button {
-	margin-top:30px;
+#submit_btn {
+    margin-top:50px;
 }
