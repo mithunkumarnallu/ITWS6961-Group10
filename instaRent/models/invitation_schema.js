@@ -51,6 +51,25 @@ var addUserToHome = function(emailId){
     });
 };
 
+function deleteOldUsersInvitations(emailIds, homeId) {
+    InvitationModel.find({_homeId: homeId}, function (err, data) {
+        if(err)
+            console.log("Could not get users from invitation model for homeId: " + homeId);
+        else {
+            var emailIdsMap = {};
+            for(var i = 0; i < emailIds.length; i++) {
+                emailIdsMap[emailIds[i]] = "";
+            }
+            for(var i = 0; i < data.length; i++) {
+                if(!(data[i].userId in emailIdsMap)) {
+                    data[i].remove();
+                }
+            }
+        }
+    });
+}
+
 var InvitationModel = mongoose.model('InvitationModel', invitationSchema);
 exports.InvitationModel = InvitationModel;
 exports.addUserToHome = addUserToHome;
+exports.deleteOldUsersInvitations = deleteOldUsersInvitations;

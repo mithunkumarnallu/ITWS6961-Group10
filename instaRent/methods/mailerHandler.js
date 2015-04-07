@@ -54,7 +54,7 @@ function sendInvitationEmail(err, mailer, homeAddress, data) {
             if(err) {
                 console.log("There was an error sending invitation email to users: " + err);
             }
-        })
+        });
     }
 }
 
