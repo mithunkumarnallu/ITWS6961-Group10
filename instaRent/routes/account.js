@@ -5,7 +5,7 @@ var express = require('express'),
     AccountController = require('../methods/account.js'),
     UserRegistration = require('../models/user-registration.js'),
     UserLogon = require('../models/user-logon.js'),
-    User = require('../models/user.js'),
+    User = require('../models/user.js').User,
     ApiResponse = require('../models/api-response.js'),
     //UserPasswordReset = require('../models/user-pwd-reset.js'),
     //UserPasswordResetFinal = require('../models/user-pwd-reset-final.js'),
@@ -44,7 +44,7 @@ router.route('/account/register').post(function (req, res) {
         passwordSalt: passwordSaltIn
     });
 	
-	
+	console.log("Hello");
 	//////////////////////
 	
 	User.findOne({ email: newUser.email }, function (err, user) {
