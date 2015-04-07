@@ -5,11 +5,26 @@ var UserSchema = new Schema({
  firstName: String,
  lastName: String,
  phoneNo: String,
- foreignId: String,                   
+ foreignId: String,
  role: String,
- isVerified: Boolean,    
+ isVerified: Boolean,
  passwordHash: String,
  passwordSalt: String
 });
- 
-module.exports = mongoose.model('User', UserSchema);
+
+var User=mongoose.model('User',UserSchema);
+
+//update the user info
+function update(user,res){
+  User.update({email:user.email,firstName:user.firstName, lastName: user.lastName,
+  phoneNo: user.phoneNo},user,{},function(err,numEffected){
+    if(err||numEffected==0)
+      res.status(409).send("Error,Could not find user");
+    else
+    res.send("Success");
+  });
+};
+
+
+exports.User=User;
+exports.update=update;

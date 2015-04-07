@@ -30,10 +30,10 @@ userHelper.prototype.getDefaultHome = function (userId) {
 
 
 userHelper.prototype.getUserInfo=function(data){
-  var firstName=data.session.passort.firstName;
-  var lastName=data.session.passort.lastName;
-  var email=data.session.passort.email;
-  var phoneNo=data.session.passort.phoneNo;
+  var firstName=data.session.passport.firstName;
+  var lastName=data.session.passport.lastName;
+  var email=data.session.passport.email;
+  var phoneNo=data.session.passport.phoneNo;
   var userInfo= {
     "firstName": firstName,
     "lastName": lastName,
@@ -41,9 +41,10 @@ userHelper.prototype.getUserInfo=function(data){
     "phoneNo": phoneNo
 
   };
-    return userInfo;
-
-}
+  var userInfoJsonParse=[];
+  userInfoJsonParse=JSON.parse(userInfo);
+  return userInfoJsonParse;
+};
 
 
 
