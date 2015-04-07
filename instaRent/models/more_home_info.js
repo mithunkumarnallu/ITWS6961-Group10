@@ -62,8 +62,11 @@ function checkAndSave(moreHome, req, res, overwrite) {
 		}
 		else if(data) {
 			//update the record in database
-            var tenantEmails = getTenantEmails(moreHome);
-            moreHome.rentPerMonthPerUser = (moreHome.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+            if(req.body.userType == "Tenant")
+            {
+                var tenantEmails = getTenantEmails(moreHome);
+                moreHome.rentPerMonthPerUser = (moreHome.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+            }
             MoreHomeInfo.update({address : moreHome.address}, moreHome, {}, function(err, numEffected) {
 				console.log(numEffected);
 				if(err || numEffected == 0) {
@@ -84,8 +87,12 @@ function checkAndSave(moreHome, req, res, overwrite) {
 		} 
 		else {
 			moreHome = new MoreHomeInfo(moreHome);
-            var tenantEmails = getTenantEmails(moreHome);
-            moreHome.rentPerMonthPerUser = (moreHome.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+
+            if(req.body.userType == "Tenant")
+            {
+                var tenantEmails = getTenantEmails(moreHome);
+                moreHome.rentPerMonthPerUser = (moreHome.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+            }
             moreHome.save(function(err, moreHome) {
 				if(err)
 					res.status(409).send("Error Adding home");

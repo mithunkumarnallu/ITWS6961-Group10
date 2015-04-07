@@ -18,6 +18,7 @@ var swig = require("swig");
 var expressSession = require('express-session');
 var mongooseSession = require('mongoose-session');  
 var accountRoutes = require('./routes/account');
+var passport = require('passport');
 var cors=require("cors");
 var json = require('jsonfile');
 var mailer = require('express-mailer');
@@ -44,10 +45,10 @@ mailer.extend(app, {
 
 //nitish
 var dbName = 'instaRent';
-var connectionString = 'mongodb://localhost:60001/' + dbName;
+var connectionString = 'mongodb://localhost:60000/' + dbName;
 
 //mongoose.connect(connectionString);
-
+require('./config/passport')(passport);
 app.use(expressSession({
         key: 'session',
         secret: '128013A7-5B9F-4CC0-BD9E-4480B2D3EFE9',
@@ -57,6 +58,10 @@ app.use(expressSession({
         cookie: {}
     })
 );
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 console.log("mongoose after session");
 
 
@@ -81,6 +86,7 @@ app.use('/payments', tenantPayments);
 
 //nitish routes
 app.use('/api', accountRoutes);
+require('./routes/social.js')(app, passport); 
 
 app.get('/signup',function(req,res)
 { 
@@ -96,10 +102,23 @@ res.render('login.html');
 
 
 // Amy routes
+getUserDetails = function() {
+  //return userHelper.getUserDetails();
+  return {email:"amyzhaosicong@gmail.com", firstName:"Amy", lastName:"Zhao", phoneNumber:"5182698510"};
+
+};
 app.get('/settings', function(req, res) {
   console.log("in settings");
-  res.render('settings.html');
+  res.render('settings.html', getUserDetails());
 });
+app.get('/settings_password', function(req, res) {
+  console.log("in settings_password");
+  res.render('settings_password.html');
+});
+
+
+
+
 //Luying routes
 app.get('/dashboard', function(req,res)
 {
