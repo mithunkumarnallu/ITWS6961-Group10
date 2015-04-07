@@ -82,8 +82,16 @@ function getUserHomeAddresses(userId, res) {
 	});
 };
 
-exports.update = update;
+function isHomeAddedToUser(emailId, homeId, callback) {
+    Home.findOne({userId: emailId, homeId: homeId}, function(err, data) {
+        if(!err && data === null)
+            callback(emailId, homeId);
+    });
+};
+
+exports.isHomeAddedToUser = isHomeAddedToUser;
 exports.getUserHomeAddresses = getUserHomeAddresses;
 exports.checkAndSave = checkAndSave;
 exports.Home = Home;
 exports.saveHome = saveHome;
+exports.update = update;
