@@ -44,7 +44,7 @@ mailer.extend(app, {
 
 //nitish
 var dbName = 'instaRent';
-var connectionString = 'mongodb://localhost:60000/' + dbName;
+var connectionString = 'mongodb://localhost:60001/' + dbName;
 
 //mongoose.connect(connectionString);
 

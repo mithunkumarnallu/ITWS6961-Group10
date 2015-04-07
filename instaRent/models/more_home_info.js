@@ -6,6 +6,7 @@ userHelper = new userHelper();
 var Home = require("../models/home").Home;
 var HomeHandler = require("../models/home");
 var mailHandler = require("../methods/mailerHandler");
+var invitationHandler = require("../models/invitation_schema");
 
 var moreHomeInfo = new mongoose.Schema({
   //homeId: String,
@@ -25,16 +26,18 @@ var MoreHomeInfo = mongoose.model('MoreHomeInfo', moreHomeInfo);
 function sendInvitationsToUsers(mailer, userType, moreHome) {
     if(userType == "Tenant") {
         var tenantEmails = getTenantEmails(moreHome);
-        for (var i = 0; i < tenantEmails.length; i++) {
-            if("_id" in moreHome)
-                mailHandler.sendInvitation(mailer, tenantEmails[i], "Tenant", moreHome._id, moreHome.address);
-            else
-                mailHandler.sendInvitation(mailer, tenantEmails[i], "Tenant", moreHome.homeId, moreHome.address);
-        }
+        var homeId;
         if("_id" in moreHome)
-            mailHandler.sendInvitation(mailer, moreHome.landlordEmail, "Landlord", moreHome._id, moreHome.address);
+            homeId = moreHome._id;
         else
-            mailHandler.sendInvitation(mailer, moreHome.landlordEmail, "Landlord", moreHome.homeId, moreHome.address);
+            homeId = moreHome.homeId;
+
+        for (var i = 0; i < tenantEmails.length; i++) {
+            mailHandler.sendInvitation(mailer, tenantEmails[i], "Tenant", homeId, moreHome.address);
+        }
+        mailHandler.sendInvitation(mailer, moreHome.landlordEmail, "Landlord", homeId, moreHome.address);
+        //HomeHandler.deleteOldUsersFromHome(tenantEmails, homeId);
+        //invitationHandler.deleteOldUsersInvitations(tenantEmails, homeId);
     }
 }
 
@@ -60,7 +63,7 @@ function checkAndSave(moreHome, req, res, overwrite) {
 		else if(data) {
 			//update the record in database
             var tenantEmails = getTenantEmails(moreHome);
-            moreHome.rentPerMonthPerUser = (moreHomeInfo.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+            moreHome.rentPerMonthPerUser = (moreHome.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
             MoreHomeInfo.update({address : moreHome.address}, moreHome, {}, function(err, numEffected) {
 				console.log(numEffected);
 				if(err || numEffected == 0) {
@@ -82,7 +85,7 @@ function checkAndSave(moreHome, req, res, overwrite) {
 		else {
 			moreHome = new MoreHomeInfo(moreHome);
             var tenantEmails = getTenantEmails(moreHome);
-            moreHome.rentPerMonthPerUser = (moreHomeInfo.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+            moreHome.rentPerMonthPerUser = (moreHome.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
             moreHome.save(function(err, moreHome) {
 				if(err)
 					res.status(409).send("Error Adding home");

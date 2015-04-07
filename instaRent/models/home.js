@@ -89,6 +89,24 @@ function isHomeAddedToUser(emailId, homeId, callback) {
     });
 };
 
+function deleteOldUsersFromHome(emailIds, homeId) {
+    Home.find({homeId: homeId}, function (err, data) {
+        if(err)
+            console.log("Could not get users for homeId: " + homeId);
+        else {
+            var emailIdsMap = {};
+            for(var i = 0; i < emailIds.length; i++) {
+                emailIdsMap[emailIds[i]] = "";
+            }
+            for(var i = 0; i < data.length; i++) {
+                if(!(data[i].userId in emailIdsMap)) {
+                    data[i].remove();
+                }
+            }
+        }
+    });
+}
+exports.deleteOldUsersFromHome = deleteOldUsersFromHome;
 exports.isHomeAddedToUser = isHomeAddedToUser;
 exports.getUserHomeAddresses = getUserHomeAddresses;
 exports.checkAndSave = checkAndSave;
