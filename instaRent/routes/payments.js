@@ -5,6 +5,31 @@ var stripe = require('stripe')('sk_test_Y7s3n0HmJTXPmp9w0WVBusMV');
 var app = express();
 var router = express.Router();
 router.use(bodyParser());
+var MoreHomeInfo = require("../models/more_home_info");
+var userHelper = require("../methods/userHelper");
+userHelper = new userHelper();
+
+
+
+router.get('/getAllTransactions',function(req,res){
+    stripe.transfers.list(
+        { limit: 3 },
+        function(err, transfers) {
+            if (err) {
+                res.send(500, err);
+            } else {
+                res.send(transfers);
+            }
+        }
+    );
+
+
+});
+
+router.post('/addLandlordAccount', function (req, res) {
+
+    console.log(req.body.stripeToken);
+});
 
 router.post('/charge', function(req, res) {
     var stripeToken = req.body.stripeToken;
@@ -24,9 +49,6 @@ router.post('/charge', function(req, res) {
     });
 });
 
-var MoreHomeInfo = require("../models/more_home_info");
-var userHelper = require("../methods/userHelper");
-userHelper = new userHelper();
 
 function getHomeDetails(res,err,data){
     if(err){

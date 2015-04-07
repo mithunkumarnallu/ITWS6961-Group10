@@ -178,7 +178,7 @@ $(document).ready(function register_logon()
                     if(resp.extras.userProfileModel.foreignId=='')
 					     window.location.href="/managehome";
                     else
-                        console.log("foreign id exists");
+                        window.location.href="/dashboard";
 				}
 				else if (resp.extras.msg) {
                       switch (resp.extras.msg) {
