@@ -1,14 +1,14 @@
-User = require('../models/user.js')
+User = require('../models/user.js').User
 
 
 userHelper = function() {};
 
 userHelper.prototype.getUserId = function(data) {
-    console.log("returning userId: "+data.session.userProfileModel.email);
-	return data.session.passport.email;
+    console.log("returning userId: "+data.session.passport.user.email);
+	return data.session.passport.user.email;
 };
 userHelper.prototype.isUserLoggedIn = function(data) {
-    return data.session.userProfileModel;
+    return data.session.passport;
 };
 
 userHelper.prototype.setDefaultHome = function(userId, homeInfo) {

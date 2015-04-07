@@ -5,7 +5,9 @@ var UserProfileModel = function(cnf) {
 	this.phoneNo=cnf.phoneNo
 	this.foreignId=cnf.foreignId,
     this.isVerified=cnf.isVerified,    
-	this.role=cnf.role
+	this.role=cnf.role,
+    this.facebook_id=cnf.facebook_id,
+    this.facebook_token=cnf.facebook_token
 };
 
 module.exports = UserProfileModel;
