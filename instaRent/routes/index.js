@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'instaRent' });
+  res.render('landing_page.html', { title: 'instaRent' });
 });
 
 module.exports = router;
