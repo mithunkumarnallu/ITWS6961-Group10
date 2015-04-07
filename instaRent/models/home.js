@@ -18,7 +18,7 @@ function saveHome(home, callback) {
 }
 
 function checkAndSave(home, res, overwrite) {
-	
+
 	Home.findOne({userId : home.userId, homeId : home.homeId}, function(err, data) {
 		//console.log(data);
 		if(err)
@@ -40,9 +40,9 @@ function checkAndSave(home, res, overwrite) {
 				else
 					res.send("Success");
 			});
-		}	
-	});	
-}; 
+		}
+	});
+};
 
 function update(home, res) {
 	//console.log(home);
@@ -51,7 +51,7 @@ function update(home, res) {
 		if(err || numEffected == 0)
 			res.status(409).send("Error: Could not find existing home");
 		else
-			res.send("Success");	
+			res.send("Success");
 	});
 	/*
 	MoreHomeInfo.findOne({address: home.address}, function(err, data) {
@@ -60,14 +60,14 @@ function update(home, res) {
 			if(err || numEffected == 0)
 				res.status(409).send("Error: Could not find existing home");
 			else
-				res.send("Success");	
+				res.send("Success");
 		});
 	});
-	*/	
-}; 
+	*/
+};
 
 function getUserHomeAddresses(userId, res) {
-	Home.find({userId: userId}, function(err, data) {		
+	Home.find({userId: userId}, function(err, data) {
 		if(err || data.length == 0)
 			res.status(409).send({status: "Error", response: "Error: No homes added!"});
 		else{
@@ -77,7 +77,7 @@ function getUserHomeAddresses(userId, res) {
 				addresses.push({address: data[i].address, id: data[i]._id, userType: "Landlord"});
 			}
 			*/
-		  	res.send({status: "Success", response: data});		
+		  	res.send({status: "Success", response: data});
          }
 	});
 };
@@ -89,9 +89,27 @@ function isHomeAddedToUser(emailId, homeId, callback) {
     });
 };
 
+function getHomeId(userId,res){
+  Home.find({userId:userId},function(err,data){
+    if(err||data.length==0)
+      res.status(409).send({
+        status:"Error",
+        response:"Error: No such User!"
+      });
+    else
+      res.send({
+        status:"Error",
+        response: data.homeId
+      });
+  });
+};
+
+
+
 exports.isHomeAddedToUser = isHomeAddedToUser;
 exports.getUserHomeAddresses = getUserHomeAddresses;
 exports.checkAndSave = checkAndSave;
 exports.Home = Home;
 exports.saveHome = saveHome;
 exports.update = update;
+exports.getHomeId=getHomeId;
