@@ -11,7 +11,7 @@ var AccountController = function (userModel, session) {
     this.userModel = userModel;
     this.session = session;
     //this.mailer = mailer;
-	this.User = require('../models/user.js');
+	this.User = require('../models/user.js').User;
 };
 
 AccountController.prototype.getSession = function () {
@@ -48,16 +48,19 @@ AccountController.prototype.logon = function(email, password,res) {
                 if (passwordHash == user.passwordHash) {
                    console.log("logon password match");
                     var userProfileModel = new me.UserProfileModel({
+                         _id:   user._id,
                         email: user.email,
                         firstName: user.firstName,
                         lastName: user.lastName,
 						phoneNo: user.phoneNo,
 						role: user.role,
                         isVerified: user.isVerified,
-						foreignId: user.foreignId
+						foreignId: user.foreignId,
+                        facebook_id: user.facebook_id,
+                        facebook_token: user.facebook_token
                     });
 
-                    me.session.userProfileModel = userProfileModel;
+                    me.session.passport.user = userProfileModel;
 					me.session.id = me.uuid.v4();
                     //me.session.cookie={userId: user.email};
 					console.log("session: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId );
@@ -91,7 +94,7 @@ AccountController.prototype.logon = function(email, password,res) {
 };
 
 AccountController.prototype.logoff = function () {
-    if (this.session.userProfileModel) delete this.session.userProfileModel;
+    if (this.session.passport) delete this.session.passport;
     return;
 };
 
@@ -188,4 +191,3 @@ AccountController.prototype.logoff = function () {
 
 
 module.exports = AccountController;
-

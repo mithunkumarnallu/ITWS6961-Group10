@@ -21,6 +21,8 @@
     "node-uuid": "^1.4.2",
     "pbkdf2": "^3.0.3",
     "serve-favicon": "~2.2.0",
+    "passport" : "~0.1.17",
+    "passport-facebook" : "~1.0.2",
     "express-mailer" : "^0.2.4"
   }
 }
