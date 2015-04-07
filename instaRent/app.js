@@ -120,10 +120,55 @@ app.get('/settings_password', function(req, res) {
 
 
 //Luying routes
+//Luying routes
+getTenantDetails = function() {
+  //return userHelper.getTenantDetails
+  return {
+    userName: "Peter",
+    activeComplaints: "2",
+    rentDue: "900",
+    rentDueIn: "30",
+    landlord: {
+      name: "Plotka",
+      email: "Plotka4@rpi.edu",
+      phone: "518269810"
+    },
+    userRole: "Tenant"
+  };
+}
+
+getLandlordDetails = function() {
+  //return userHelper.getLandlordDetails
+  return {
+    userName: "Plotka",
+    activeComplaints: "3",
+    rentDue: "1800",
+    rentDueIn: "30",
+    rents:[{
+      name: "Peter",
+      email: "peter4@rpi.edu",
+      phone: "5186056957"
+    },
+    {
+      name: "Roger",
+      email: "Roger4@rpi.edu",
+      phone: "5189087863"
+    }],
+    userRole: "Landlord",
+    rentStatus: [{
+      name: "Peter",
+      rentPaidOn: "10",
+    },{
+      name: "Roger",
+      rentPaidOn: "14",
+    }],
+    rentToBePaid: "2"
+  };
+}
 app.get('/dashboard', function(req,res)
 {
   console.log("success");
-  res.render('dashboard.html');
+  res.render('dashboard.html',getTenantDetails());
 
 });
 
