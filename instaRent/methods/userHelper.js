@@ -35,10 +35,10 @@ userHelper.prototype.getUserInfo=function(data){
   var email=data.session.passport.email;
   var phoneNo=data.session.passport.phoneNo;
   var userInfo= {
-    "firstName": firstName,
-    "lastName": lastName,
-    "email":email,
-    "phoneNo": phoneNo
+    firstName: firstName,
+    lastName: lastName,
+    email:email,
+    phoneNo: phoneNo
 
   };
   var userInfoJsonParse=[];
