@@ -60,7 +60,7 @@ function checkAndSave(moreHome, req, res, overwrite) {
 		else if(data) {
 			//update the record in database
             var tenantEmails = getTenantEmails(moreHome);
-            moreHome.rentPerMonthPerUser = (moreHomeInfo.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+            //moreHome.rentPerMonthPerUser = (moreHomeInfo.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
             MoreHomeInfo.update({address : moreHome.address}, moreHome, {}, function(err, numEffected) {
 				console.log(numEffected);
 				if(err || numEffected == 0) {
@@ -82,7 +82,7 @@ function checkAndSave(moreHome, req, res, overwrite) {
 		else {
 			moreHome = new MoreHomeInfo(moreHome);
             var tenantEmails = getTenantEmails(moreHome);
-            moreHome.rentPerMonthPerUser = (moreHomeInfo.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+            //moreHome.rentPerMonthPerUser = (moreHomeInfo.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
             moreHome.save(function(err, moreHome) {
 				if(err)
 					res.status(409).send("Error Adding home");
@@ -104,7 +104,7 @@ function checkAndSave(moreHome, req, res, overwrite) {
 function update(home, userId, req, res) {
 	//console.log(home);
     var tenantEmails = getTenantEmails(home);
-    home.rentPerMonthPerUser = (home.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+   // home.rentPerMonthPerUser = (home.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
     MoreHomeInfo.update({_id: home.homeId, address : home.address}, home, {}, function(err, numEffected) {
 		//console.log(data);
 		if(err || numEffected == 0) {

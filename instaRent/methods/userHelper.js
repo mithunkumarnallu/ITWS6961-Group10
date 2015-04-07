@@ -5,7 +5,7 @@ userHelper = function() {};
 
 userHelper.prototype.getUserId = function(data) {
     console.log("returning userId: "+data.session.userProfileModel.email);
-	return data.session.passport.email;
+	return data.session.userProfileModel.email;
 };
 userHelper.prototype.isUserLoggedIn = function(data) {
     return data.session.userProfileModel;

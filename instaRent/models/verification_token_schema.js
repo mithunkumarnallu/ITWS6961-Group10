@@ -2,7 +2,7 @@ var mongoose = require("./mongoose_connector").mongoose;
 var db = require("./mongoose_connector").db;
 var uuid = require('node-uuid');
 var Schema = mongoose.Schema;
-var userModel = require("./user");
+var userModel = require("./user").User;
 
 // Verification token model
 var verificationTokenSchema = new Schema({
