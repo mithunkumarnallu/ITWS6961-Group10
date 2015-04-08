@@ -49,9 +49,10 @@ router.get("/", function (req, res) {
                             email: data.landlordEmail
                         };
                     }
+                    console.log(result);
                     res.render("dashboard.html", result);
                 });
-                console.log(data);
+
             }
         });
     }

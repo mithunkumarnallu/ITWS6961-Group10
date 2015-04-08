@@ -17,7 +17,7 @@ var swig = require("swig");
 //Nitish dependencies
 //var mongoose = require('mongoose');
 var expressSession = require('express-session');
-var mongooseSession = require('mongoose-session');  
+var mongooseSession = require('mongoose-session');
 var accountRoutes = require('./routes/account');
 var passport = require('passport');
 var cors=require("cors");
@@ -33,15 +33,15 @@ var db = require("./models/mongoose_connector").db;
 console.log("mongoose obj");
 
 mailer.extend(app, {
-  from: 'noreplyinstarent@gmail.com',
-  host: 'smtp.gmail.com', // hostname
-  secureConnection: true, // use SSL
-  port: 465, // port for secure SMTP
-  transportMethod: 'SMTP', // default is SMTP. Accepts anything that nodemailer accepts
-  auth: {
-    user: 'noreplyinstarent@gmail.com',
-    pass: 'instarent123'
-  }
+    from: 'noreplyinstarent@gmail.com',
+    host: 'smtp.gmail.com', // hostname
+    secureConnection: true, // use SSL
+    port: 465, // port for secure SMTP
+    transportMethod: 'SMTP', // default is SMTP. Accepts anything that nodemailer accepts
+    auth: {
+        user: 'noreplyinstarent@gmail.com',
+        pass: 'instarent123'
+    }
 });
 
 //nitish
@@ -87,34 +87,34 @@ app.use("/dashboard", dashboard);
 
 //nitish routes
 app.use('/api', accountRoutes);
-require('./routes/social.js')(app, passport); 
+require('./routes/social.js')(app, passport);
 
 app.get('/signup',function(req,res)
-{ 
+{
     console.log("in signup");
     res.render('signup.html');
-    
+
 });
 
 app.get('/login',function(req,res)
-{ 
-res.render('login.html');
+{
+    res.render('login.html');
 });
 
 
 // Amy routes
 getUserDetails = function() {
-  //return userHelper.getUserDetails();
-  return {email:"amyzhaosicong@gmail.com", firstName:"Amy", lastName:"Zhao", phoneNumber:"5182698510"};
+    //return userHelper.getUserDetails();
+    return {email:"amyzhaosicong@gmail.com", firstName:"Amy", lastName:"Zhao", phoneNumber:"5182698510"};
 
 };
 app.get('/settings', function(req, res) {
-  console.log("in settings");
-  res.render('settings.html', getUserDetails());
+    console.log("in settings");
+    res.render('settings.html', getUserDetails());
 });
 app.get('/settings_password', function(req, res) {
-  console.log("in settings_password");
-  res.render('settings_password.html');
+    console.log("in settings_password");
+    res.render('settings_password.html');
 });
 
 
@@ -130,9 +130,9 @@ app.get('/settings_password', function(req, res) {
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handlers
@@ -140,23 +140,23 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    console.log(err);
-    /*res.render('error', {
-      message: err.message,
-      error: err
-    });*/
-  });
+    app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        console.log(err);
+        /*res.render('error', {
+         message: err.message,
+         error: err
+         });*/
+    });
 }
 
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
 });
 module.exports = app;

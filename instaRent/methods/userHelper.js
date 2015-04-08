@@ -51,10 +51,10 @@ userHelper.prototype.getUserInfo=function(data, email, callback){
         });
     }
     else {
-        var firstName = data.session.passport.firstName;
-        var lastName = data.session.passport.lastName;
-        var email = data.session.passport.email;
-        var phoneNo = data.session.passport.phoneNo;
+        var firstName = data.session.passport.user.firstName;
+        var lastName = data.session.passport.user.lastName;
+        var email = data.session.passport.user.email;
+        var phoneNo = data.session.passport.user.phoneNo;
         var userInfo = {
             firstName: firstName,
             lastName: lastName,
