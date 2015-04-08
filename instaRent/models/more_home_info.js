@@ -61,29 +61,34 @@ function checkAndSave(moreHome, req, res, overwrite) {
 			res.status(409).send("Error: Home already exists");
 		}
 		else if(data) {
-			//update the record in database
-            if(req.body.userType == "Tenant")
-            {
-                var tenantEmails = getTenantEmails(moreHome);
-                moreHome.rentPerMonthPerUser = (moreHome.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
-            }
-            MoreHomeInfo.update({address : moreHome.address}, moreHome, {}, function(err, numEffected) {
-				console.log(numEffected);
-				if(err || numEffected == 0) {
-					console.log(err);
-					res.status(409).send("Error: Could not add home");
-				}
-				else {
-                    sendInvitationsToUsers(res.mailer, req.body.userType, data);
-					var home = {
-						userId: userId,
-						homeId: data._id,
-						description: req.body.description,
-						userType: req.body.userType
-					}; 
-					HomeHandler.checkAndSave(home, res, true);
-				}
-			});
+			HomeHandler.isHomeAddedToUser(userHelper.getUserId(req), data._id, function (emailId, homeId, err) {
+                if(err)
+                    res.status(409).send("Error: Home already exists");
+                else {
+                    //update the record in database
+                    if(req.body.userType == "Tenant") {
+                        var tenantEmails = getTenantEmails(moreHome);
+                        moreHome.rentPerMonthPerUser = (moreHome.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+                    }
+                    MoreHomeInfo.update({address : moreHome.address}, moreHome, {}, function(err, numEffected) {
+                        console.log(numEffected);
+                        if(err || numEffected == 0) {
+                            console.log(err);
+                            res.status(409).send("Error: Could not add home");
+                        }
+                        else {
+                            sendInvitationsToUsers(res.mailer, req.body.userType, data);
+                            var home = {
+                                userId: userId,
+                                homeId: data._id,
+                                description: req.body.description,
+                                userType: req.body.userType
+                            };
+                            HomeHandler.checkAndSave(home, res, true);
+                        }
+                    });
+                }
+            } );
 		} 
 		else {
 			moreHome = new MoreHomeInfo(moreHome);
@@ -231,8 +236,23 @@ function getrentPerMonth(homeId,res){
 
 		res.send({status: "Success", response: data.rentPerMonth});
 	});
+}
 
-
+function getCurrentHomeObject(emailId, res, callback) {
+    userHelper.getDefaultHome(emailId, res, function(err, data) {
+       if(!err && data) {
+           MoreHomeInfo.findById(data, function (err, data) {
+               if(!err && data) {
+                   callback(null, data);
+               }
+               else
+                   callback(err);
+           });
+       }
+       else {
+           callback(err);
+       }
+    });
 }
 
 exports.update = update;
@@ -240,3 +260,4 @@ exports.getUserHomeAddresses = getUserHomeAddresses;
 exports.checkAndSave = checkAndSave;
 exports.MoreHomeInfo = MoreHomeInfo;
 exports.getrentPerMonth = getrentPerMonth;
+exports.getCurrentHomeObject = getCurrentHomeObject;

@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var users = require('./routes/users');
 var manageHomeRoutes = require('./routes/managehome');
 var tenantPayments = require('./routes/payments');
+var dashboard = require("./routes/dashboard");
 
 var swig = require("swig");
 
@@ -82,7 +83,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', users);
 app.use('/managehome', manageHomeRoutes);
 app.use('/payments', tenantPayments);
-
+app.use("/dashboard", dashboard);
 
 //nitish routes
 app.use('/api', accountRoutes);
@@ -91,7 +92,7 @@ require('./routes/social.js')(app, passport);
 app.get('/signup',function(req,res)
 { 
     console.log("in signup");
-res.render('signup.html');
+    res.render('signup.html');
     
 });
 
@@ -120,12 +121,12 @@ app.get('/settings_password', function(req, res) {
 
 
 //Luying routes
-app.get('/dashboard', function(req,res)
-{
-  console.log("success");
-  res.render('dashboard.html');
-
-});
+//app.get('/dashboard', function(req,res)
+//{
+//  console.log("success");
+//  res.render('dashboard.html');
+//
+//});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
