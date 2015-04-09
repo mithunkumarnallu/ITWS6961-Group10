@@ -108,6 +108,14 @@ router.route('/account/logon').post(function (req, res) {
         
 });
 
+router.route('/account/logoff').get(function(req,res){
+  console.log("inside logoff router");
+  var accountController=new AccountController(User, req.session);
+  accountController.logoff();
+  //res.redirect("/login"); 
+    res.send({success: true});
+});
+
 
 
 module.exports = router;
