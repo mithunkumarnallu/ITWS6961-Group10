@@ -5,7 +5,9 @@ var stripe = require('stripe')('sk_test_Y7s3n0HmJTXPmp9w0WVBusMV');
 var app = express();
 var router = express.Router();
 router.use(bodyParser());
-var MoreHomeInfo = require("../models/more_home_info");
+var MoreHomeInfo = require("../models/more_home_info").MoreHomeInfo;
+var MoreHomeInfoHandler = require("../models/more_home_info");
+var Landlordmodel = require("../models/landLordbankDetails");
 var userHelper = require("../methods/userHelper");
 userHelper = new userHelper();
 
@@ -26,10 +28,50 @@ router.get('/getAllTransactions',function(req,res){
 
 });
 
+
 router.post('/addLandlordAccount', function (req, res) {
 
-    console.log(req.body.stripeToken);
+    //console.log("inside addLandLordBaank" + req.body.accNo);
+    //console.log(req.body.routeNo);
+    //console.log(req.body.tokenID);
+    var addLandlordBankdetails;
+    var stripeToken = req.body.tokenID;
+    var id = userHelper.getUserId(req);
+
+    addLandlordBankdetails = {
+        userId:id,
+        bankAcc:req.body.accNo,
+        routingNo:req.body.routeNo,
+        token:stripeToken
+
+    };
+
+
+    Landlordmodel.checkBankDetailsAndSave(addLandlordBankdetails, req, res, true);
+
+
+
 });
+
+function depositRent(){
+
+
+    stripe.transfers.create({
+        amount: 100, // amount in cents
+        currency: "usd",
+        recipient: Token,
+        bank_account: req.body.accNo,
+        statement_descriptor: "Test Transfer"
+    }, function(err, transfer) {
+        if (err) {
+            res.send(500, err);
+        } else {
+            res.send(204);
+        }
+    });
+
+
+}
 
 router.post('/charge', function(req, res) {
     var stripeToken = req.body.stripeToken;
@@ -44,6 +86,7 @@ router.post('/charge', function(req, res) {
         if (err) {
             res.send(500, err);
         } else {
+            depositRent();
             res.send(204);
         }
     });
@@ -60,12 +103,9 @@ function getHomeDetails(res,err,data){
 }
 
 router.get('/getRent', function(req, res, next){
-    if(userHelper.ownerIdentity(req)=="Landlord")
-        console.log("Landlord cannot pay rent");
-    else {
         console.log("inGetrent");
         userHelper.getDefaultHome(userHelper.getUserId(req), res, getHomeDetails);
-    }
+
     //MoreHomeInfo.getrentPerMonth(homeID,res);
 
 });
