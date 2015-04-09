@@ -18,7 +18,7 @@ var express = require('express'),
 	
 	
 	
-router.route('/account/register').post(function (req, res) { 
+   router.route('/account/register').post(function (req, res) { 
 	/*router.post('/account/register',function (req, res) {*/
 	var me = this;
     console.log("received password: "+req.body.password +" "+ req.body.passwordConfirm);
@@ -33,6 +33,8 @@ router.route('/account/register').post(function (req, res) {
             passwordHashIn;
 
     var newUser =new User ({
+        facebook_id:"",
+        facebook_token:"",
         email: req.body.email,
         firstName: req.body.firstName,
         lastName:  req.body.lastName,
@@ -76,7 +78,9 @@ router.route('/account/register').post(function (req, res) {
 						phoneNo: user.phoneNo,
 						role: user.role,
                         isVerified: user.isVerified,
-						foreignId: user.foreignId
+						foreignId: user.foreignId,
+                        facebook_id:user.facebook_id,
+                        facebook_token:user.facebook_token
                     };
 					console.log("user profile model created in register: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId + " Name: "+  userProfileModel.firstName );
                     console.log(mailer.sendAccountConfirmationMail);

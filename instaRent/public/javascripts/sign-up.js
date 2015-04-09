@@ -67,7 +67,7 @@ $(document).ready(function register_logon()
         }
     });
     
-    $('#login').bootstrapValidator({
+    $('#loginform').bootstrapValidator({
         container: '#messages',
       
         fields: {
@@ -93,8 +93,11 @@ $(document).ready(function register_logon()
         }
     });    
 
-   $('#signup').submit(function()
-   {   
+   $('#signup').unbind('submit').submit(function(e)
+   {    
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        console.log("signup clicked");
         var $first_name=$("#first_name");
 		var $last_name=$("#last_name");
 		var $email=$("#email");
@@ -139,7 +142,7 @@ $(document).ready(function register_logon()
 				else console.log("unsuccessful sign-up HTTP response ");
 			},
 			error: function(xhr,textStatus,err){ 
-			    window.location.href="/login";
+			 
 				console.log("error log");
                 console.log("readyState: " + xhr.readyState);
 				console.log("responseText: "+ xhr.responseText);
@@ -154,8 +157,9 @@ $(document).ready(function register_logon()
 				
    });
    
-   $('#loginform').submit(function()
-   { console.log("logon");
+   $('#loginform').unbind('submit').submit(function()
+   { 
+      console.log("logon");
 	  var $email=$("#email");
 	  var $password=$("#password");
 	  
