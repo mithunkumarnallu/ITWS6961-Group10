@@ -86,10 +86,29 @@ function isHomeAddedToUser(emailId, homeId, callback) {
     Home.findOne({userId: emailId, homeId: homeId}, function(err, data) {
         if(!err && data === null)
             callback(emailId, homeId);
+        else
+            callback(emailId, homeId, "Home already exists");
     });
 };
 
-
+function deleteOldUsersFromHome(emailIds, homeId) {
+    Home.find({homeId: homeId}, function (err, data) {
+        if(err)
+            console.log("Could not get users for homeId: " + homeId);
+        else {
+            var emailIdsMap = {};
+            for(var i = 0; i < emailIds.length; i++) {
+                emailIdsMap[emailIds[i]] = "";
+            }
+            for(var i = 0; i < data.length; i++) {
+                if(!(data[i].userId in emailIdsMap)) {
+                    data[i].remove();
+                }
+            }
+        }
+    });
+}
+exports.deleteOldUsersFromHome = deleteOldUsersFromHome;
 
 function getHomeId(userId,res){
   Home.find({userId:userId},function(err,data){
@@ -105,8 +124,6 @@ function getHomeId(userId,res){
       });
   });
 };
-
-
 
 exports.isHomeAddedToUser = isHomeAddedToUser;
 exports.getUserHomeAddresses = getUserHomeAddresses;

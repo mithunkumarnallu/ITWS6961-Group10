@@ -31,7 +31,7 @@
     <link href="./stylesheets/morris.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="./font-awesome/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="./font-awesome/font-awesome.min.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -40,7 +40,19 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <script src="/javascripts/dashboard.js"></script>
+
+    <script type="text/javascript">
+        function toggle_visibility(id) {
+           var e = document.getElementById(id);
+           if(e.style.display == 'block')
+              e.style.display = 'none';
+           else
+              e.style.display = 'block';
+        }
+        function mdy(todaysdate) {
+            return todaysdate.getMonth()+1+"/"+todaysdate.getDate()
+        }
+    </script>
 
 </head>
 
@@ -103,8 +115,8 @@
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
-
-        <div id="page-wrapper" >
+        <!-- This page is for the tenant-->
+        <div id="page-wrapper" class= "Tenant" >
 
             <div class="container-fluid">
 
@@ -112,7 +124,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            <small id = "firstName" > {{obj.userName.firstName }} Peter</small>  Welcome back! 
+                            <small id = "firstName" > {{ userName }} </small>  Welcome back! 
                             <!--to distinguish the landlord and renter-->
                         </h1>
                         <ol class="breadcrumb">
@@ -142,18 +154,27 @@
                                     </div>
                                     <div class="col-xs-9 text-right" >
                                         <div class="huge" >
-                                            <small>{{ obj.activeComplaints }}Comp</small>
+                                            <small>
+                                                <!--Here didn't tell the difference between two roles, need fix-->
+                                                {% if userRole == 'Tenant'%}
+                                                    {{ activeComplaints }} 
+                                                {% elseif userRole == 'Landlord'%}
+                                                    {{ activeComplaints }} 
+                                                {% endif %}
+
+                                            </small>
                                         </div>
                                         <div>New Complaints!</div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
+                            <a href="#" onclick="toggle_visibility('ActiveComplaintsForTenant');">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show"></i>
+                                    <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show_ActiveCom"></i>
                                         <!--Complaints-->
-                                        <p id = "ActiveComplaints">
+                                        <!--Show the complaints? Not included in the json file-->
+                                        <p id = "ActiveComplaintsForTenant" style="display:none;">
                                             Roof is leaking
                                         </p></span>
                                     <div class="clearfix"></div>
@@ -170,7 +191,15 @@
                                     </div>
                                     <div class="col-xs-9 text-right">
                                         <div class="huge" >
-                                            <small>{{ obj.RentDue }}$900</small>
+                                            <small>
+                                                <!--Here didn't tell the difference between two roles, need fix-->
+                                                {% if userRole == 'Tenant'%}
+                                                    $ {{ rentDue }} 
+                                                {% elseif userRole == 'Landlord'%}
+                                                    $ {{ rentDue }}
+                                                {% endif %}
+                                                
+                                            </small>
                                         </div>
                                         <div>Rent fees</div>
                                     </div>
@@ -178,12 +207,12 @@
                             </div>
                             <a href="#">
                                 <div class="panel-footer">
-                                    <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show"></i>
+                                    <span class="pull-left">Go to Payments</span>
+                                    <span class="pull-right"><i class="fa fa-arrow-circle-right" ></i>
                                         <!--Rents-->
-                                        <p id = "Rents">
-                                            $900
-                                        </p></span>
+                                        
+                                        <p id = "Rents" style="display:none;"></p>
+                                    </span>
                                     <div class="clearfix"></div>
                                 </div>
                             </a>
@@ -198,18 +227,38 @@
                                     </div>
                                     <div class="col-xs-9 text-right">
                                         <div class="huge" >
-                                            <small>{{obj.RentDueIn}} 30 Days</div>
-                                        <div>Days to pay</div>
+                                            <small>
+                                                {% if userRole == 'Tenant'%}
+                                                    {{rentDueIn}}  Days
+                                                {% elseif userRole == 'Landlord'%}
+                                                    {{rentToBePaid}} not paid
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                        <div>
+                                            {% if userRole == 'Tenant'%}
+                                                Days to pay
+                                            {% elseif userRole == 'Landlord'%}
+                                                Rent Status
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
+                            <a href="#" onclick="toggle_visibility('DueDay');">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show"></i>
+                                    <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show_Dueday"></i>
                                         <!--Due day-->
-                                        <p id = "DueDay">
-                                            April 30th
+                                        <p id = "DueDay" style="display:none;">
+                                            {% if userRole == 'Landlord'%}
+                                                {% for x in rentStatus %}
+                                                    {% if loop.first %}<ul>{% endif %}
+                                                    Name: {{ x.name }}</br>
+                                                    Paid Day: {{ x.rentPaidOn }}
+                                                    {% if loop.last %}</ul>{% endif %}
+                                                {% endfor %}
+                                            {% endif %}
                                         </p>
                                     </span>
                                     <div class="clearfix"></div>
@@ -226,22 +275,35 @@
                                     </div>
                                     <div class="col-xs-9 text-right">
                                         <div class="huge">Info</div>
-                                        <div>Contact Landlord!</div>
+                                        <div>Contact Info!</div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
+                            <a href="#" onclick="toggle_visibility('LandlordInfo');">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
-                                    <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show"></i>
+                                    <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show_Landlord"></i>
                                         <!--Landlord info include ="name" + "email"-->
-                                        <p id = "LandlordInfo">
-                                            Peter Fox</br>
-                                            Email: peter@insta.com
+                                        <p id = "LandlordInfo" style="display:none;">
+                                            {% if userRole == 'Tenant'%}
+                                                    Name: {{landlord.name}}</br>
+                                                    Email: {{landlord.email}}</br>
+                                                    Tel: {{landlord.phone}}
+                                                {% elseif userRole == 'Landlord'%}
+                                                    {% for x in rents %}
+                                                        {% if loop.first %}<ul>{% endif %}
+                                                        Name: {{ x.name }}</br>
+                                                        Email: {{ x.email }}</br>
+                                                        Tel: {{x.phone}}
+                                                        {% if loop.last %}</ul>{% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            
                                         </p>
                                     </span>
                                     <div class="clearfix"></div>
                                 </div>
+
                             </a>
                         </div>
                     </div>
