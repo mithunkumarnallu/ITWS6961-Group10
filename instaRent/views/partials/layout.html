@@ -110,8 +110,8 @@
     				url: '/payments/getRent',
 	
     				success: function (responseData, status) {
-    					rent = responseData.response;
-
+    					rent = responseData;
+                        console.log(rent);
     					var checkout = StripeCheckout.configure({
 				    
         				key: 'pk_test_jwW7JFcTZaD8HmJdFZgeh4TR',

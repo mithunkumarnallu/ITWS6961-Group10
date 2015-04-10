@@ -47,7 +47,7 @@ passport.use(new FacebookStrategy({
         process.nextTick(function() {
 
             // find the user in the database based on their facebook id
-            User.findOne({ 'facebook_id' : profile.id }, function(err, user) {
+            User.findOne({ 'email' : profile.emails[0].value }, function(err, user) {
 
                 // if there is an error, stop everything and return that
                 // ie an error connecting to the database
@@ -56,21 +56,8 @@ passport.use(new FacebookStrategy({
 
                 // if the user is found, then log them in
                 if (user) {
-                    var userProfile = new UserProfileModel({
-                        email: user.email,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-						phoneNo: user.phoneNo,
-						role: user.role,
-                        isVerified: user.isVerified,
-						foreignId: user.foreignId,
-                        facebook_id: user.facebook_id,
-                        facebook_token: user.facebook_token
-                    });
-
-                   /* req.session.userProfileModel = userProfile;
-					req.session.id = me.uuid.v4();
-                    return done(null, user); // user found, return that user */
+                    
+                    return done(null, user); // user found, return that user 
                 } else {
                     // if there is no user found with that facebook id, create them
                     var newUser= new User({
@@ -88,23 +75,7 @@ passport.use(new FacebookStrategy({
                     passwordSalt: ""    
                         
                     });
-                    var userProfile = new UserProfileModel({
-                        email: newUser.email,
-                        firstName: newUser.firstName,
-                        lastName: newUser.lastName,
-						phoneNo: newUser.phoneNo,
-						role: newUser.role,
-                        isVerified: newUser.isVerified,
-						foreignId: newUser.foreignId,
-                        facebook_id: newUser.facebook_id,
-                        facebook_token: newUser.facebook_token
-                    });
-
-                   /* req.session.userProfileModel = userProfile;
-					req.session.id = me.uuid.v4() ;*/
                     
-                    
-
                     // save our user to the database
                     newUser.save(function(err) {
                         if (err)
