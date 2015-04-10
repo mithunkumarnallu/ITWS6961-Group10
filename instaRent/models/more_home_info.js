@@ -233,6 +233,7 @@ function getUserHomeAddresses(userId, res) {
 };
 
 
+
 function getrentPerMonth(homeId, callback){
     MoreHomeInfo.findOne({_id:homeId}, function(err, data){
         //if(err || data.length == 0)
@@ -259,15 +260,15 @@ function daysInMonth(month,year) {
 
 function getRentDueIn(leastStartDate, leaseEndDate) {
     var result = {
-        isProRate : false
+        isProRate: false
     };
     var d = new Date();
-    if(d.getMonth() == leastStartDate.getMonth()) {
+    if (d.getMonth() == leastStartDate.getMonth()) {
         result.isProRate = true;
         result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - leastStartDate.getDate();
         result.daysOfStay = 1 - (d.getDate() / (daysInMonth(d.getMonth(), d.getYear()) - d.getDate())).toFixed(2);
     }
-    else if(d.getMonth() == leaseEndDate.getMonth()) {
+    else if (d.getMonth() == leaseEndDate.getMonth()) {
         result.isProRate = true;
         result.rentDueIn = leaseEndDate.getDate() - d.getDate();
         result.daysOfStay = 1 - (d.getDate() / leaseEndDate.getDate()).toFixed(2);
@@ -276,6 +277,10 @@ function getRentDueIn(leastStartDate, leaseEndDate) {
         result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - d.getDate();
     }
     return result;
+}
+
+function daysInMonth(month,year) {
+    return new Date(year, month, 0).getDate();
 }
 
 function getCurrentHomeObject(emailId, res, callback) {
@@ -303,3 +308,4 @@ exports.MoreHomeInfo = MoreHomeInfo;
 exports.getrentPerMonth = getrentPerMonth;
 exports.getCurrentHomeObject = getCurrentHomeObject;
 exports.getRentDueIn = getRentDueIn;
+

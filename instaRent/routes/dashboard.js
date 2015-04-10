@@ -14,25 +14,30 @@ var MoreHomeInfoHandler = require("../models/more_home_info");
 
 router.get("/", function (req, res) {
     var userType = userHelper.getUserType(req);
-    if(userType == "Tenant") {
-        MoreHomeInfoHandler.getCurrentHomeObject(userHelper.getUserId(req), res, function (err, data) {
-            if(err) {
-                console.log("Error in getting current home info: " + err);
-                res.status(500).send("Error in fetching data");
-            }
-            else {
-                var currentUserInfo = userHelper.getUserInfo(req);
-                var rentDueIn = getRentDueIn(data.leaseStartDate, data.leaseEndDate);
-                var result = {
-                    userName: currentUserInfo.firstName,
-                    rentDueIn: rentDueIn.rentDueIn,
-                    rentDue: data.rentPerMonthPerUser,
-                    userRole: "Tenant"
-                };
+    MoreHomeInfoHandler.getCurrentHomeObject(userHelper.getUserId(req), res, function (err, data) {
+        if(err) {
+            console.log("Error in getting current home info: " + err);
+            res.status(500).send("Error in fetching data");
+        }
+        else {
+            var currentUserInfo = userHelper.getUserInfo(req);
+            var rentDueIn = MoreHomeInfoHandler.getRentDueIn(data.leaseStartDate, data.leaseEndDate);
+            var result = {
+                userName: currentUserInfo.firstName,
+                rentDueIn: rentDueIn.rentDueIn,
+                userRole: userType
+            };
+
+            if(userType == "Tenant") {
                 if(rentDueIn.isProRate) {
                     result.rentDue = (data.rentPerMonthPerUser * rentDueIn.daysOfStay).toFixed(2);
                 }
-                userHelper.getUserInfo(null, data.landlordEmail, function(err, landlordInfo) {
+                else {
+                    result.rentDue= data.rentPerMonthPerUser;
+                }
+
+                //Get landlord information
+                userHelper.getUserInfo(null, data.landlordEmail, null, function(err, landlordInfo) {
                     if(err) {
                         console.log("Error while fetching landlord details: " + err);
                         res.status(500).send("Error in fetching data");
@@ -49,39 +54,55 @@ router.get("/", function (req, res) {
                             email: data.landlordEmail
                         };
                     }
-                    console.log(result);
+                    //res.send(result);
                     res.render("dashboard.html", result);
                 });
-
             }
-        });
-    }
+            else {
+                //User is a landlord. Fetch details correspondingly
+                if(rentDueIn.isProRate) {
+                    result.rentDue = (data.rentPerMonth * rentDueIn.daysOfStay).toFixed(2);
+                }
+                else {
+                    result.rentDue= data.rentPerMonth;
+                }
+                HomeHandler.getUserIdsForAHome(data._id, "Tenant", function (err, data) {
+                    if(err) {
+                        console.log("Error while fetching tenants living in a house: " + err);
+                        res.status(500).send("Error in fetching data");
+                    }
+                    else {
+                        var userIds = [];
+                        for(var i = 0; i < data.length; i++) {
+                            userIds.push({email: data[i].userId});
+                        }
+                        userHelper.getUserInfo(null,null,userIds, function(err, data) {
+                            if(err) {
+                                console.log("Error while fetching tenant information from User database: " + err);
+                                res.status(500).send("Error in fetching data");
+                            }
+                            else {
+                                var tenantInfo = [];
+                                for(var i = 0; i < data.length; i++) {
+                                    var tenant = {};
+                                    tenant.name = data[i].firstName;
+                                    tenant.email = data[i].email;
+                                    tenant.phone = data[i].phoneNo;
+                                    tenantInfo.push(tenant);
+                                }
+                                result.tenants = tenantInfo;
+                                res.render("dashboard.html", result);
+                                //res.send(result);
+                            }
+                        });
+                    }
+                });
+                //res.send(result);
+            }
+
+        }
+    });
 });
-
-function daysInMonth(month,year) {
-    return new Date(year, month, 0).getDate();
-}
-
-function getRentDueIn(leastStartDate, leaseEndDate) {
-    var result = {
-        isProRate : false
-    };
-    var d = new Date();
-    if(d.getMonth() == leastStartDate.getMonth()) {
-        result.isProRate = true;
-        result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - leastStartDate.getDate();
-        result.daysOfStay = 1 - (d.getDate() / (daysInMonth(d.getMonth(), d.getYear()) - d.getDate())).toFixed(2);
-    }
-    else if(d.getMonth() == leaseEndDate.getMonth()) {
-        result.isProRate = true;
-        result.rentDueIn = leaseEndDate.getDate() - d.getDate();
-        result.daysOfStay = 1 - (d.getDate() / leaseEndDate.getDate()).toFixed(2);
-    }
-    else {
-        result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - d.getDate();
-    }
-    return result;
-}
 
 //display the dashboard information for tenant
 router.get('/tenantdashboard',function(req,res){
