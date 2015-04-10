@@ -94,7 +94,9 @@ AccountController.prototype.logon = function(email, password,res) {
 };
 
 AccountController.prototype.logoff = function () {
+    console.log("inside logoff method");
     if (this.session.passport) delete this.session.passport;
+    if(this.session.id) delete this.session.id;
     return;
 };
 
