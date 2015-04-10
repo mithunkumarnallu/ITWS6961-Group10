@@ -9,6 +9,7 @@ userHelper.prototype.getUserId = function(data) {
 	return data.session.passport.user.email;
 
 };
+
 userHelper.prototype.isUserLoggedIn = function(data) {
     return data.session.passport;
 };
@@ -26,35 +27,48 @@ userHelper.prototype.setDefaultHome = function(userId, homeInfo) {
     });
 };
 
-userHelper.prototype.getDefaultHome = function (userId,res,callback) {
-
-    User.findOne({email:userId}, function (err, data) {
-
-        callback(res,err,data);
+userHelper.prototype.getDefaultHome = function (userId, res, callback) {
+	User.findOne({email: userId}, function (err, data) {
+        if(err)
+            callback(err);
+        else if(!data.foreignId) {
+            res.redirect("/login");
+        }
+        else
+            callback(err, data.foreignId);
     });
-
 }
 
-//userHelper.prototype.ownerIdentity = function (data) {
-//    return data.session.userProfileModel.role;
-//}
+userHelper.prototype.getUserType = function (req) {
+    return req.session.passport.user.role;
+};
 
 
-userHelper.prototype.getUserInfo=function(data){
-  var firstName=data.session.passport.firstName;
-  var lastName=data.session.passport.lastName;
-  var email=data.session.passport.email;
-  var phoneNo=data.session.passport.phoneNo;
-  var userInfo= {
-    firstName: firstName,
-    lastName: lastName,
-    email:email,
-    phoneNo: phoneNo
-
-  };
-  var userInfoJsonParse=[];
-  userInfoJsonParse=JSON.parse(userInfo);
-  return userInfoJsonParse;
+userHelper.prototype.getUserInfo=function(data, email, callback){
+    if(email) {
+        User.findOne({email: email}, function (err, data) {
+            if(err || !data)
+                callback(err);
+            else
+                callback(err, data);
+        });
+    }
+    else {
+        var firstName = data.session.passport.user.firstName;
+        var lastName = data.session.passport.user.lastName;
+        var email = data.session.passport.user.email;
+        var phoneNo = data.session.passport.user.phoneNo;
+        var userInfo = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phoneNo: phoneNo
+        };
+        return userInfo;
+        //var userInfoJsonParse = [];
+        //userInfoJsonParse = JSON.parse(userInfo);
+        //return userInfoJsonParse;
+    }
 };
 
 

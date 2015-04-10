@@ -8,7 +8,7 @@
 
 body {
     margin-top: 100px;
-    background-color: #222;
+    background-color: white;
 }
 
 @media(min-width:768px) {
@@ -144,12 +144,13 @@ ul.alert-dropdown {
     display: block;
     padding: 10px 15px 10px 38px;
     text-decoration: none;
-    color: #999;
+    color: #00FF00;
 }
 
 .side-nav>li>ul>li>a:hover {
     color: #fff;
 }
+
 
 /* Flot Chart Containers */
 

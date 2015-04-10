@@ -31,52 +31,72 @@ router.get('/getAllTransactions',function(req,res){
 
 router.post('/addLandlordAccount', function (req, res) {
 
-    //console.log("inside addLandLordBaank" + req.body.accNo);
-    //console.log(req.body.routeNo);
-    //console.log(req.body.tokenID);
     var addLandlordBankdetails;
     var stripeToken = req.body.tokenID;
     var id = userHelper.getUserId(req);
 
-    addLandlordBankdetails = {
-        userId:id,
-        bankAcc:req.body.accNo,
-        routingNo:req.body.routeNo,
-        token:stripeToken
+    stripe.recipients.create({
+        name: req.body.fn+" "+req.body.ln,
+        type: "individual",
+        bank_account: stripeToken,
+        email: id
+    }, function(err, recipient) {
+        if(err)
+            console.log("cannot create recipient");
+        else {
+            console.log(recipient);
+            addLandlordBankdetails = {
+                userId: id,
+                bankAcc: req.body.accNo,
+                routingNo: req.body.routeNo,
+                token: recipient.id
 
-    };
+            };
+            Landlordmodel.checkBankDetailsAndSave(addLandlordBankdetails, req, res, true);
+        }
 
-
-    Landlordmodel.checkBankDetailsAndSave(addLandlordBankdetails, req, res, true);
-
-
-
+    });
 });
 
-function depositRent(){
+function depositRent(amt,res, id){
+    var landlord_emailId ;
+    var tokenID;
+    MoreHomeInfoHandler.getCurrentHomeObject(id,res,function(err,data){
 
+        if(err)
+            res.status(409).send("Error: Searching Home Object");
+        else{
+            landlord_emailId = data.landlordEmail;
+          Landlordmodel.getTokenNo(landlord_emailId, function (err,data) {
+              if (err)
+                  res.status(409).send("Error: getting landlord token");
+              else {
+                  tokenID = data;
+                  stripe.transfers.create({
+                      amount: amt, // amount in cents
+                      currency: "usd",
+                      recipient: tokenID,
+                      statement_descriptor: "Test Transfer"
+                  }, function(err, transfer) {
+                      if (err) {
+                          console.log(err + " inside create transfer");
+                          res.status(409).send("Error: Transferring money to Landlord" + err);
+                      } else {
+                          console.log("transfer Successfull");
+                          res.send("Successfully transferred money to landlord");
+                      }
+                  });
+              }
+          });
 
-    stripe.transfers.create({
-        amount: 100, // amount in cents
-        currency: "usd",
-        recipient: Token,
-        bank_account: req.body.accNo,
-        statement_descriptor: "Test Transfer"
-    }, function(err, transfer) {
-        if (err) {
-            res.send(500, err);
-        } else {
-            res.send(204);
         }
     });
-
-
 }
 
 router.post('/charge', function(req, res) {
     var stripeToken = req.body.stripeToken;
-    var amount = 100;
-
+    var amount=100;
+    var userId = userHelper.getUserId(req);
     stripe.charges.create({
         card: stripeToken,
         currency: 'usd',
@@ -84,29 +104,33 @@ router.post('/charge', function(req, res) {
     },
     function(err, charge) {
         if (err) {
-            res.send(500, err);
+            res.status(409).send("Error: Charging card");
         } else {
-            depositRent();
-            res.send(204);
+            depositRent(amount ,res, userId);
+
         }
     });
 });
 
-
-function getHomeDetails(res,err,data){
-    if(err){
-        console.log(err);
-    }
-    else{
-        MoreHomeInfo.getrentPerMonth(data.foreignId,res);
-    }
-}
-
 router.get('/getRent', function(req, res, next){
         console.log("inGetrent");
-        userHelper.getDefaultHome(userHelper.getUserId(req), res, getHomeDetails);
+        userHelper.getDefaultHome(userHelper.getUserId(req), res, function(err, data){
+            if(err){
+                res.status(409).send("Error: Getting Home");
+            }
+            else{
+                MoreHomeInfoHandler.getrentPerMonth(data,function(err,data){
+                    if(err)
+                        res.status(409).send("Error: Getting rent");
+                    else{
+                        res.send(data);
+                    }
 
-    //MoreHomeInfo.getrentPerMonth(homeID,res);
+                });
+            }
+
+        });
+
 
 });
 

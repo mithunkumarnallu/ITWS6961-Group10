@@ -16,38 +16,63 @@ var LandLordBankDetails = new Schema({
 
 var landlordBankDetails = mongoose.model('landLordBankDetails', LandLordBankDetails);
 
-function checkBankDetailsAndSave(landlordDetails,req,res,overwrite){
+function checkBankDetailsAndSave(landlordDetails,req,res,overwrite) {
     console.log("Request Bank acc " + req.body.accNo);
     var userId = userHelper.getUserId(req);
-    landlordBankDetails.findOne({userId:landlordDetails.userId},function(err,data){
+    landlordBankDetails.findOne({userId: landlordDetails.userId}, function (err, data) {
 
 
-        if(err)
+        if (err)
             res.status(409).send("Error: Adding Bank account");
-        else if(data && !overwrite) {
+        else if (data && !overwrite) {
             res.status(409).send("Error: Bank account already exists");
         }
-       else if(data && data.userId==userId && data.bankAcc==req.body.accNo){
+        else if (data && data.userId == userId && data.bankAcc == req.body.accNo) {
 
             res.status(409).send("Error: Bank account already exists");
         }
 
-        else{
+        else {
             landlordDetails = new landlordBankDetails(landlordDetails);
 
-            landlordDetails.save(function(err,landlordDetails){
-                if(err)
+            landlordDetails.save(function (err, landlordDetails) {
+                if (err)
                     res.status(409).send("Error: Adding Bank account");
-                else{
+                else {
                     res.send("successfully added Bank account");
                 }
 
             });
         }
     });
-
-
-
 }
+    function getBankAccNo(landlordemail,callback){
+        landlordBankDetails.findOne({userId:landlordemail}, function (err, data) {
+                if(err)
+                    callback(err);
+
+            else{
+               callback(err,data.bankAcc);
+            }
+        });
+    }
+
+    function getTokenNo(landlordemail,callback){
+            var result;
+        landlordBankDetails.findOne({userId:landlordemail}, function (err, data) {
+            if(err)
+                callback(err);
+
+            else{
+                callback(err,data.token);
+            }
+        });
+
+    }
+
+
+
 exports.landlordBankDetails = landlordBankDetails;
 exports.checkBankDetailsAndSave = checkBankDetailsAndSave;
+exports.getTokenNo = getTokenNo;
+exports.getBankAccNo = getBankAccNo;

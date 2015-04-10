@@ -86,6 +86,8 @@ function isHomeAddedToUser(emailId, homeId, callback) {
     Home.findOne({userId: emailId, homeId: homeId}, function(err, data) {
         if(!err && data === null)
             callback(emailId, homeId);
+        else
+            callback(emailId, homeId, "Home already exists");
     });
 };
 
