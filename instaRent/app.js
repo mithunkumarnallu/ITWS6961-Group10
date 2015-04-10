@@ -11,6 +11,7 @@ var users = require('./routes/users');
 var manageHomeRoutes = require('./routes/managehome');
 var tenantPayments = require('./routes/payments');
 var dashboard = require("./routes/dashboard");
+var mailerHandler = require("./methods/mailerHandler");
 
 var swig = require("swig");
 
@@ -23,6 +24,7 @@ var passport = require('passport');
 var cors=require("cors");
 var json = require('jsonfile');
 var mailer = require('express-mailer');
+var CronJob = require('cron').CronJob;
 
 var app = express();
 
@@ -106,27 +108,31 @@ app.get('/login',function(req,res)
 getUserDetails = function() {
     //return userHelper.getUserDetails();
     return {email:"amyzhaosicong@gmail.com", firstName:"Amy", lastName:"Zhao", phoneNumber:"5182698510"};
-
 };
+
 app.get('/settings', function(req, res) {
     console.log("in settings");
     res.render('settings.html', getUserDetails());
 });
+
 app.get('/settings_password', function(req, res) {
     console.log("in settings_password");
     res.render('settings_password.html');
 });
 
+//Send rent due notifications at 00:00:00 AM every day as per EST
+var job = new CronJob('00 00 00 * * 0-6', function() {
+        /*
+         * Runs every day (Sunday through Saturday)
+         * at 00:00:00 AM.
+         */
+        mailerHandler.sendRentDueNotifications(app.mailer);
+    },
+    null,
+    true, /* Start the job right now */
+    "America/New_York"
+);
 
-
-
-//Luying routes
-//app.get('/dashboard', function(req,res)
-//{
-//  console.log("success");
-//  res.render('dashboard.html');
-//
-//});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
