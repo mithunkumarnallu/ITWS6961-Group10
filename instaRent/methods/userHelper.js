@@ -30,7 +30,7 @@ userHelper.prototype.getDefaultHome = function (userId, res, callback) {
         if(err)
             callback(err);
         else if(!data.foreignId) {
-            res.redirect("/login");
+            res.redirect("/manageHome");
         }
         else
             callback(err, data.foreignId);
@@ -41,8 +41,11 @@ userHelper.prototype.getUserType = function (req) {
     return req.session.passport.user.role;
 };
 
-userHelper.prototype.getUserInfo=function(data, email, callback){
-    if(email) {
+userHelper.prototype.getUserInfo=function(data, email, userIds, callback){
+    if(userIds) {
+        User.find({$or: userIds}, callback);
+    }
+    else if(email) {
         User.findOne({email: email}, function (err, data) {
             if(err || !data)
                 callback(err);
@@ -67,7 +70,6 @@ userHelper.prototype.getUserInfo=function(data, email, callback){
         //return userInfoJsonParse;
     }
 };
-
 
 
 module.exports = userHelper;
