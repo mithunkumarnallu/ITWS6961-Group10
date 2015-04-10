@@ -2,6 +2,7 @@
 var verificationToken = require("../models/verification_token_schema");
 var invitationHandler = require("../models/invitation_schema");
 var homeHandler = require("../models/home");
+var moreHomeHandler = require("../models/more_home_info");
 
 function sendMail(res) {
 	console.log(res.mailer.send);
@@ -66,7 +67,61 @@ function sendInvitation(mailer, emailId, userType, homeId, homeAddress) {
     });
 }
 
+//Function to send rent due notifications to all users who need to pay rent in less than 7 days
+function sendRentDueNotifications(mailer) {
+    var allHomes = moreHomeHandler.MoreHomeInfo.find();
+    allHomes.$where(function() {
+        if(this.leaseStartDate && this.leaseEndDate) {
+
+            function daysInMonth(month, year) {
+                return new Date(year, month, 0).getDate();
+            }
+
+            var d = new Date();
+            var rentDueIn;
+
+            if (d.getMonth() == this.leaseStartDate.getMonth())
+                rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - this.leaseStartDate.getDate();
+            else if (d.getMonth() == this.leaseEndDate.getMonth())
+                rentDueIn = this.leaseEndDate.getDate() - d.getDate();
+            else
+                rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - d.getDate();
+
+            return rentDueIn <= 7;
+        }
+        else
+            return false;
+    });
+    allHomes.exec(function(err, data) {
+        if(err)
+            console.log("Error: Failed to fetch homes with rent dues in next 7 days. Err: " + err);
+        else {
+            data.forEach(function(homeDetails) {
+                homeHandler.getUserIdsForAHome(homeDetails._id, "Tenant", function(err, users) {
+                    if(err)
+                        console.log("Error: Could not fetch tenants for home with id: " + homeDetails._id + ". " + err);
+                    else {
+                        for(var j = 0; j < users.length; j++) {
+                            mailer.send("rentDueInMail.html", {
+                                to: users[j].userId,
+                                subject: "Remember, your rent is due this week!",
+                                otherProperty: {address: homeDetails.address, loginLink: "http://127.0.0.1:3000/login",
+                                    rentDueIn: moreHomeHandler.getRentDueIn(homeDetails.leaseStartDate, homeDetails.leaseEndDate).rentDueIn}
+                            }, function (err) {
+                                if(err) {
+                                    console.log("There was an error sending rent due notification email to users: " + err);
+                                }
+                            });
+                        }
+                    }
+                })
+            });
+        }
+    });
+}
+
 exports.sendMail = sendMail;
 exports.sendAccountConfirmationMail = sendAccountConfirmationMail;
 exports.sendInvitation = sendInvitation;
+exports.sendRentDueNotifications = sendRentDueNotifications;
 //exports.sendAccountConfirmationMail = sendAccountConfirmationMail;
