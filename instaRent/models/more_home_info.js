@@ -229,13 +229,46 @@ function getUserHomeAddresses(userId, res) {
 	});
 };
 
-function getrentPerMonth(homeId,res){
+function getrentPerMonth(homeId, callback){
 	MoreHomeInfo.findOne({_id:homeId}, function(err, data){
-		if(err || data.length == 0)
-			res.status(409).send({status: "Error", response: "Error: No such home!"});
+		//if(err || data.length == 0)
+		//	res.status(409).send({status: "Error", response: "Error: No such home!"});
+        callback(err);
+        var rentDueIn = getRentDueIn(data.leaseStartDate, data.leaseEndDate);
 
-		res.send({status: "Success", response: data.rentPerMonth});
+        if(rentDueIn.isProRate)
+            data = (data.rentPerMonth * rentDueIn.daysOfStay).toFixed(2);
+        else
+            data = data.rentPerMonth;
+
+        callback(null, data);
+		//res.send({status: "Success", response: data.rentPerMonth});
 	});
+}
+
+function getRentDueIn(leastStartDate, leaseEndDate) {
+    var result = {
+        isProRate : false
+    };
+    var d = new Date();
+    if(d.getMonth() == leastStartDate.getMonth()) {
+        result.isProRate = true;
+        result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - leastStartDate.getDate();
+        result.daysOfStay = 1 - (d.getDate() / (daysInMonth(d.getMonth(), d.getYear()) - d.getDate())).toFixed(2);
+    }
+    else if(d.getMonth() == leaseEndDate.getMonth()) {
+        result.isProRate = true;
+        result.rentDueIn = leaseEndDate.getDate() - d.getDate();
+        result.daysOfStay = 1 - (d.getDate() / leaseEndDate.getDate()).toFixed(2);
+    }
+    else {
+        result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - d.getDate();
+    }
+    return result;
+}
+
+function daysInMonth(month,year) {
+    return new Date(year, month, 0).getDate();
 }
 
 function getCurrentHomeObject(emailId, res, callback) {
@@ -261,3 +294,4 @@ exports.checkAndSave = checkAndSave;
 exports.MoreHomeInfo = MoreHomeInfo;
 exports.getrentPerMonth = getrentPerMonth;
 exports.getCurrentHomeObject = getCurrentHomeObject;
+exports.getRentDueIn = getRentDueIn;
