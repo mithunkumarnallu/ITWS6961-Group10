@@ -94,6 +94,7 @@
 
     function onReceiveToken(token, args) {
         // Submit token to server so it can charge the card
+        //console.log(token);
         $.ajax({
             url: '/payments/charge',
             type: 'POST',
@@ -111,7 +112,7 @@
 	
     				success: function (responseData, status) {
     					rent = responseData;
-                        console.log(rent);
+                        //console.log(rent);
     					var checkout = StripeCheckout.configure({
 				    
         				key: 'pk_test_jwW7JFcTZaD8HmJdFZgeh4TR',

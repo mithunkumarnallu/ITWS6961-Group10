@@ -244,9 +244,9 @@ function getrentPerMonth(homeId, callback){
             var rentDueIn = getRentDueIn(data.leaseStartDate, data.leaseEndDate);
 
             if (rentDueIn.isProRate)
-                data = (data.rentPerMonth * rentDueIn.daysOfStay).toFixed(2);
+                data = (data.rentPerMonthPerUser * rentDueIn.daysOfStay).toFixed(2);
             else
-                data = data.rentPerMonth;
+                data = data.rentPerMonthPerUser;
 
             callback(null, data);
         }

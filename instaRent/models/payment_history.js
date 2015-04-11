@@ -20,30 +20,25 @@ var payment_history = mongoose.model('PaymentHistory', PaymentHistory);
 
 
 
+function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId,res) {
+    payment_history.findOne({userId: userId}, function (err, data) {
 
+        if (err)
+            res.status(409).send("Error: Adding adding payment history");
+        else{
+            paymentHistoryDetails = new payment_history(paymentHistoryDetails);
+            paymentHistoryDetails.save(function (err, landlordDetails) {
+                if (err)
+                    res.status(409).send("Error: Adding Bank account");
+                else {
+                    res.send("successfully saved payment history");
+                }
 
+            });
+        }
+    });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 exports.payment_history = payment_history;
+exports.checkPaymentHistoryDetailsAndSave = checkPaymentHistoryDetailsAndSave;
