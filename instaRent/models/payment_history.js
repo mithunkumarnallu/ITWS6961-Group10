@@ -20,7 +20,7 @@ var payment_history = mongoose.model('PaymentHistory', PaymentHistory);
 
 
 
-function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId,res) {
+function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId) {
     payment_history.findOne({userId: userId}, function (err, data) {
 
         if (err)
@@ -29,9 +29,11 @@ function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId,res) {
             paymentHistoryDetails = new payment_history(paymentHistoryDetails);
             paymentHistoryDetails.save(function (err, landlordDetails) {
                 if (err)
-                    res.status(409).send("Error: Adding Bank account");
+                    //res.status(409).send("Error: Adding Bank account");
+                console.log("cannot save payment history" + err);
                 else {
-                    res.send("successfully saved payment history");
+                    //res.send("successfully saved payment history");
+                    console.log("successfully saved payment history");
                 }
 
             });

@@ -9,6 +9,7 @@ var MoreHomeInfo = require("../models/more_home_info").MoreHomeInfo;
 var MoreHomeInfoHandler = require("../models/more_home_info");
 var Landlordmodel = require("../models/landLordbankDetails");
 var payment_history_model = require("../models/payment_history");
+var mailHandler = require("../methods/mailerHandler");
 var userHelper = require("../methods/userHelper");
 userHelper = new userHelper();
 
@@ -57,12 +58,34 @@ router.post('/addLandlordAccount', function (req, res) {
     });
 });
 
+function sendConfirmationEmailLandlord(id,res,landlord_emailId,amt,TenantAddress){
+    userHelper.getTenantName(id,function(err,data1){
+        if(err)
+            console.log("cannot get Tenant Name" + err);
+        else{
+
+            Landlordmodel.getBankAccNo(landlord_emailId,function(err,bankAcc){
+                if(err)
+                    console.log("cannot get bank acc no " + err);
+                else
+                    mailHandler.sendPaymentConfirmationLandlord(res,landlord_emailId,amt,TenantAddress,data1,bankAcc);
+
+            });
+
+        }
+
+    });
+
+}
+
 function depositRent(amt,res, id){
     var landlord_emailId ;
     var tokenID;
     var description = "Test Transfer";
+    var TenantAddress;
     MoreHomeInfoHandler.getCurrentHomeObject(id,res,function(err,data){
         var userid = id;
+        TenantAddress = data.address;
         if(err)
             res.status(409).send("Error: Searching Home Object");
         else{
@@ -89,13 +112,15 @@ function depositRent(amt,res, id){
                       if (err) {
                           console.log(err + " inside create transfer");
                           addPaymentHistory.status = "Failed";
-                          payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid,res);
+                          payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid);
                           //res.status(409).send("Error: Transferring money to Landlord" + err);
                       } else {
                           console.log("transfer Successful");
                           addPaymentHistory.status = "Success";
                          //res.send("Successfully transferred money to landlord");
-                        payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid,res);
+                        payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid);
+                          sendConfirmationEmailLandlord(id,res,landlord_emailId,amt,TenantAddress);
+
                       }
                   });
               }
