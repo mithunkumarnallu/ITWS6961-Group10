@@ -67,6 +67,10 @@ function sendInvitation(mailer, emailId, userType, homeId, homeAddress) {
     });
 }
 
+function sendPaymentConfirmationLandlord(){
+
+
+}
 //Function to send rent due notifications to all users who need to pay rent in less than 7 days
 function sendRentDueNotifications(mailer) {
     var allHomes = moreHomeHandler.MoreHomeInfo.find();

@@ -8,6 +8,7 @@ router.use(bodyParser());
 var MoreHomeInfo = require("../models/more_home_info").MoreHomeInfo;
 var MoreHomeInfoHandler = require("../models/more_home_info");
 var Landlordmodel = require("../models/landLordbankDetails");
+var payment_history_model = require("../models/payment_history");
 var userHelper = require("../methods/userHelper");
 userHelper = new userHelper();
 
@@ -24,8 +25,6 @@ router.get('/getAllTransactions',function(req,res){
             }
         }
     );
-
-
 });
 
 
@@ -61,8 +60,9 @@ router.post('/addLandlordAccount', function (req, res) {
 function depositRent(amt,res, id){
     var landlord_emailId ;
     var tokenID;
+    var description = "Test Transfer";
     MoreHomeInfoHandler.getCurrentHomeObject(id,res,function(err,data){
-
+        var userid = id;
         if(err)
             res.status(409).send("Error: Searching Home Object");
         else{
@@ -73,17 +73,29 @@ function depositRent(amt,res, id){
               else {
                   tokenID = data;
                   stripe.transfers.create({
-                      amount: amt, // amount in cents
+                      amount: Math.round(parseFloat(amt)*100), // amount in cents
                       currency: "usd",
                       recipient: tokenID,
-                      statement_descriptor: "Test Transfer"
+                      statement_descriptor: description
                   }, function(err, transfer) {
+                      var addPaymentHistory = {
+                          payment_date: new Date(),
+                          amount_charged:parseFloat(amt),
+                          description:description,
+                          userID:userid,
+                          landlordEmail:landlord_emailId
+
+                      };
                       if (err) {
                           console.log(err + " inside create transfer");
-                          res.status(409).send("Error: Transferring money to Landlord" + err);
+                          addPaymentHistory.status = "Failed";
+                          payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid,res);
+                          //res.status(409).send("Error: Transferring money to Landlord" + err);
                       } else {
-                          console.log("transfer Successfull");
-                          res.send("Successfully transferred money to landlord");
+                          console.log("transfer Successful");
+                          addPaymentHistory.status = "Success";
+                         //res.send("Successfully transferred money to landlord");
+                        payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid,res);
                       }
                   });
               }
@@ -95,21 +107,37 @@ function depositRent(amt,res, id){
 
 router.post('/charge', function(req, res) {
     var stripeToken = req.body.stripeToken;
-    var amount=100;
     var userId = userHelper.getUserId(req);
-    stripe.charges.create({
-        card: stripeToken,
-        currency: 'usd',
-        amount: amount
-    },
-    function(err, charge) {
-        if (err) {
-            res.status(409).send("Error: Charging card");
-        } else {
-            depositRent(amount ,res, userId);
 
+    userHelper.getDefaultHome(userHelper.getUserId(req), res, function(err, data){
+        if(err){
+            res.status(409).send("Error: Getting Home");
         }
+        else{
+            MoreHomeInfoHandler.getrentPerMonth(data,function(err,data){
+                if(err)
+                    res.status(409).send("Error: Getting rent");
+                else{
+                    stripe.charges.create({
+                            card: stripeToken,
+                            currency: 'usd',
+                            amount: Math.round(parseFloat(data)*100)
+                        },
+                        function(err, charge) {
+                            if (err) {
+                                res.status(409).send("Error: Charging card");
+                            } else {
+                                depositRent(data ,res, userId);
+                            }
+                        });
+                }
+
+            });
+        }
+
     });
+
+
 });
 
 router.get('/getRent', function(req, res, next){
