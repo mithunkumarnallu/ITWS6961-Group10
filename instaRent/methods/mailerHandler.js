@@ -67,8 +67,22 @@ function sendInvitation(mailer, emailId, userType, homeId, homeAddress) {
     });
 }
 
-function sendPaymentConfirmationLandlord(){
+function sendPaymentConfirmationLandlord(res,landlordEmail,amount,address,tenantName,bankAcc){
 
+var lastFourdigits = bankAcc.substring(bankAcc.length-4);
+
+    res.mailer.send('landlord_payment_recieved.html', {
+        to: landlordEmail, // REQUIRED. This can be a comma delimited string just like a normal email to field.
+        subject: 'Rent Payment Confirmation', // REQUIRED.
+        otherProperty: {landlordEmail:landlordEmail,rent:amount,add:address,tenantname:tenantName,bankAcc:lastFourdigits} // All additional properties are also passed to the template as local variables.
+    }, function (err) {
+        if (err) {
+            // handle error
+            console.log(err);
+            return;
+        }
+        res.send('Email Sent to the Landlord for Rent confirmation');
+    });
 
 }
 //Function to send rent due notifications to all users who need to pay rent in less than 7 days
@@ -128,4 +142,5 @@ exports.sendMail = sendMail;
 exports.sendAccountConfirmationMail = sendAccountConfirmationMail;
 exports.sendInvitation = sendInvitation;
 exports.sendRentDueNotifications = sendRentDueNotifications;
+exports.sendPaymentConfirmationLandlord = sendPaymentConfirmationLandlord;
 //exports.sendAccountConfirmationMail = sendAccountConfirmationMail;

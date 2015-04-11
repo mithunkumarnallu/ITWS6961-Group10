@@ -10,6 +10,20 @@ userHelper.prototype.getUserId = function(data) {
 
 };
 
+userHelper.prototype.getTenantName = function(data,callback){
+
+    User.findOne({email:data},function(err,data){
+
+        if(err)
+            console.log("Cannot find the user" + err);
+        else {
+            var fullname = data.firstName + " " + data.lastName;
+            callback(null,fullname);
+        }
+    });
+    //return data.session.passport.user.firstName + " " + data.session.passport.user.lastName;
+}
+
 userHelper.prototype.isUserLoggedIn = function(data) {
     return data.session.passport;
 };
