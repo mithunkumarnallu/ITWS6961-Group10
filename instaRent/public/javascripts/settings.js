@@ -1,5 +1,39 @@
 $(document).ready(function update_profile() {
 	console.log("update_profile outside");
+	$('#update_profile').bootstrapValidator({
+		feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+		fields: {
+			first_name: {
+				validators: {
+					notEmpty: {
+						message: 'The first name is required and cannot be empty'
+					}
+				}
+			},
+			last_name: {
+				validators: {
+					notEmpty: {
+						message: 'The last name is required and cannot be empty'
+					}
+				}
+			},
+			number: {
+                validators: {
+                    notEmpty: {
+                        message: 'The phone number is required and cannot be empty'
+                    },
+                    phone: {
+                        message: 'The input is not a valid phone number'
+                    }
+                }
+            }
+		}
+	});
+
 	$('#update_profile').submit(function() {
 		console.log("update_profile");
 		var $first_name=$("#first_name");
@@ -16,24 +50,14 @@ $(document).ready(function update_profile() {
 
 		$.ajax({
 			type: 'POST',
-			url: "/api/account/update",  // needed changes in account.js file, not done yet
-			data: "&firstName=" + firstName + "&lastName=" +lastName + "&phone=" + phone,
+			url: "/settings/changeuserprofile",  // needed changes in account.js file, not done yet
+			data: "&firstName=" + firstName + "&lastName=" +lastName + "&phoneNo=" + phone,
 			//dataType: "jsonp",
 			success: function(resp) {
-				if(resp.success==true) {
+				if(resp=="Success") {
 					console.log("response success");
 					alert("Updated successfully!");
 				}
-				else if (resp.extras.msg) {
-					switch (resp.extras.msg) {
-						case 2:
-						case 5:
-						console.log("Oops! BookIt had a problem and could not update.  Please try again in a few minutes.");
-						break;
-						// ? case 4
-					}
-				}
-				else console.log("unsuccessful update HTTP response");
 			},
 			error: function(xhr, textStatus, err) {
 				console.log("error log");
