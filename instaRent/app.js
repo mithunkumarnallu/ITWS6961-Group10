@@ -90,6 +90,7 @@ app.use('/users', users);
 app.use('/managehome', manageHomeRoutes);
 app.use('/payments', tenantPayments);
 app.use("/dashboard", dashboard);
+app.use("/settings", settings);
 
 //nitish routes
 app.use('/api', accountRoutes);
