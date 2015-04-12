@@ -7,7 +7,7 @@ var UserHandler=require("../models/user");
 
 
 router.get('/', function(req, res, next) {
-  res.render('Role Selection.html', { title: 'instaRent' });
+  res.render('settings.html', userHelper.getUserInfo(req) );
 });
 
 //display the user profile, return type is in JSON
@@ -29,6 +29,19 @@ router.post('/changeuserprofile',function(req,res,next){
   };
   UserHandler.update(userInfo,res);
 });
+
+
+// added by Amy, parse the data to backend, not tested yet
+router.post('/changeUserPassword',function(req,res,next){
+  var userPassword;
+  userPassword={
+    password: req.body.password,
+    password_new: req.body.password_new,
+    password_conf: req.body.password_conf
+  };
+  UserHandler.update(userPassword,res);
+});
+
 
 
 module.exports=router;
