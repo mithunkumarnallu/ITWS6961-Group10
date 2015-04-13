@@ -57,7 +57,9 @@ AccountController.prototype.logon = function(email, password,res) {
                         isVerified: user.isVerified,
 						foreignId: user.foreignId,
                         facebook_id: user.facebook_id,
-                        facebook_token: user.facebook_token
+                        facebook_token: user.facebook_token,
+                        google_id:user.google_id,
+                        google_token: user.google_token
                     });
 
                     me.session.passport.user = userProfileModel;

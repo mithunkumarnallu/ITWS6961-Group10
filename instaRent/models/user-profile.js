@@ -7,7 +7,9 @@ var UserProfileModel = function(cnf) {
     this.isVerified=cnf.isVerified,    
 	this.role=cnf.role,
     this.facebook_id=cnf.facebook_id,
-    this.facebook_token=cnf.facebook_token
+    this.facebook_token=cnf.facebook_token,
+    this.google_id=cnf.google_id,
+    this.google_token=cnf.google_token
 };
 
 module.exports = UserProfileModel;

@@ -1,4 +1,6 @@
 var FacebookStrategy = require('passport-facebook').Strategy;
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+
 var User = require('../models/user.js').User;
 var UserProfileModel = require('../models/user-profile.js');
 var uuid = require('node-uuid');
@@ -18,7 +20,9 @@ module.exports = function(passport) {
             isVerified: user.isVerified,
             foreignId: user.foreignId,
             facebook_id: user.facebook_id,
-            facebook_token: user.facebook_token
+            facebook_token: user.facebook_token,
+            google_id: user.google_id,
+            google_token: user.facebook_token
             
         }
         
@@ -31,6 +35,61 @@ module.exports = function(passport) {
             done(err, sessionUser);
         });
     });
+    
+passport.use(new GoogleStrategy({
+
+        clientID        : configAuth.googleAuth.clientID,
+        clientSecret    : configAuth.googleAuth.clientSecret,
+        callbackURL     : configAuth.googleAuth.callbackURL,
+
+    },
+    function(token, refreshToken, profile, done) {
+
+        // make the code asynchronous
+        // User.findOne won't fire until we have all our data back from Google
+        process.nextTick(function() {
+
+            // try to find the user based on their google id
+            User.findOne({ 'email' : profile.emails[0].value }, function(err, user) {
+                if (err)
+                    return done(err);
+
+                if (user) {
+                  if(user.google_id=="") 
+                      return done(null,null);
+                  return done(null, user); // user found, return that user 
+                } else {
+                    // if the user isnt in our database, create a new user
+                    var newUser          = new User({
+
+                    // set all of the relevant information
+                    google_id: profile.id,
+                    google_token: token,
+                    facebook_id: "",                  
+                    facebook_token: "",                   
+                    firstName: profile.displayName,
+                    lastName:  "",
+                    email:     profile.emails[0].value,
+                    phoneNo:"",
+                    foreignId:  "",
+                    role:"",
+                    isVerified:true,
+                    passwordHash:"",
+                    passwordSalt: ""
+                    });
+
+                    // save the user
+                    newUser.save(function(err) {
+                        if (err)
+                            throw err;
+                        return done(null, newUser);
+                    });
+                }
+            });
+        });
+
+    }));
+
 
 passport.use(new FacebookStrategy({
 
@@ -57,6 +116,7 @@ passport.use(new FacebookStrategy({
                 // if the user is found, then log them in
                 if (user) {
                     
+                    if(user.facebook_id=="") return done(null,null);
                     return done(null, user); // user found, return that user 
                 } else {
                     // if there is no user found with that facebook id, create them
