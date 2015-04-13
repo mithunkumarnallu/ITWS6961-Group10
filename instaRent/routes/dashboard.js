@@ -12,7 +12,7 @@ var HomeHandler = require("../models/home");
 var MoreHomeInfo = require("../models/more_home_info").MoreHomeInfo;
 var MoreHomeInfoHandler = require("../models/more_home_info");
 
-<<<<<<< Updated upstream
+
 router.get("/", function (req, res) {
     var userType = userHelper.getUserType(req);
     MoreHomeInfoHandler.getCurrentHomeObject(userHelper.getUserId(req), res, function (err, data) {
@@ -104,8 +104,7 @@ router.get("/", function (req, res) {
         }
     });
 });
-=======
->>>>>>> Stashed changes
+
 
 //display the dashboard information for tenant
 router.get('/tenantdashboard',function(req,res){
