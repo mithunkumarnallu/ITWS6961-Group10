@@ -21,9 +21,9 @@
                 <div class="col-lg-10">
                     <h1>Locate your Home!</h1>
                 </div>
-                <div class="col-lg-2" style="margin-top: 2%">                        
-                    <label class="btn btn-primary" ng-click="open('lg')">Add home</label>
-                    <div class="btn-group" dropdown is-open="status.isopen">
+                <div class="col-lg-2">                       
+                    <label class="btn btn-primary" ng-click="open('lg')" style="margin-top:3%">Add home</label>
+                    <div class="btn-group" dropdown is-open="status.isopen" style="margin-top:3%">
                         <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle ng-disabled="disabled">
                             Update home <span class="caret"></span>
                         </button>
@@ -38,12 +38,14 @@
             </div>
             <div class="row">
                 <!-- Responsive iFrame -->
-                <div id="mapHolder" scrolling="no" marginheight="0" marginwidth="0" class="Flexible-container" style="margin-top: 2%">
+             <!--iframe-->
+                <div id="mapHolder" scrolling="no" class="Flexible-container" marginheight="0" marginwidth="0" style="margin-top:2%">
                 
                 <!--    <iframe id="mapHolder" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.ch/maps?f=q&amp;q=USA&amp;ie=UTF8&amp;output=embed"></iframe>-->
                 
                 <!--</div>-->
-            </div>
+                </div>
+            <!--/iframe-->
         </div>
     </div>
     

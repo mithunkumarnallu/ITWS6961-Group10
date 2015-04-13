@@ -2,8 +2,9 @@
 
 .Flexible-container {
     position: relative;
-    padding-bottom: 48%;
+    padding-bottom: 38%;
     padding-top: 30px;
+    margin-right: 3%;
     height: 0;
     overflow: hidden;
 }
@@ -11,10 +12,14 @@
 .Flexible-container iframe,   
 .Flexible-container object,  
 .Flexible-container embed {
-    position: absolute;
+   /* position: absolute;
     top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
     left: 1%;
     right: 1%;
     width: 98%;
-    height: 80%;
+    height: 100%;*/
+
 }
