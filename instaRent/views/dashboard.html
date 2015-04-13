@@ -116,9 +116,9 @@
                                             <small>
                                                 <!--Here didn't tell the difference between two roles, need fix-->
                                                 {% if userRole == 'Tenant'%}
-                                                    $ {{ rentDue }} 
+                                                     {{ rentDue }} 
                                                 {% elseif userRole == 'Landlord'%}
-                                                    $ {{ rentDue }}
+                                                     {{ rentDue }}
                                                 {% endif %}
                                                 
                                             </small>
