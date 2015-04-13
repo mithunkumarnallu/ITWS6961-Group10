@@ -4,7 +4,6 @@ var jetbrains = angular.module("jetbrains", []);
         var app = this;
         var url = "http://localhost:3000";
         $http.get(url + "/payments/getPaymentHistory").success(function (data) {
-            //console.log(data);
             app.data = data;
         });
     });

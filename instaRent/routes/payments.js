@@ -208,7 +208,7 @@ router.get('/getPaymentHistory',function(req,res,next){
                };
                results.push(obj);
            }
-           res.send(results);
+           res.send({total:data.length, rows:results});
 
        }
 
