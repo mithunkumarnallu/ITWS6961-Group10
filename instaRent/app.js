@@ -6,11 +6,16 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-//var routes = require('./routes/index');
+var routes = require('./routes/index');
 var users = require('./routes/users');
 var manageHomeRoutes = require('./routes/managehome');
 var tenantPayments = require('./routes/payments');
 var dashboard = require("./routes/dashboard");
+var mailerHandler = require("./methods/mailerHandler");
+var settings = require("./routes/settings");
+
+var userHelper = require("./methods/userHelper");
+userHelper = new userHelper();
 
 var swig = require("swig");
 
@@ -23,7 +28,11 @@ var passport = require('passport');
 var cors=require("cors");
 var json = require('jsonfile');
 var mailer = require('express-mailer');
+
 var mail = require("./methods/mailerHandler");
+
+var CronJob = require('cron').CronJob;
+
 
 var app = express();
 
@@ -80,11 +89,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//app.use('/', routes);
+app.use('/', routes);
 app.use('/users', users);
 app.use('/managehome', manageHomeRoutes);
 app.use('/payments', tenantPayments);
 app.use("/dashboard", dashboard);
+app.use("/settings", settings);
 
 //nitish routes
 app.use('/api', accountRoutes);
@@ -101,6 +111,7 @@ app.get('/login',function(req,res)
 {
     res.render('login.html', {foo:false});
 });
+
 
 app.get('/login_error',function(req,res)
 {
@@ -126,20 +137,40 @@ app.post('/send_mail', function(req,res)   //receives email from client and trig
    res.send({success: true});
 });
 
-// Amy routes
-getUserDetails = function() {
-    //return userHelper.getUserDetails();
-    return {email:"amyzhaosicong@gmail.com", firstName:"Amy", lastName:"Zhao", phoneNumber:"5182698510"};
+app.get('/payments/testLandlord', function (req,res) {
 
-};
-app.get('/settings', function(req, res) {
-    console.log("in settings");
-    res.render('settings.html', getUserDetails());
+    res.render('LandLordAddBank.html');
+
 });
+
+app.get('/payments/payment_history', function (req,res) {
+
+    res.render('payment_history.html');
+
+
+});
+
+
+// Amy routes
+
 app.get('/settings_password', function(req, res) {
     console.log("in settings_password");
     res.render('settings_password.html');
 });
+
+//Send rent due notifications at 00:00:00 AM every day as per EST
+var job = new CronJob('00 00 00 * * 0-6', function() {
+        /*
+         * Runs every day (Sunday through Saturday)
+         * at 00:00:00 AM.
+         */
+        mailerHandler.sendRentDueNotifications(app.mailer);
+        mailerHandler.sendLeaseRenewalNotifications(app.mailer);
+    },
+    null,
+    true, /* Start the job right now */
+    "America/New_York"
+);
 
 
 
@@ -153,6 +184,8 @@ app.get('/settings_password', function(req, res) {
 //  res.render('dashboard.html');
 //
 //});
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

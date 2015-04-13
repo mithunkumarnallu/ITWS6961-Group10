@@ -108,7 +108,6 @@ function deleteOldUsersFromHome(emailIds, homeId) {
         }
     });
 }
-exports.deleteOldUsersFromHome = deleteOldUsersFromHome;
 
 function getHomeId(userId,res){
   Home.find({userId:userId},function(err,data){
@@ -125,6 +124,13 @@ function getHomeId(userId,res){
   });
 };
 
+function getUserIdsForAHome(homeId, userType, callback) {
+    if(userType)
+        Home.find({homeId: homeId, userType: userType}, callback);
+    else
+        Home.find({homeId: homeId}, callback);
+}
+
 exports.isHomeAddedToUser = isHomeAddedToUser;
 exports.getUserHomeAddresses = getUserHomeAddresses;
 exports.checkAndSave = checkAndSave;
@@ -132,3 +138,5 @@ exports.Home = Home;
 exports.saveHome = saveHome;
 exports.update = update;
 exports.getHomeId=getHomeId;
+exports.deleteOldUsersFromHome = deleteOldUsersFromHome;
+exports.getUserIdsForAHome = getUserIdsForAHome;
