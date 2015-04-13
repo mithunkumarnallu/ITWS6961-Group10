@@ -67,6 +67,44 @@ function sendInvitation(mailer, emailId, userType, homeId, homeAddress) {
     });
 }
 
+//Function to send lease renewal notifications to all users in 30 days days
+function sendLeaseRenewalNotifications(mailer) {
+    var allHomes = moreHomeHandler.MoreHomeInfo.find();
+    allHomes.$where(function() {
+        if (this.leaseEndDate && Math.floor((this.leaseEndDate - new Date()) / (1000 * 3600 * 24)) == 30)
+            return true;
+        else
+            return false;
+    });
+    allHomes.exec(function(err, data) {
+        if(err)
+            console.log("Error: Failed to fetch homes with lease expiry date in 30 days. Err: " + err);
+        else {
+            data.forEach(function(homeDetails) {
+                homeHandler.getUserIdsForAHome(homeDetails._id, null, function(err, users) {
+                    if(err)
+                        console.log("Error: Could not fetch users for home with id: " + homeDetails._id + ". " + err);
+                    else {
+                        for(var j = 0; j < users.length; j++) {
+                            mailer.send("leaseExpiresMail.html", {
+                                to: users[j].userId,
+                                subject: "Remember, your lease expires in 30 days!",
+                                otherProperty: {address: homeDetails.address,
+                                    loginLink: "http://127.0.0.1:3000/login"}
+                            }, function (err) {
+                                if(err) {
+                                    console.log("There was an error sending rent due notification email to users: " + err);
+                                }
+                            });
+                        }
+                    }
+                })
+            });
+        }
+    });
+
+}
+
 //Function to send rent due notifications to all users who need to pay rent in less than 7 days
 function sendRentDueNotifications(mailer) {
     var allHomes = moreHomeHandler.MoreHomeInfo.find();
@@ -124,4 +162,5 @@ exports.sendMail = sendMail;
 exports.sendAccountConfirmationMail = sendAccountConfirmationMail;
 exports.sendInvitation = sendInvitation;
 exports.sendRentDueNotifications = sendRentDueNotifications;
+exports.sendLeaseRenewalNotifications = sendLeaseRenewalNotifications;
 //exports.sendAccountConfirmationMail = sendAccountConfirmationMail;
