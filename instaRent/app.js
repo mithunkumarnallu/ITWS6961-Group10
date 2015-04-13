@@ -12,6 +12,10 @@ var manageHomeRoutes = require('./routes/managehome');
 var tenantPayments = require('./routes/payments');
 var dashboard = require("./routes/dashboard");
 var mailerHandler = require("./methods/mailerHandler");
+var settings = require("./routes/settings");
+
+var userHelper = require("./methods/userHelper");
+userHelper = new userHelper();
 
 var swig = require("swig");
 
@@ -86,6 +90,7 @@ app.use('/users', users);
 app.use('/managehome', manageHomeRoutes);
 app.use('/payments', tenantPayments);
 app.use("/dashboard", dashboard);
+app.use("/settings", settings);
 
 //nitish routes
 app.use('/api', accountRoutes);
@@ -117,15 +122,6 @@ app.get('/payments/payment_history', function (req,res) {
 
 
 // Amy routes
-getUserDetails = function() {
-    //return userHelper.getUserDetails();
-    return {email:"amyzhaosicong@gmail.com", firstName:"Amy", lastName:"Zhao", phoneNumber:"5182698510"};
-};
-
-app.get('/settings', function(req, res) {
-    console.log("in settings");
-    res.render('settings.html', getUserDetails());
-});
 
 app.get('/settings_password', function(req, res) {
     console.log("in settings_password");
