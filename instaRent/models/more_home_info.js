@@ -42,11 +42,15 @@ function sendInvitationsToUsers(mailer, userType, moreHome) {
 }
 
 function getTenantEmails(moreHome) {
-    var tenantEmails = moreHome.tenantsEmails.split(";");
-    for(var i = 0; i < tenantEmails.length; i++) {
-        tenantEmails[i] = tenantEmails[i].trim();
+    if(moreHome.tenantsEmails) {
+
+        var tenantEmails = moreHome.tenantsEmails.split(";");
+        for (var i = 0; i < tenantEmails.length; i++) {
+            tenantEmails[i] = tenantEmails[i].trim();
+        }
+        return tenantEmails;
     }
-    return tenantEmails;
+    return [];
 }
 
 function checkAndSave(moreHome, req, res, overwrite) {
@@ -89,15 +93,18 @@ function checkAndSave(moreHome, req, res, overwrite) {
                     });
                 }
             } );
+
 		} 
 		else {
 			moreHome = new MoreHomeInfo(moreHome);
+
 
             if(req.body.userType == "Tenant")
             {
                 var tenantEmails = getTenantEmails(moreHome);
                 moreHome.rentPerMonthPerUser = (moreHome.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
             }
+
             moreHome.save(function(err, moreHome) {
 				if(err)
 					res.status(409).send("Error Adding home");
@@ -229,13 +236,55 @@ function getUserHomeAddresses(userId, res) {
 	});
 };
 
-function getrentPerMonth(homeId,res){
-	MoreHomeInfo.findOne({_id:homeId}, function(err, data){
-		if(err || data.length == 0)
-			res.status(409).send({status: "Error", response: "Error: No such home!"});
 
-		res.send({status: "Success", response: data.rentPerMonth});
-	});
+
+function getrentPerMonth(homeId, callback){
+    MoreHomeInfo.findOne({_id:homeId}, function(err, data){
+        //if(err || data.length == 0)
+        // res.status(409).send({status: "Error", response: "Error: No such home!"});
+        if(err)
+            callback(err);
+        else {
+            var rentDueIn = getRentDueIn(data.leaseStartDate, data.leaseEndDate);
+
+            if (rentDueIn.isProRate)
+                data = (data.rentPerMonthPerUser * rentDueIn.daysOfStay).toFixed(2);
+            else
+                data = data.rentPerMonthPerUser;
+
+            callback(null, data);
+        }
+        //res.send({status: "Success", response: data.rentPerMonth});
+    });
+}
+
+function daysInMonth(month,year) {
+    return new Date(year, month, 0).getDate();
+}
+
+function getRentDueIn(leastStartDate, leaseEndDate) {
+    var result = {
+        isProRate: false
+    };
+    var d = new Date();
+    if (d.getMonth() == leastStartDate.getMonth()) {
+        result.isProRate = true;
+        result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - leastStartDate.getDate();
+        result.daysOfStay = 1 - (d.getDate() / (daysInMonth(d.getMonth(), d.getYear()) - d.getDate())).toFixed(2);
+    }
+    else if (d.getMonth() == leaseEndDate.getMonth()) {
+        result.isProRate = true;
+        result.rentDueIn = leaseEndDate.getDate() - d.getDate();
+        result.daysOfStay = 1 - (d.getDate() / leaseEndDate.getDate()).toFixed(2);
+    }
+    else {
+        result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - d.getDate();
+    }
+    return result;
+}
+
+function daysInMonth(month,year) {
+    return new Date(year, month, 0).getDate();
 }
 
 function getCurrentHomeObject(emailId, res, callback) {
@@ -252,6 +301,7 @@ function getCurrentHomeObject(emailId, res, callback) {
        else {
            callback(err);
        }
+
     });
 }
 
@@ -261,3 +311,5 @@ exports.checkAndSave = checkAndSave;
 exports.MoreHomeInfo = MoreHomeInfo;
 exports.getrentPerMonth = getrentPerMonth;
 exports.getCurrentHomeObject = getCurrentHomeObject;
+exports.getRentDueIn = getRentDueIn;
+
