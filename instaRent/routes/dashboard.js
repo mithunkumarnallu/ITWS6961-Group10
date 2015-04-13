@@ -107,7 +107,7 @@ router.get("/", function (req, res) {
 
 
 //display the dashboard information for tenant
-router.get('/tenantdashboard',function(req,res){
+/*router.get('/tenantdashboard',function(req,res){
       var tenantInfo={};
       var useFirstName=userHelper.getUserInfo(req).firstName;
       var homeId=HomeHandler.getHomeId(req).response;
@@ -119,10 +119,12 @@ router.get('/tenantdashboard',function(req,res){
       tenantInfo={
         "userFirstName"
       }
-});
+});*/
 
 
 //display the dashboard information for landloard
 router.get('/landloarddashboard',function(req,res){
 
 });
+
+module.exports=router;
