@@ -42,11 +42,15 @@ function sendInvitationsToUsers(mailer, userType, moreHome) {
 }
 
 function getTenantEmails(moreHome) {
-    var tenantEmails = moreHome.tenantsEmails.split(";");
-    for(var i = 0; i < tenantEmails.length; i++) {
-        tenantEmails[i] = tenantEmails[i].trim();
+    if(moreHome.tenantsEmails) {
+
+        var tenantEmails = moreHome.tenantsEmails.split(";");
+        for (var i = 0; i < tenantEmails.length; i++) {
+            tenantEmails[i] = tenantEmails[i].trim();
+        }
+        return tenantEmails;
     }
-    return tenantEmails;
+    return [];
 }
 
 function checkAndSave(moreHome, req, res, overwrite) {
@@ -122,7 +126,7 @@ function checkAndSave(moreHome, req, res, overwrite) {
 function update(home, userId, req, res) {
 	//console.log(home);
     var tenantEmails = getTenantEmails(home);
-   // home.rentPerMonthPerUser = (home.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+    home.rentPerMonthPerUser = (home.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
     MoreHomeInfo.update({_id: home.homeId, address : home.address}, home, {}, function(err, numEffected) {
 		//console.log(data);
 		if(err || numEffected == 0) {
