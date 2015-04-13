@@ -89,15 +89,18 @@ function checkAndSave(moreHome, req, res, overwrite) {
                     });
                 }
             } );
+
 		} 
 		else {
 			moreHome = new MoreHomeInfo(moreHome);
+
 
             if(req.body.userType == "Tenant")
             {
                 var tenantEmails = getTenantEmails(moreHome);
                 moreHome.rentPerMonthPerUser = (moreHome.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
             }
+
             moreHome.save(function(err, moreHome) {
 				if(err)
 					res.status(409).send("Error Adding home");
@@ -119,7 +122,7 @@ function checkAndSave(moreHome, req, res, overwrite) {
 function update(home, userId, req, res) {
 	//console.log(home);
     var tenantEmails = getTenantEmails(home);
-    home.rentPerMonthPerUser = (home.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+   // home.rentPerMonthPerUser = (home.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
     MoreHomeInfo.update({_id: home.homeId, address : home.address}, home, {}, function(err, numEffected) {
 		//console.log(data);
 		if(err || numEffected == 0) {
@@ -229,34 +232,43 @@ function getUserHomeAddresses(userId, res) {
 	});
 };
 
+
+
 function getrentPerMonth(homeId, callback){
-	MoreHomeInfo.findOne({_id:homeId}, function(err, data){
-		//if(err || data.length == 0)
-		//	res.status(409).send({status: "Error", response: "Error: No such home!"});
-        callback(err);
-        var rentDueIn = getRentDueIn(data.leaseStartDate, data.leaseEndDate);
+    MoreHomeInfo.findOne({_id:homeId}, function(err, data){
+        //if(err || data.length == 0)
+        // res.status(409).send({status: "Error", response: "Error: No such home!"});
+        if(err)
+            callback(err);
+        else {
+            var rentDueIn = getRentDueIn(data.leaseStartDate, data.leaseEndDate);
 
-        if(rentDueIn.isProRate)
-            data = (data.rentPerMonth * rentDueIn.daysOfStay).toFixed(2);
-        else
-            data = data.rentPerMonth;
+            if (rentDueIn.isProRate)
+                data = (data.rentPerMonthPerUser * rentDueIn.daysOfStay).toFixed(2);
+            else
+                data = data.rentPerMonthPerUser;
 
-        callback(null, data);
-		//res.send({status: "Success", response: data.rentPerMonth});
-	});
+            callback(null, data);
+        }
+        //res.send({status: "Success", response: data.rentPerMonth});
+    });
+}
+
+function daysInMonth(month,year) {
+    return new Date(year, month, 0).getDate();
 }
 
 function getRentDueIn(leastStartDate, leaseEndDate) {
     var result = {
-        isProRate : false
+        isProRate: false
     };
     var d = new Date();
-    if(d.getMonth() == leastStartDate.getMonth()) {
+    if (d.getMonth() == leastStartDate.getMonth()) {
         result.isProRate = true;
         result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - leastStartDate.getDate();
         result.daysOfStay = 1 - (d.getDate() / (daysInMonth(d.getMonth(), d.getYear()) - d.getDate())).toFixed(2);
     }
-    else if(d.getMonth() == leaseEndDate.getMonth()) {
+    else if (d.getMonth() == leaseEndDate.getMonth()) {
         result.isProRate = true;
         result.rentDueIn = leaseEndDate.getDate() - d.getDate();
         result.daysOfStay = 1 - (d.getDate() / leaseEndDate.getDate()).toFixed(2);
@@ -285,6 +297,7 @@ function getCurrentHomeObject(emailId, res, callback) {
        else {
            callback(err);
        }
+
     });
 }
 
@@ -295,3 +308,4 @@ exports.MoreHomeInfo = MoreHomeInfo;
 exports.getrentPerMonth = getrentPerMonth;
 exports.getCurrentHomeObject = getCurrentHomeObject;
 exports.getRentDueIn = getRentDueIn;
+
