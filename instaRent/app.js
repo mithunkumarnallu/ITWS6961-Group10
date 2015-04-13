@@ -121,12 +121,13 @@ app.get('/settings_password', function(req, res) {
 });
 
 //Send rent due notifications at 00:00:00 AM every day as per EST
-var job = new CronJob('00 00 00 * * 0-6', function() {
+var job = new CronJob('20 24 18 * * 0-6', function() {
         /*
          * Runs every day (Sunday through Saturday)
          * at 00:00:00 AM.
          */
         mailerHandler.sendRentDueNotifications(app.mailer);
+        mailerHandler.sendLeaseRenewalNotifications(app.mailer);
     },
     null,
     true, /* Start the job right now */
