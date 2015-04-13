@@ -10,7 +10,19 @@ module.exports = function(app, passport) {
     app.get('/auth/facebook/callback',
         passport.authenticate('facebook', {
             successRedirect : '/managehome',
-            failureRedirect : '/login'
+            failureRedirect : '/login_error',
+            
         }));
     
+    app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+
+    // the callback after google has authenticated the user
+    app.get('/auth/google/oauth2callback',
+            passport.authenticate('google', {
+                    successRedirect : '/managehome',
+                    failureRedirect : '/login_error'
+            }));
+
 }
+
+    

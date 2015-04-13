@@ -66,7 +66,30 @@ function sendInvitation(mailer, emailId, userType, homeId, homeAddress) {
     });
 }
 
+function sendPasswordResetMail(req, res, id) {
+	console.log("In passwordResetMail");
+    req.session.email=id;
+	var VerificationTokenObj = new verificationToken.verificationTokenModel({_userId: id});
+	VerificationTokenObj.createVerificationToken(function (err, token) {
+	    if (err) 
+	    	return console.log("Couldn't create verification token", err);
+	    res.mailer.send('passwordReset_mail.html', {
+		    to: id, // REQUIRED. This can be a comma delimited string just like a normal email to field. 
+		    subject: 'instaRent Password Reset', // REQUIRED.
+		    otherProperty: {id: id, verificationLink: req.protocol + "://" + req.get('host') + "/api/account/verify/" + token} // All additional properties are also passed to the template as local variables.
+		}, function (err) {
+		    if (err) {
+		      // handle error
+		      console.log(err);
+		      return 'There was an error sending the email';
+		    }
+		    return 'Email Sent';
+		});	
+	});
+};
+
 exports.sendMail = sendMail;
 exports.sendAccountConfirmationMail = sendAccountConfirmationMail;
 exports.sendInvitation = sendInvitation;
+exports.sendPasswordResetMail=sendPasswordResetMail;
 //exports.sendAccountConfirmationMail = sendAccountConfirmationMail;

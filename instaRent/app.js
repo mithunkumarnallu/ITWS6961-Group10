@@ -23,6 +23,7 @@ var passport = require('passport');
 var cors=require("cors");
 var json = require('jsonfile');
 var mailer = require('express-mailer');
+var mail = require("./methods/mailerHandler");
 
 var app = express();
 
@@ -98,9 +99,32 @@ app.get('/signup',function(req,res)
 
 app.get('/login',function(req,res)
 {
-    res.render('login.html');
+    res.render('login.html', {foo:false});
 });
 
+app.get('/login_error',function(req,res)
+{
+   res.render('login.html', {foo: true});
+});
+
+app.get('/forgot_password_route',function(req,res) //triggered from api/verify, routes to reset password
+{
+    console.log("session email in /forgot_password: "+req.session.email);
+   res.render('forgot_password.html',{email:req.session.email, state: true} );
+});
+
+app.get('/reset_verify_fail', function(req,res)
+{
+    console.log("in /reset_verify_fail");
+    res.render('forgot_password.html',{state: false});
+});
+        
+app.post('/send_mail', function(req,res)   //receives email from client and triggers email 
+{
+   console.log("in /send_email route");
+   mail.sendPasswordResetMail(req, res, req.body.email); 
+   res.send({success: true});
+});
 
 // Amy routes
 getUserDetails = function() {
@@ -116,6 +140,8 @@ app.get('/settings_password', function(req, res) {
     console.log("in settings_password");
     res.render('settings_password.html');
 });
+
+
 
 
 
