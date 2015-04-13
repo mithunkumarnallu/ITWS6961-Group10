@@ -4,7 +4,7 @@ var UserSchema = new Schema({
  facebook_id: String,
  facebook_token: String,
  google_id: String,
- google_token: String,    
+ google_token: String,
  email: String,
  firstName: String,
  lastName: String,
@@ -31,4 +31,4 @@ function update(user,res){
 
 
 exports.User=User;
-//exports.update=update;
+exports.update=update;
