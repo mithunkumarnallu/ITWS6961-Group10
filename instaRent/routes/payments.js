@@ -187,5 +187,34 @@ router.get('/getRent', function(req, res, next){
 
 });
 
+router.get('/getPaymentHistory',function(req,res,next){
+    var userId = userHelper.getUserId(req);
+
+    payment_history_model.getCurrentPaymentHistoryObject(userId,res,function(err,data){
+       if(err)
+           res.status(409).send("Error: retrieving payment_history object");
+        else{
+           console.log(data);
+           var results =[];
+           for (var i = 0; i<data.length; i++) {
+
+               //var date = data[i].payment_date.getMonth().toString() + "/" + data[i].payment_date.getDate().toString() +"/" + data[i].payment_date.getFullYear().toString();
+
+               var obj = {
+                   date: ((new Date(data[i].payment_date).getMonth()+1).toString()) + "/" + new Date(data[i].payment_date).getDate().toString() +"/" + new Date(data[i].payment_date).getFullYear().toString(),
+                   landlord_email: data[i].landlordEmail,
+                   status: data[i].status,
+                   rent: data[i].amount_charged
+               };
+               results.push(obj);
+           }
+           res.send(results);
+
+       }
+
+    });
+
+
+});
 
 module.exports = router;

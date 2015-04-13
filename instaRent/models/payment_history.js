@@ -42,5 +42,19 @@ function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId) {
 
 }
 
+function getCurrentPaymentHistoryObject(emailId, res, callback) {
+   payment_history.find({userID:emailId},function(err,data){
+
+       if (err)
+          callback(null);
+       else{
+          callback(null,data);
+       }
+   });
+
+}
+
+
 exports.payment_history = payment_history;
 exports.checkPaymentHistoryDetailsAndSave = checkPaymentHistoryDetailsAndSave;
+exports.getCurrentPaymentHistoryObject = getCurrentPaymentHistoryObject;

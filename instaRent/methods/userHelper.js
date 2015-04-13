@@ -21,7 +21,6 @@ userHelper.prototype.getTenantName = function(data,callback){
             callback(null,fullname);
         }
     });
-    //return data.session.passport.user.firstName + " " + data.session.passport.user.lastName;
 }
 
 userHelper.prototype.isUserLoggedIn = function(data) {
