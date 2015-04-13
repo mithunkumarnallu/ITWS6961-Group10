@@ -13,11 +13,42 @@
 <body>
    <div class="background-image"></div>
      <div class="container">    
-        <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
-            <div class="panel panel-default" >
-                    <div class="panel-heading">
-                        <div class="panel-title">Sign In</div>
-                        <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a></div>
+        <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">   
+            
+            
+            
+            
+            <div class="panel panel-default hide centered-form panel-transparent" id="submit_email">
+        		<div class="panel-heading">
+                    <h1 class="panel-title"><strong>Enter your email</strong></h1>
+			    </div>
+                <div class="panel-body panel-success">
+                   <form id="emailform" class="form-horizontal" role="form" method="post">
+                        <div style="margin-bottom: 25px" class="input-group">
+                          <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                          <input id="submitEmail" type="text" class="form-control" name="username" placeholder="email">                                       </div>
+                       <div id="messages_submit" style="color: red"></div>
+                       
+                       <input type="submit" value="submit" class="btn btn-primary" id="email_button">
+                   </form>
+                </div>        
+         </div>
+            
+        <div class="panel panel-default hide centered-form panel-transparent" id="send_email">
+        		<div class="panel-heading">
+                    <h1 class="panel-title"><strong>Check you email</strong></h1>
+			    </div>
+                <div class="panel-body panel-success">
+                    <strong>Check your email to receive a link to reset your password</strong>
+                </div>        
+         </div>
+            
+            
+            
+        <div class="panel panel-default" id="login_panel" >
+           <div class="panel-heading">
+                <div class="panel-title">Sign In</div>
+                    <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#" id="forgot_password">Forgot password?</a></div>
                     </div>     
 
                     <div style="padding-top:30px" class="panel-body" >
@@ -35,14 +66,19 @@
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                                         <input id="password" type="password" class="form-control" name="password" placeholder="password">
                             </div>
+                            <div class="row">
+                                   <div class="col-md-9 col-md-offset-3">
+                                       <div id="messages" style="color: red">
+                                           {% if foo %}
+                                              <span style="color: red">This email is already registered !</span>
+                                           {% endif %}
+                                       </div>
+                                   </div>
+                               </div>
 							<input type="submit" value="login" class="btn btn-primary" id="login">
                             <!--<a href="../Role selection screen/role selection.html"  class="btn btn-primary">Login!</a>--> 
                             
-                            <div class="form-group pull-left">
-                                   <div class="col-md-9 col-md-offset-3">
-                                       <div id="messages" style="color: red"></div>
-                                   </div>
-                               </div>
+                            
                                 
                             <div class="input-group">
                                       <div class="checkbox">
@@ -71,14 +107,16 @@
 										</a>
 									</div>
 									<div class="col-xs-6 col-sm-6 col-md-6">
-										<a class="btn btn-block btn-social btn-google-plus">
+										<a id="google" href='/auth/google' class="btn btn-block btn-social btn-google-plus" >
 											<i class="fa fa-google-plus"></i> Sign in with Google
 										</a>
 									</div>
 							    </div>
+                        </br></br>
                             </form>   							
 
-                        </div>                     
+                        </div> 
+                        
                     </div>  
           </div>
          

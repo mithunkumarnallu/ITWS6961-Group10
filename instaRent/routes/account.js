@@ -1,4 +1,5 @@
 var mailer = require("../methods/mailerHandler");
+var verificationToken = require("../models/verification_token_schema");
 
 var express = require('express'),
     router = express.Router(),
@@ -35,6 +36,8 @@ var express = require('express'),
     var newUser =new User ({
         facebook_id:"",
         facebook_token:"",
+        google_id:"",
+        google_token:"",
         email: req.body.email,
         firstName: req.body.firstName,
         lastName:  req.body.lastName,
@@ -80,7 +83,9 @@ var express = require('express'),
                         isVerified: user.isVerified,
 						foreignId: user.foreignId,
                         facebook_id:user.facebook_id,
-                        facebook_token:user.facebook_token
+                        facebook_token:user.facebook_token,
+                        google_id:user.google_id,
+                        google_token: user.google_token
                     };
 					console.log("user profile model created in register: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId + " Name: "+  userProfileModel.firstName );
                     console.log(mailer.sendAccountConfirmationMail);
@@ -108,12 +113,54 @@ router.route('/account/logon').post(function (req, res) {
         
 });
 
+router.route('/account/sendEmail').post(function(req,res){
+    
+});
+
 router.route('/account/logoff').get(function(req,res){
   console.log("inside logoff router");
   var accountController=new AccountController(User, req.session);
   accountController.logoff();
   //res.redirect("/login"); 
     res.send({success: true});
+});
+
+router.route('/account/reset').post(function(req,res){
+    console.log("inside '/verify/reset' route. email: "+req.session.email);
+    if (req.body.password !== req.body.passwordConfirm) {
+		console.log("inside getUser pass mismatch: "+req.body.password);
+        res.send({ success: false, extras: { msg: 10 } });
+    }
+        
+    var passwordSaltIn = uuid.v4(),
+        cryptoIterations = 10, // Must match iterations used in controller#hashPassword.
+        cryptoKeyLen = 8,       // Must match keyLen used in controller#hashPassword.
+        passwordHashIn;
+    
+   User.update({email: req.session.email}, {passwordHash: crypto.pbkdf2Sync(req.body.password, passwordSaltIn, cryptoIterations, cryptoKeyLen), passwordSalt: passwordSaltIn},{},function(err,numberAffected){
+        if(err)
+            console.log("setDefaultHome database update error" + err);
+        else
+        {
+            console.log("update password: numberAffected: "+numberAffected);
+            res.send({success: true, extras: {msg: "Password Successfully reset"}});
+        }
+    });
+});
+
+router.get("/account/verify/:token", function (req, res, next) {
+    console.log("inside verify route");
+    var token = req.params.token;
+    //req.session.email=req.params.id;
+    console.log("req session email in /verify: "+req.session.email);
+    //console.log("Verifying user user");
+    verificationToken.verifyEmail(token, req.session.email, function(err) {
+        console.log("printing err: "+err);
+     if (err==null) 
+       res.redirect("/reset_verify_fail");
+    else 
+       res.redirect("/forgot_password_route");
+    });
 });
 
 

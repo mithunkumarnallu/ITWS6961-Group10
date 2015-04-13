@@ -24,6 +24,11 @@
     "passport-facebook": "~1.0.2",
     "pbkdf2": "^3.0.3",
     "serve-favicon": "~2.2.0",
+    "passport" : "~0.1.17",
+    "passport-facebook" : "~1.0.2",
+    "passport-google-oauth" : "~0.1.5",
+    "express-mailer" : "^0.2.4",
     "stripe": "~3.3.2"
+
   }
 }

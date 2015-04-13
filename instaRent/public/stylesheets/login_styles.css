@@ -19,7 +19,7 @@
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
   top: 100px;
   left: 30%;
-  height: 380px;
+  
   max-width: 35%;
   position: fixed;
   margin-left: 20px;
@@ -30,4 +30,8 @@
 }
 .panel .panel-heading{
 	margin-top: 10px;
+}
+
+.hide{
+ display: none;    
 }

@@ -125,7 +125,10 @@ function getHomeId(userId,res){
 };
 
 function getUserIdsForAHome(homeId, userType, callback) {
-    Home.find({homeId: homeId, userType: userType}, callback);
+    if(userType)
+        Home.find({homeId: homeId, userType: userType}, callback);
+    else
+        Home.find({homeId: homeId}, callback);
 }
 
 exports.isHomeAddedToUser = isHomeAddedToUser;

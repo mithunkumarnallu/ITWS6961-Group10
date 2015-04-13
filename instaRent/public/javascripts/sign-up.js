@@ -166,8 +166,16 @@ $(document).ready(function register_logon()
 	  var email=$email.val().trim();
 	  var password=$password.val().trim();
     
-      if(password.length<=0 || email=='')
-       { return; }
+      if(!email)
+       {   console.log("empty email");
+           document.getElementById("messages").innerText="Please enter email";
+           return; 
+       }
+      if(password.length==0)
+       {
+         console.log(password.length+" empty password");
+         return;
+       }
 	  
 	  $.ajax(
 		{    
@@ -182,10 +190,16 @@ $(document).ready(function register_logon()
                     if(resp.extras.userProfileModel.foreignId=='')
 					     window.location.href="/managehome";
                     else
+                    {
+                        console.log("foreign id exists");
                         window.location.href="/dashboard";
+                    }
 				}
 				else if (resp.extras.msg) {
                       switch (resp.extras.msg) {
+                        case 11: console.log("email not found.");
+                                document.getElementById("messages").innerText="Email entered is not registered"
+						        break;
                          case 2:
                          case 5:
                               console.log("Oops! BookIt had a problem and could not register you.  Please try again in a few minutes.");
@@ -195,15 +209,131 @@ $(document).ready(function register_logon()
 						 case 1: console.log("invalid password.");
                               document.getElementById("messages").innerText="Password Entered is invalid"
 						      break;
-						 case 0: console.log("email not found.");
-                                 document.getElementById("messages").innerText="Email entered is not registered"
-						      break;
+						 
                         }
 				}
-				else console.log("unsuccessful sign-up HTTP response ");
+				else console.log("unsuccessful sign-up HTTP response "+resp.extras.msg);
 			},
 			error: function(xhr,textStatus,err){ 
-			    window.location.href="/role-selection";
+			    
+				console.log("error log");
+                console.log("readyState: " + xhr.readyState);
+				console.log("responseText: "+ xhr.responseText);
+				console.log("status: " + xhr.status);
+				console.log("text status: " + textStatus);
+				console.log("error: " + err);
+			}	
+		});
+    });
+    
+    $("#forgot_password").click(function(){
+        $("#login_panel").addClass("hide");
+        $("#submit_email").removeClass("hide");
+        
+    });
+    
+    $("#submit_email").unbind('submit').submit(function(){          //send ajax request with email for mailer verification
+           //field to add email
+        
+        //code to send email
+        var $email=$("#submitEmail");
+        var email=$email.val().trim();
+        if(email=='')
+         { 
+           console.log("empty email");
+           document.getElementById("messages_submit").innerText="Please enter email";
+           return; 
+         }
+        
+        
+        $.ajax(
+		{    
+		    type: 'POST',
+			url: "/send_mail",
+			data: { email: email},
+			//dataType: "jsonp",
+			success: function(resp){
+				    console.log("/send_mail "+resp.success);
+				if(resp.success==true){
+                    
+					console.log("send mail response success");
+                    $("#submit_email").addClass("hide");
+                    $("#send_email").removeClass("hide");  //panel to request user to check mail
+                    //document.getElementById("messages_submit").innerText="Password has been reset";        
+				}
+				else if (resp.success==false) {
+                   // document.getElementById("messages_submit").innerText="Error in resetting password";
+                    console.log("reset response fail");  
+				}
+				else console.log("unsuccessful reset HTTP response ");
+			},
+			error: function(xhr,textStatus,err){ 
+			    
+				console.log("error log send_mail");
+                console.log("readyState: " + xhr.readyState);
+				console.log("responseText: "+ xhr.responseText);
+				console.log("status: " + xhr.status);
+				console.log("text status: " + textStatus);
+				console.log("error: " + err);
+			}	
+		});
+        
+        
+        
+        
+    });
+    
+    
+    
+    
+    $('#resetform').unbind('submit').submit(function()
+   { 
+      console.log("reset password js");
+      var $email=$("#emailForgot");  
+        console.log("$email: "+$email);
+	  var $password=$("#passwordForgot");
+	  var $password_confirm=$("#passwordForgot_confirm");
+        
+	  var email=$email.val().trim();
+	  var password=$password.val().trim();
+	  var password_confirm=$password_confirm.val().trim();
+        console.log("email: "+email);
+    
+      if(password=='' || password_confirm=='')
+       {   console.log("empty pass");
+           document.getElementById("messages").innerText="Please enter a value first";
+           return; 
+       }
+      if(password!=password_confirm)
+       {
+         console.log("password mismatch");
+         document.getElementById("messages").innerText="Passwords entered do not match";
+         return;
+       }
+	  
+	  $.ajax(
+		{    
+		    type: 'POST',
+			url: "/api/account/reset",
+			data: { email: email, password: password, passwordConfirm: password_confirm },
+			//dataType: "jsonp",
+			success: function(resp){
+				    console.log("reset "+resp.success);
+				if(resp.success==true){
+					console.log("reset response success");
+                    document.getElementById("messages_correct").innerText="Password has been reset";  
+                    $("#okay").removeClass("hide");
+                    $("#reset").addClass("hide");
+                    $("#messages").addClass("hide");
+				}
+				else if (resp.success==false) {
+                    document.getElementById("messages").innerText="Error in resetting password";
+                    console.log("reset response fail");  
+				}
+				else console.log("unsuccessful reset HTTP response ");
+			},
+			error: function(xhr,textStatus,err){ 
+			 
 				console.log("error log");
                 console.log("readyState: " + xhr.readyState);
 				console.log("responseText: "+ xhr.responseText);
