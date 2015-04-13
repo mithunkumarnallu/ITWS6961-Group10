@@ -16,7 +16,7 @@ var UserSchema = new Schema({
 
 var User=mongoose.model('User',UserSchema);
 
-//update the user info
+////update the user info
 function update(user,res){
   User.update({email:user.email,firstName:user.firstName, lastName: user.lastName,
   phoneNo: user.phoneNo},user,{},function(err,numEffected){
@@ -29,4 +29,4 @@ function update(user,res){
 
 
 exports.User=User;
-exports.update=update;
+//exports.update=update;

@@ -79,8 +79,22 @@
 	<script>
     // Define handler to be called when Stripe returns a card token
     var rent = 0;
+//    function getTransactions() {
+//        // Submit token to server so it can charge the card
+//        $.ajax({
+//            url: '/payments/getAllTransactions',
+//            type: 'GET',
+//            success: function (responseData, status) {
+//                console.log(responseData);
+//            }
+//
+//        });
+//
+//    }
+
     function onReceiveToken(token, args) {
         // Submit token to server so it can charge the card
+        //console.log(token);
         $.ajax({
             url: '/payments/charge',
             type: 'POST',
@@ -97,15 +111,15 @@
     				url: '/payments/getRent',
 	
     				success: function (responseData, status) {
-    					rent = responseData.response;
-    					console.log(rent);
+    					rent = responseData;
+                        //console.log(rent);
     					var checkout = StripeCheckout.configure({
 				    
         				key: 'pk_test_jwW7JFcTZaD8HmJdFZgeh4TR',
         				token: onReceiveToken,
 						image: '',
 				        name: 'InstaRent.com',
-				        description: 'Pay rent to John Doe',
+				        description: 'Pay rent',
 				        amount: rent*100
     					});
 
@@ -113,7 +127,7 @@
     					
 
     				}
-				});   
+				});
 
  	}
   

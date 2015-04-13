@@ -46,7 +46,7 @@ var express = require('express'),
         passwordSalt: passwordSaltIn
     });
 	
-	
+	console.log("Hello");
 	//////////////////////
 	
 	User.findOne({ email: newUser.email }, function (err, user) {

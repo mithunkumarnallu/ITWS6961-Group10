@@ -7,7 +7,9 @@
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
 		<!-- javaScripts -->
 	    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js"></script>
     
 	    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
 	    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.1.js"></script>
@@ -17,6 +19,7 @@
 	    <!-- Stylesheets -->
 	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/css/bootstrapvalidator.min.css"> 
 	    <link rel="stylesheet" href="http://lipis.github.io/bootstrap-social/bootstrap-social.css">
 	    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 	    <link href="./stylesheets/settings.css" rel="stylesheet">
@@ -156,11 +159,21 @@
 		        			<div class="col-lg-9">
 		        				<div class="form-group">
 		        					<!-- input user phone number from backend--> 
-									<input type="tel" value={{phoneNumber}} name="number" id="number" class="form-control">
+									<input type="tel" value={{phoneNo}} name="number" id="number" class="form-control">
 								</div>
 							</div>
 						</div>
 						<!-- /.row -->
+
+						<div class="row">
+							<div class="form-group pull-left">
+                            	<div class="col-lg-9 col-lg-offset-3">
+                                	<div id="messages" style="color: red"></div>
+                            	</div>
+                        	</div>
+                        </div>
+
+
 
 						<div class="row">
 							<div class="col-lg-3">
