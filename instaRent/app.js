@@ -109,6 +109,13 @@ app.get('/payments/testLandlord', function (req,res) {
 
 });
 
+app.get('/payments/payment_history', function (req,res) {
+
+    res.render('payment_history.html');
+
+});
+
+
 // Amy routes
 getUserDetails = function() {
     //return userHelper.getUserDetails();
