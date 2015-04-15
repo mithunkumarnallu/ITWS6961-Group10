@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var manageHomeRoutes = require('./routes/managehome');
+var complaintsRoutes = require('./routes/complaints');
 var tenantPayments = require('./routes/payments');
 var dashboard = require("./routes/dashboard");
 var mailerHandler = require("./methods/mailerHandler");
@@ -73,8 +74,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-//Tom - complaints routes
-app.use('/complaints', complaintsRoutes);
+
 
 console.log("mongoose after session");
 
@@ -98,6 +98,8 @@ app.use('/managehome', manageHomeRoutes);
 app.use('/payments', tenantPayments);
 app.use("/dashboard", dashboard);
 app.use("/settings", settings);
+
+
 
 //nitish routes
 app.use('/api', accountRoutes);
@@ -160,6 +162,9 @@ app.get('/settings_password', function(req, res) {
     console.log("in settings_password");
     res.render('settings_password.html');
 });
+
+//Tom - complaints routes
+app.use('/complaints', complaintsRoutes);
 
 //Send rent due notifications at 00:00:00 AM every day as per EST
 var job = new CronJob('00 00 00 * * 0-6', function() {
