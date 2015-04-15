@@ -73,6 +73,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
+//Tom - complaints routes
+app.use('/complaints', complaintsRoutes);
+
 console.log("mongoose after session");
 
 
