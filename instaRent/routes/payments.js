@@ -101,6 +101,7 @@ function depositRent(amt,res, id){
                       recipient: tokenID,
                       statement_descriptor: description
                   }, function(err, transfer) {
+
                       userHelper.getTenantName(userid, function (err,tenantFullName) {
                           var addPaymentHistory = {
                               payment_date: new Date(),
@@ -147,6 +148,8 @@ router.post('/charge', function(req, res) {
                             card: stripeToken,
                             currency: 'usd',
                             amount: Math.abs(Math.round(parseFloat(data)*100))
+
+
                         },
                         function(err, charge) {
                             if (err) {
@@ -160,6 +163,7 @@ router.post('/charge', function(req, res) {
             });
         }
     });
+
 });
 
 router.get('/getRent', function(req, res, next){
@@ -200,7 +204,6 @@ router.get('/getPaymentHistory',function(req,res,next){
                };
                results.push(obj);
            }
-          // res.send({total:data.length, rows:results});
            res.send(results);
 
        }

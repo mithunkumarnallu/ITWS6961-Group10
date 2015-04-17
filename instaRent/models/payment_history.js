@@ -15,6 +15,7 @@ var PaymentHistory = new Schema({
     status:String,
     landlordEmail:String,
     tenantName:String
+
 });
 
 var payment_history = mongoose.model('PaymentHistory', PaymentHistory);
@@ -43,15 +44,17 @@ function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId) {
 }
 
 function getCurrentPaymentHistoryObject(emailId, res, callback) {
-   payment_history.find({userID:emailId},function(err,data){
+    payment_history.find({userID:emailId},function(err,data){
 
-       if (err)
-          callback(null);
-       else{
-          callback(null,data);
-       }
-   });
+        if (err)
+            callback(null);
+        else{
+            callback(null,data);
+        }
+    });
 }
+
+
 exports.payment_history = payment_history;
 exports.checkPaymentHistoryDetailsAndSave = checkPaymentHistoryDetailsAndSave;
 exports.getCurrentPaymentHistoryObject = getCurrentPaymentHistoryObject;

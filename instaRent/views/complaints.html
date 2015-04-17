@@ -1,0 +1,185 @@
+{% extends 'partials/layout.html' %}
+ 
+{% block myHead %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    
+    <script src="/javascripts/complaints_registration.js"></script>
+    <link href="/stylesheets/complaints.css" rel="stylesheet"/>
+    
+{% endblock %}
+
+{% block myBody %}
+    {% raw %}
+
+
+    <div ng-app = "complaintsApp" class="top-buffer">
+      <div ng-controller = "complaintsController as ctrl" >
+
+        <!-- buttons -->
+        <div>
+          <button class="btn btn-default" ng-click="ctrl.setMode('categories')" ng-show="ctrl.mode === 'topics'" >Switch Category</button>
+        </div>
+
+        <div>
+          <button class="btn btn-default" ng-click="ctrl.setMode('topics')" ng-show="ctrl.mode === 'msgs'" >Switch Issue</button>
+        </div>
+
+        <div>
+          <button class="btn btn-success" ng-show="ctrl.mode === 'topics'" data-toggle="modal" data-target="#createTopicModal">Log New Issue</button>
+        </div>
+
+        <div>
+          <button class="btn btn-success" ng-show="ctrl.mode === 'msgs'" data-toggle="modal" data-target="#createMsgModal">Create New Message</button>
+        </div>
+        
+        <!-- Create Topic Modal -->
+        <div class="modal fade" id="createTopicModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">{{"New Issue for " + ctrl.selectedCategory + " Category"}}</h4>
+              </div>
+              <div class="modal-body">
+                
+                <form>
+                  <div class="form-group">
+                    <label for="issue">Issue Description:</label>
+                    <textarea class="form-control" ng-model="ctrl.newtopic"></textarea>
+                  </div>
+
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="ctrl.newTopic()" >Create Issue</button>
+
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Create Message Modal -->
+        <div class="modal fade" id="createMsgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">{{"Creating Message"}}</h4>
+              </div>
+              <div class="modal-body">
+                
+                <form>
+                  <div class="form-group">
+                    <label for="issue">From:</label>
+                    <input type="text"  class="form-control" ng-model="ctrl.from" disabled></input>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="issue">To:</label>
+                    <input type="text" class="form-control" ng-model="ctrl.to" disabled></input>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="issue">Date:</label>
+                    <input type="text" class="form-control" ng-model="ctrl.date" disabled></input>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="issue">Message:</label>
+                    <textarea class="form-control" ng-model="ctrl.newmsg" ></textarea>
+                  </div>
+
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="ctrl.newMsg()">Send</button>
+
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- categories -->
+        <div ng-show="ctrl.mode === 'categories'" ng-repeat="category in ctrl.categories" class="panel panel-default" ng-click="ctrl.fetchTopics(category)">
+          <div class="panel-body" >
+            <a> {{category.name}} </a>
+          </div>
+        </div>
+        
+
+        <!-- topics -->
+        <div ng-show="ctrl.mode==='topics'">
+          <div>
+          
+            <div class="panel panel-primary" ng-show="topic.status==='new'" ng-repeat="topic in topics">
+
+              <div>
+                <button class="btn btn-primary" ng-click="ctrl.changeStatus(topic)" >{{topic.status}}</button>
+              </div>
+
+              <div class="panel-body" ng-click="ctrl.fetchMsgs(topic)">
+                <a>{{topic.name}}</a>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel panel-danger" ng-show="topic.status==='processing'" ng-repeat="topic in topics">
+
+              <div>
+                <button class="btn btn-danger" ng-click="ctrl.changeStatus(topic)" >{{topic.status}}</button>
+              </div>
+
+              <div class="panel-body" ng-click="ctrl.fetchMsgs(topic)" >
+                <a>{{topic.name}}</a>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel panel-success" ng-show="topic.status==='finished'" ng-repeat="topic in topics">
+
+              <div>
+                <button class="btn btn-success" ng-click="ctrl.changeStatus(topic)" >{{topic.status}}</button>
+              </div>
+
+              <div class="panel-body" ng-click="ctrl.fetchMsgs(topic)">
+                <a>{{topic.name}}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- messages -->
+        <div ng-show="ctrl.mode==='msgs'">
+          
+          <div>
+            <div class="panel panel-primary" ng-repeat="msg in msgs | orderBy: '-date'">
+
+              <div>
+                <button class="btn btn-danger" ng-show="msg.senderid === ctrl.userid" >{{"From: " + msg.senderid }}</button>
+              </div>
+
+              <div>
+                <button class="btn btn-success" ng-hide="msg.senderid === ctrl.userid" >{{"From:" + msg.senderid}}</button>
+              </div>
+
+              <div class="panel-body" ng-click="ctrl.setDate()" data-toggle="modal" data-target="#createMsgModal">
+                <a>{{msg.message}}</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div >
+      
+    </div> 
+
+
+    {% endraw %}
+    
+{% endblock %}
