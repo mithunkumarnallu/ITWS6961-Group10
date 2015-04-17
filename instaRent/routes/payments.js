@@ -190,7 +190,7 @@ router.get('/getRent', function(req, res, next){
 router.get('/getPaymentHistory',function(req,res,next){
     var userId = userHelper.getUserId(req);
 
-    payment_history_model.getCurrentPaymentHistoryObject(userId,res,function(err,data){
+    payment_history_model.getCurrentPaymentHistoryObject(userId,false,function(err,data){
        if(err)
            res.status(409).send("Error: retrieving payment_history object");
         else{

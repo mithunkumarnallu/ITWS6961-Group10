@@ -8,7 +8,7 @@ var Schema = mongoose.Schema;
 
 
 var PaymentHistory = new Schema({
-    payment_date:String,
+    payment_date:Date,
     amount_charged:Number,
     description:String,
     userID:String,
@@ -42,11 +42,15 @@ function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId) {
 
 }
 
-function getCurrentPaymentHistoryObject(emailId, res, callback) {
-   payment_history.find({userID:emailId},function(err,data){
+function getCurrentPaymentHistoryObject(emailId, isFetchLatest, callback) {
+   var payment = payment_history.find({userID:emailId});
+   if(isFetchLatest)
+       payment = payment.sort("-payment_date");
+
+   payment.exec(function(err,data){
 
        if (err)
-          callback(null);
+          callback(err);
        else{
           callback(null,data);
        }
@@ -54,7 +58,24 @@ function getCurrentPaymentHistoryObject(emailId, res, callback) {
 
 }
 
+function getPaymentHistoryForAllUsers(emailIds, isFetchLatest, callback) {
+    var payment = payment_history.find({$or : emailIds}).group("userId");
+    if(isFetchLatest)
+        payment = payment.sort("-payment_date");
+
+    payment.exec(function(err,data){
+
+        if (err)
+            callback(err);
+        else{
+            callback(null,data);
+        }
+    });
+
+}
+
 
 exports.payment_history = payment_history;
 exports.checkPaymentHistoryDetailsAndSave = checkPaymentHistoryDetailsAndSave;
 exports.getCurrentPaymentHistoryObject = getCurrentPaymentHistoryObject;
+exports.getPaymentHistoryForAllUsers = getPaymentHistoryForAllUsers;
