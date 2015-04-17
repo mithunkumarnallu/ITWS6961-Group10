@@ -1,13 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
 
-<head>
+<!--<head>-->
+
+{% extends 'partials/layout.html' %}
+
+{% block myHead %}
 
     <title>Payment History</title>
-    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+    <link href="./stylesheets/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="./stylesheets/sb-admin.css" rel="stylesheet">
+
+
+
+    <!-- Custom Fonts -->
+    <link href="./font-awesome/font-awesome.min.css" rel="stylesheet">
+    <link href="/stylesheets/myStyle.css" rel="stylesheet"/>
+    <!--<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">-->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.7.0/bootstrap-table.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
+  <!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
+  <!--  <script src="/js/bootstrap.min.js"></script>-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.7.0/bootstrap-table.min.js"></script>
 
 
@@ -15,10 +30,11 @@
      <script src="https://code.angularjs.org/1.3.9/angular-route.js"></script>-->
     <script src="/js/paymentHistory.js"></script>
 
+{% endblock %}
+<!--</head>-->
 
-</head>
-
-<body>
+{% block myBody %}
+<!--<body>-->
 
 <div id="page-wrapper">
 
@@ -60,7 +76,8 @@
     </thead>
 </table>
 
+{% endblock %}
 
-</body>
+<!--</body>-->
 
-</html>
+<!--</html>-->
