@@ -1,0 +1,88 @@
+{% extends 'partials/layout.html' %}
+ 
+{% block myHead %}
+    <link href="/stylesheets/complaints.css" rel="stylesheet"/>
+    <script src="/javascripts/complaints_registration.js"></script>
+
+{% endblock %}
+
+{% block myBody %}
+    {% raw %}
+    <div ng-app="complaints">
+      
+        <div ng-controller="ComplaintsSelector as selector" class="top-buffer">
+            
+            <div class="btn-group">
+                <label class="btn btn-primary" ng-click="fetchCategories(house)" ng-repeat="house in houses" ng-model="checkHouseModel[house]" btn-checkbox>
+                    {{house}}
+                    <span class="badge">{{categoryList[house].length * categoryList[house].length }}</span>
+                </label> 
+                
+                <div class="clearfix"></div>
+
+                <label class="btn btn-success" ng-click="fetchMsgs(category)" ng-repeat="category in categories" ng-model="checkCategoryModel[category]" btn-checkbox>
+                    {{category}}
+                    <span class="badge">{{categories.length}}</span>
+                </label> 
+                <div class="clearfix"></div> 
+
+            </div>
+            <div class="clearfix"></div>
+
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+              <div class="panel panel-default" ng-repeat="msg in msgs">
+                <div class="panel-heading" role="tab" id="headingOne">
+                  <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="{{msg.href}}" aria-expanded="true" aria-controls="collapseOne">
+                      {{msg["Title"]}}
+                    </a>
+                  </h4>
+                </div>
+                <div id="{{msg.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        {{msg["Body"]}}
+                    </div>
+
+                    <div class="clearfix"> </div>
+                    
+
+                    <label class="btn btn-warning" data-toggle="modal">
+                        Mark as Resolved
+                    </label>
+                    <label class="btn btn-primary" data-toggle="modal" data-target="{{msg.modalTarget}}">
+                        Reply
+                    </label>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="{{msg.modalID}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">{{"Replying to " + msg["Sender"]}}</h4>
+                          </div>
+                          <div class="modal-body">
+                            <div class="form-group">
+
+                              <textarea class="form-control"> </textarea> 
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                </div>
+              </div>
+              
+            </div>
+            
+        </div>
+        
+    </div>
+    {% endraw %}
+    
+{% endblock %}
