@@ -14,7 +14,7 @@ var PaymentHistory = new Schema({
     userID:String,
     status:String,
     landlordEmail:String,
-    tenantName:String
+    userName:String
 
 });
 

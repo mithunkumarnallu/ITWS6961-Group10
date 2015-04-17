@@ -109,7 +109,7 @@ function depositRent(amt,res, id){
                               description:description,
                               userID:userid,
                               landlordEmail:landlord_emailId,
-                              tenantName:tenantFullName
+                              userName:tenantFullName
                           };
                           if (err) {
                               console.log(err + " inside create transfer");
