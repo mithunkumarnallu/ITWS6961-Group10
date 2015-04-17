@@ -28,10 +28,6 @@
     "passport-facebook" : "~1.0.2",
     "passport-google-oauth" : "~0.1.5",
     "express-mailer" : "^0.2.4",
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     "stripe": "~3.3.2"
 
   }
