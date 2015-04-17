@@ -13,7 +13,8 @@ var PaymentHistory = new Schema({
     description:String,
     userID:String,
     status:String,
-    landlordEmail:String
+    landlordEmail:String,
+    tenantName:String
 });
 
 var payment_history = mongoose.model('PaymentHistory', PaymentHistory);
@@ -39,7 +40,6 @@ function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId) {
             });
         }
     });
-
 }
 
 function getCurrentPaymentHistoryObject(emailId, res, callback) {
@@ -51,10 +51,7 @@ function getCurrentPaymentHistoryObject(emailId, res, callback) {
           callback(null,data);
        }
    });
-
 }
-
-
 exports.payment_history = payment_history;
 exports.checkPaymentHistoryDetailsAndSave = checkPaymentHistoryDetailsAndSave;
 exports.getCurrentPaymentHistoryObject = getCurrentPaymentHistoryObject;
