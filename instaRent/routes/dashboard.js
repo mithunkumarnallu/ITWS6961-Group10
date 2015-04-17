@@ -107,12 +107,11 @@ router.get("/", function (req, res) {
 
 
 //display the dashboard information for tenant
-<<<<<<< Updated upstream
-/*router.get('/tenantdashboard',function(req,res){
-=======
-/*
+
+
+
 router.get('/tenantdashboard',function(req,res){
->>>>>>> Stashed changes
+
       var tenantInfo={};
       var useFirstName=userHelper.getUserInfo(req).firstName;
       var homeId=HomeHandler.getHomeId(req).response;
@@ -122,18 +121,14 @@ router.get('/tenantdashboard',function(req,res){
       var userRole;
 
       tenantInfo={
-<<<<<<< Updated upstream
-        "userFirstName"
+
+
       }
-});*/
-=======
-
-      };
->>>>>>> Stashed changes
-
-
 });
-*/
+
+
+
+
 
 //display the dashboard information for landloard
 router.get('/landloarddashboard',function(req,res){
