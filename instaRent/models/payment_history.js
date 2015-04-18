@@ -94,12 +94,12 @@ function getPaymentHistoryForAllUsers(emailIds, isFetchLatest, callback) {
             var addedUsers = {};
             var result = [];
             for(var i = 0; i < data.length; i++) {
-                if(!(data[i].userId in addedUsers)) {
+                if(!(data[i].userID in addedUsers)) {
                     addedUsers[data[i].userID] = true;
                     result.push(data[i]);
                 }
             }
-            console.log()
+            console.log(result);
             callback(null,result);
         }
     });

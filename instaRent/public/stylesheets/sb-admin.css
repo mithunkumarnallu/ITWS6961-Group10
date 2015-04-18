@@ -5,7 +5,7 @@
  */
 
 /* Global Styles */
-
+/* The whole page*/
 body {
     margin-top: 100px;
     background-color: white;
@@ -16,16 +16,17 @@ body {
         margin-top: 50px;
     }
 }
-
+ 
 #wrapper {
     padding-left: 0;
 }
-
+/* Content part*/
 #page-wrapper {
     width: 100%;
     padding: 0;
     background-color: #fff;
 }
+
 
 .huge {
     font-size: 50px;
@@ -41,11 +42,18 @@ body {
         padding: 10px;
     }
 }
+.navbar {
+  background-color: #009999; /* background color will be black for all browsers */
+  background-image: none;
+  background-repeat: no-repeat;
+  filter: none;
+}
 
 /* Top Navigation */
-
+/* Username */
 .top-nav {
     padding: 0 15px;
+    background-color: #009999;/*#B74934;*/
 }
 
 .top-nav>li {
@@ -57,7 +65,8 @@ body {
     padding-top: 15px;
     padding-bottom: 15px;
     line-height: 20px;
-    color: #999;
+    /* Username */
+    color: white; 
 }
 
 .top-nav>li>a:hover,
@@ -65,8 +74,10 @@ body {
 .top-nav>.open>a,
 .top-nav>.open>a:hover,
 .top-nav>.open>a:focus {
-    color: #fff;
-    background-color: #000;
+    /* When click username change the color of word*/
+    color: #7FED11;
+    /* When click the username button background color*/
+    background-color: #009999;/*#00A188;*/
 }
 
 .top-nav>.open>.dropdown-menu {
@@ -117,7 +128,8 @@ ul.alert-dropdown {
         position: fixed;
         top: 51px;
         left: 225px;
-        width: 225px;
+        width: 250px;
+        height: 500px;
         margin-left: -225px;
         border: none;
         border-radius: 0;
@@ -126,16 +138,18 @@ ul.alert-dropdown {
     }
 
     .side-nav>li>a {
-        width: 225px;
+        width: 250px;
     }
 
 }
-
+.navbar-inverse .navbar-nav>li>a {
+    color: #00A188;
+}
 /* Backgroud color*/
 .side-nav li a:hover,
 .side-nav li a:focus {
     outline: none;
-    background-color: #3366FF !important;
+    background-color: #009999 !important;
 }
 
 .side-nav li a:focus {
@@ -152,7 +166,7 @@ ul.alert-dropdown {
     display: block;
     padding: 10px 15px 10px 38px;
     text-decoration: none;
-    color: #4C4C4C;
+    color: #00A188;
 }
 
 /* When put mouse on the button*/
