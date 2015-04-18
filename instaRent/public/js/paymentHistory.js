@@ -43,18 +43,17 @@ function downloadExcel(){
                     }
                     line = line.slice(0, -1);
                     str += line + '\r\n';
-                    console.log("Hello"+str);
-                    var csv = str;
-                    var downloadLink = document.createElement("a");
-                    var blob = new Blob(["\ufeff", csv]);
-                    var url = URL.createObjectURL(blob);
-                    downloadLink.href = url;
-                    downloadLink.download =  "PaymentHistory.csv";
-                    document.body.appendChild(downloadLink);
-                    downloadLink.click();
-                    document.body.removeChild(downloadLink);
-                }
 
+                }
+                var csv = str;
+                var downloadLink = document.createElement("a");
+                var blob = new Blob(["\ufeff", csv]);
+                var url = URL.createObjectURL(blob);
+                downloadLink.href = url;
+                downloadLink.download =  "PaymentHistory.csv";
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
 
             }
         });
