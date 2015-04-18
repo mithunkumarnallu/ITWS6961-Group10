@@ -13,7 +13,9 @@ var PaymentHistory = new Schema({
     description:String,
     userID:String,
     status:String,
-    landlordEmail:String
+    landlordEmail:String,
+    userName:String
+
 });
 
 var payment_history = mongoose.model('PaymentHistory', PaymentHistory);
@@ -39,8 +41,8 @@ function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId) {
             });
         }
     });
-
 }
+
 
 function getCurrentPaymentHistoryObject(emailId, isFetchLatest, callback) {
    var payment = payment_history.find({userID:emailId});
@@ -55,20 +57,28 @@ function getCurrentPaymentHistoryObject(emailId, isFetchLatest, callback) {
           callback(null,data);
        }
    });
-
 }
 
 function getPaymentHistoryForAllUsers(emailIds, isFetchLatest, callback) {
-    var payment = payment_history.find({$or : emailIds}).group("userId");
+    var payment = payment_history.find({$or : emailIds});
     if(isFetchLatest)
-        payment = payment.sort("-payment_date");
+        payment = payment.sort({userId: 1, payment_date: -1});
 
     payment.exec(function(err,data){
 
         if (err)
             callback(err);
         else{
-            callback(null,data);
+            var addedUsers = {};
+            var result = [];
+            for(var i = 0; i < data.length; i++) {
+                if(!(data[i].userId in addedUsers)) {
+                    addedUsers[data[i].userID] = true;
+                    result.push(data[i]);
+                }
+            }
+            console.log()
+            callback(null,result);
         }
     });
 

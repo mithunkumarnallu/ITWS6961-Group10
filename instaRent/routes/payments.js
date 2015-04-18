@@ -101,27 +101,28 @@ function depositRent(amt,res, id){
                       recipient: tokenID,
                       statement_descriptor: description
                   }, function(err, transfer) {
-                      var addPaymentHistory = {
-                          payment_date: new Date(),
-                          amount_charged:parseFloat(amt),
-                          description:description,
-                          userID:userid,
-                          landlordEmail:landlord_emailId
 
-                      };
-                      if (err) {
-                          console.log(err + " inside create transfer");
-                          addPaymentHistory.status = "Failed";
-                          payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid);
-                          //res.status(409).send("Error: Transferring money to Landlord" + err);
-                      } else {
-                          console.log("transfer Successful");
-                          addPaymentHistory.status = "Success";
-                         //res.send("Successfully transferred money to landlord");
-                        payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid);
-                          sendConfirmationEmailLandlord(id,res,landlord_emailId,amt,TenantAddress);
+                      userHelper.getTenantName(userid, function (err,tenantFullName) {
+                          var addPaymentHistory = {
+                              payment_date: new Date(),
+                              amount_charged:parseFloat(amt),
+                              description:description,
+                              userID:userid,
+                              landlordEmail:landlord_emailId,
+                              userName:tenantFullName
+                          };
+                          if (err) {
+                              console.log(err + " inside create transfer");
+                              addPaymentHistory.status = "Failed";
+                              payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid);
+                          } else {
+                              console.log("transfer Successful");
+                              addPaymentHistory.status = "Success";
+                              payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid);
+                              sendConfirmationEmailLandlord(id,res,landlord_emailId,amt,TenantAddress);
 
-                      }
+                          }
+                      });
                   });
               }
           });
@@ -146,7 +147,9 @@ router.post('/charge', function(req, res) {
                     stripe.charges.create({
                             card: stripeToken,
                             currency: 'usd',
-                            amount: Math.round(parseFloat(data)*100)
+                            amount: Math.abs(Math.round(parseFloat(data)*100))
+
+
                         },
                         function(err, charge) {
                             if (err) {
@@ -159,9 +162,7 @@ router.post('/charge', function(req, res) {
 
             });
         }
-
     });
-
 
 });
 
@@ -183,8 +184,6 @@ router.get('/getRent', function(req, res, next){
             }
 
         });
-
-
 });
 
 router.get('/getPaymentHistory',function(req,res,next){
@@ -197,9 +196,6 @@ router.get('/getPaymentHistory',function(req,res,next){
            console.log(data);
            var results =[];
            for (var i = 0; i<data.length; i++) {
-
-               //var date = data[i].payment_date.getMonth().toString() + "/" + data[i].payment_date.getDate().toString() +"/" + data[i].payment_date.getFullYear().toString();
-
                var obj = {
                    date: ((new Date(data[i].payment_date).getMonth()+1).toString()) + "/" + new Date(data[i].payment_date).getDate().toString() +"/" + new Date(data[i].payment_date).getFullYear().toString(),
                    landlord_email: data[i].landlordEmail,

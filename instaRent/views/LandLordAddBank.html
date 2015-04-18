@@ -1,7 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'partials/layout.html' %}
 
-<head>
+{% block myHead %}
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+
+<!--<head>-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://checkout.stripe.com/checkout.js"></script>
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
@@ -10,11 +14,12 @@
     <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-</head>
+<!--</head>-->
 
+{% endblock %}
 
-
-<body>
+<!--<body>-->
+{% block myBody %}
     <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
@@ -31,7 +36,7 @@
     <div class = "container">
         <legend>Bank Accounts</legend>
 
-                <form method="POST" id="inst-form" role="form" action="http://localhost:3000/payments/addLandlordAccount">
+                <form method="POST" id="inst-form" role="form">
                     <div class="form-group">
                         <label for="tbAccountNo">Account No</label>
                         <input id="tbAccountNo" class="form-control" type="text" data-stripe="accountNumber">
@@ -83,11 +88,11 @@
         }
     }
 
-    jQuery(function($) {
-        $('#inst-form').submit(function(event) {
+    $('#button').click(function() {
+
+            console.log("In submit click code");
             // Get the form object.
-            var $form = $(this);
-            $form.find('button').prop('disabled', true);
+           $('#button').prop('disabled', true);
 
 
             // Create a token with Stripe
@@ -97,14 +102,12 @@
                 routing_number:  $('#routingno').val(),
                 account_number: $('#tbAccountNo').val()
             }, stripeResponseHandler);
-
-
             return false;
         });
-    });
 
 
 </script>
 
-</body>
-</html>
+<!--</body>-->
+{% endblock %}
+<!--</html>-->
