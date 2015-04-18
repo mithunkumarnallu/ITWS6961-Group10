@@ -14,8 +14,9 @@ var PaymentHistory = new Schema({
     userID:String,
     status:String,
     landlordEmail:String,
-    userName:String
-
+    userName:String,
+    homeID:String,
+    role:String
 });
 
 var payment_history = mongoose.model('PaymentHistory', PaymentHistory);
@@ -23,7 +24,7 @@ var payment_history = mongoose.model('PaymentHistory', PaymentHistory);
 
 
 function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId) {
-    payment_history.findOne({userId: userId}, function (err, data) {
+    payment_history.findOne({userID: userId}, function (err, data) {
 
         if (err)
             res.status(409).send("Error: Adding adding payment history");
@@ -45,7 +46,6 @@ function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId) {
 
 function getCurrentPaymentHistoryObject(emailId, res, callback) {
     payment_history.find({userID:emailId},function(err,data){
-
         if (err)
             callback(null);
         else{

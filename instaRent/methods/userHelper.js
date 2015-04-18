@@ -52,6 +52,11 @@ userHelper.prototype.getDefaultHome = function (userId, res, callback) {
     });
 }
 
+userHelper.prototype.getDefaultHomeID = function(data){
+return data.session.passport.user.foreignId;
+}
+
+
 userHelper.prototype.getUserType = function (req) {
     return req.session.passport.user.role;
 };

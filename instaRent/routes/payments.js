@@ -69,13 +69,9 @@ function sendConfirmationEmailLandlord(id,res,landlord_emailId,amt,TenantAddress
                     console.log("cannot get bank acc no " + err);
                 else
                     mailHandler.sendPaymentConfirmationLandlord(res,landlord_emailId,amt,TenantAddress,data1,bankAcc);
-
             });
-
         }
-
     });
-
 }
 
 function depositRent(amt,res, id){
@@ -90,43 +86,52 @@ function depositRent(amt,res, id){
             res.status(409).send("Error: Searching Home Object");
         else{
             landlord_emailId = data.landlordEmail;
-          Landlordmodel.getTokenNo(landlord_emailId, function (err,data) {
-              if (err)
-                  res.status(409).send("Error: getting landlord token");
-              else {
-                  tokenID = data;
-                  stripe.transfers.create({
-                      amount: Math.round(parseFloat(amt)*100), // amount in cents
-                      currency: "usd",
-                      recipient: tokenID,
-                      statement_descriptor: description
-                  }, function(err, transfer) {
+            Landlordmodel.isBankAccExists(landlord_emailId,function(data){
+               if(data=="false"){
+                   console.log("Landlord Bank account does not exists");
+                   return;
+               }
 
-                      userHelper.getTenantName(userid, function (err,tenantFullName) {
-                          var addPaymentHistory = {
-                              payment_date: new Date(),
-                              amount_charged:parseFloat(amt),
-                              description:description,
-                              userID:userid,
-                              landlordEmail:landlord_emailId,
-                              userName:tenantFullName
-                          };
-                          if (err) {
-                              console.log(err + " inside create transfer");
-                              addPaymentHistory.status = "Failed";
-                              payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid);
-                          } else {
-                              console.log("transfer Successful");
-                              addPaymentHistory.status = "Success";
-                              payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid);
-                              sendConfirmationEmailLandlord(id,res,landlord_emailId,amt,TenantAddress);
+                else{
+                   Landlordmodel.getTokenNo(landlord_emailId, function (err,data) {
+                       if (err)
+                           res.status(409).send("Error: getting landlord token");
+                       else {
+                           tokenID = data;
+                           stripe.transfers.create({
+                               amount: Math.round(parseFloat(amt)*100), // amount in cents
+                               currency: "usd",
+                               recipient: tokenID,
+                               statement_descriptor: description
+                           }, function(err, transfer) {
 
-                          }
-                      });
-                  });
-              }
-          });
+                               userHelper.getTenantName(userid, function (err,tenantFullName) {
+                                   var addPaymentHistory = {
+                                       payment_date: new Date(),
+                                       amount_charged:parseFloat(amt),
+                                       description:description,
+                                       userID:userid,
+                                       landlordEmail:landlord_emailId,
+                                       userName:tenantFullName
+                                   };
+                                   if (err) {
+                                       console.log(err + " inside create transfer");
+                                       addPaymentHistory.status = "Failed";
+                                       payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid);
+                                   } else {
+                                       console.log("transfer Successful");
+                                       addPaymentHistory.status = "Success";
+                                       payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid);
+                                       sendConfirmationEmailLandlord(id,res,landlord_emailId,amt,TenantAddress);
 
+                                   }
+                               });
+                           });
+                       }
+                   });
+               }
+
+            });
         }
     });
 }
@@ -134,6 +139,7 @@ function depositRent(amt,res, id){
 router.post('/charge', function(req, res) {
     var stripeToken = req.body.stripeToken;
     var userId = userHelper.getUserId(req);
+
 
     userHelper.getDefaultHome(userHelper.getUserId(req), res, function(err, data){
         if(err){
