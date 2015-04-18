@@ -27,7 +27,7 @@ body {
     background-color: #fff;
 }
 
-
+/* wtf is this one*/
 .huge {
     font-size: 50px;
     line-height: normal;
@@ -75,7 +75,7 @@ body {
 .top-nav>.open>a:hover,
 .top-nav>.open>a:focus {
     /* When click username change the color of word*/
-    color: #9c0c5e;
+    color: #7FED11;
     /* When click the username button background color*/
     background-color: #009999;/*#00A188;*/
 }
@@ -128,7 +128,8 @@ ul.alert-dropdown {
         position: fixed;
         top: 51px;
         left: 225px;
-        width: 225px;
+        width: 250px;
+        height: 500px;
         margin-left: -225px;
         border: none;
         border-radius: 0;
@@ -137,16 +138,18 @@ ul.alert-dropdown {
     }
 
     .side-nav>li>a {
-        width: 225px;
+        width: 250px;
     }
 
 }
-
+.navbar-inverse .navbar-nav>li>a {
+    color: #00A188;
+}
 /* Backgroud color*/
 .side-nav li a:hover,
 .side-nav li a:focus {
     outline: none;
-    background-color: #3366FF !important;
+    background-color: #009999 !important;
 }
 
 .side-nav li a:focus {
@@ -163,7 +166,7 @@ ul.alert-dropdown {
     display: block;
     padding: 10px 15px 10px 38px;
     text-decoration: none;
-    color: #4C4C4C;
+    color: #00A188;
 }
 
 /* When put mouse on the button*/
