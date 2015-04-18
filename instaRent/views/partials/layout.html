@@ -46,14 +46,16 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav navbar-default side-nav">
                     <li >
-                        <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
-                    </li>
-                    
-                    <li>
-                        <a href="#"><i class="fa fa-fw fa-edit"></i> Complaints Board</a>
+                        <a href="/dashboard"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
                     <li>
-                        <a href="#"><i class="fa fa-fw fa-wrench"></i> Settings</a>
+                        <a href="/managehome"><i class="fa fa-fw fa-desktop"></i> Manage Home</a>
+                    </li>
+                    <li>
+                        <a href="/complaints"><i class="fa fa-fw fa-edit"></i> Complaints Board</a>
+                    </li>
+                    <li>
+                        <a href="/settings"><i class="fa fa-fw fa-wrench"></i> Settings</a>
                     </li>
                     <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Payments <i class="fa fa-fw fa-caret-down"></i></a>
@@ -69,7 +71,7 @@
                     
                 </ul>
             </div>
-		 </nav>
+         </nav>
 		 <div id="page-wrapper">
 		   <div class="container-fluid">
 		     {% block myBody %}
@@ -79,8 +81,8 @@
 	
   </div>
 	 
-	 <script type="text/javascript" src="./javascripts/sign-off.js"></script>
-    <script type="text/javascript" src="./js/tenantPayments.js"></script>
+	 <script type="text/javascript" src="/javascripts/sign-off.js"></script>
+    <script type="text/javascript" src="/js/tenantPayments.js"></script>
 
 
     {% include "footer.html" %}

@@ -137,18 +137,8 @@ app.post('/send_mail', function(req,res)   //receives email from client and trig
    res.send({success: true});
 });
 
-app.get('/payments/testLandlord', function (req,res) {
-
-    res.render('LandLordAddBank.html');
-
-});
-
-app.get('/payments/payment_history', function (req,res) {
-
-    res.render('payment_history.html');
 
 
-});
 
 
 // Amy routes
