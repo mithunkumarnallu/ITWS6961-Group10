@@ -14,8 +14,9 @@ var PaymentHistory = new Schema({
     userID:String,
     status:String,
     landlordEmail:String,
-    userName:String
-
+    userName:String,
+    homeID:String,
+    role:String
 });
 
 var payment_history = mongoose.model('PaymentHistory', PaymentHistory);
@@ -23,7 +24,7 @@ var payment_history = mongoose.model('PaymentHistory', PaymentHistory);
 
 
 function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId) {
-    payment_history.findOne({userId: userId}, function (err, data) {
+    payment_history.findOne({userID: userId}, function (err, data) {
 
         if (err)
             res.status(409).send("Error: Adding adding payment history");
@@ -44,8 +45,13 @@ function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId) {
 }
 
 
-function getCurrentPaymentHistoryObject(emailId, isFetchLatest, callback) {
-   var payment = payment_history.find({userID:emailId});
+
+function getCurrentPaymentHistoryObject(emailId, isFetchLatest, HomeID, userType, callback) {
+
+
+
+    if(userType=="Tenant"){
+   var payment = payment_history.find({userID:emailId, homeID:HomeID});
    if(isFetchLatest)
        payment = payment.sort("-payment_date");
 
@@ -57,6 +63,22 @@ function getCurrentPaymentHistoryObject(emailId, isFetchLatest, callback) {
           callback(null,data);
        }
    });
+    }
+    else{
+        var payment1 = payment_history.find({landlordEmail:emailId, homeID:HomeID});
+        if(isFetchLatest)
+            payment1 = payment1.sort("-payment_date");
+
+        payment1.exec(function(err,data){
+
+            if (err)
+                callback(err);
+            else{
+                callback(null,data);
+            }
+        });
+    }
+
 }
 
 function getPaymentHistoryForAllUsers(emailIds, isFetchLatest, callback) {

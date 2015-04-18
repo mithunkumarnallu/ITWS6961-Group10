@@ -11,11 +11,8 @@
 
     <!-- Custom CSS -->
     <link href="../stylesheets/sb-admin.css" rel="stylesheet">
-
-
-
     <!-- Custom Fonts -->
-    <link href="./font-awesome/font-awesome.min.css" rel="stylesheet">
+
     <link href="/stylesheets/myStyle.css" rel="stylesheet"/>
     <!--<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">-->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.7.0/bootstrap-table.min.css">
@@ -32,7 +29,6 @@
 <!--</head>-->
 
 {% block myBody %}
-<!--<body>-->
 
 <div id="page-wrapper">
 
@@ -62,20 +58,25 @@
        data-query-params="queryParams"
        data-pagination="true"
        data-search="true"
-       data-height="350">
+       data-height="320">
     <thead>
     <tr>
-        <th data-field="state" data-checkbox="true"></th>
         <th data-field="date" data-align="center" data-sortable="true">Date</th>
         <th data-field="rent" data-align="center" data-sortable="true">Rent</th>
         <th data-field="status" data-align="center" data-sortable="true">Status</th>
-        <th data-field="landlord_email" data-align="center" data-sortable="true">LandLord Email</th>
+        <th data-field="landlord_email" data-align="center" data-sortable="true">
+            {% if userRole == 'Tenant'%}
+            LandLord Email ID
+            {% elseif userRole == 'Landlord'%}
+            Tenant Name
+            {% endif %}</th>
     </tr>
     </thead>
 </table>
 
-{% endblock %}
 
-<!--</body>-->
+
+
 
 <!--</html>-->
+{% endblock %}
