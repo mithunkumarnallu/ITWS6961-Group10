@@ -14,6 +14,7 @@ var tenantPayments = require('./routes/payments');
 var dashboard = require("./routes/dashboard");
 var mailerHandler = require("./methods/mailerHandler");
 var settings = require("./routes/settings");
+var qrcodeLoginHandler = require("./routes/qrcodelogin");
 
 var userHelper = require("./methods/userHelper");
 userHelper = new userHelper();
@@ -95,6 +96,7 @@ app.use('/managehome', manageHomeRoutes);
 app.use('/payments', tenantPayments);
 app.use("/dashboard", dashboard);
 app.use("/settings", settings);
+app.use("/qrcode", qrcodeLoginHandler);
 
 //nitish routes
 app.use('/api', accountRoutes);

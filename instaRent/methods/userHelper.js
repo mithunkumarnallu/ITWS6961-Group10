@@ -87,5 +87,21 @@ userHelper.prototype.getUserInfo=function(data, email, userIds, callback){
     }
 };
 
+userHelper.prototype.SetQRSession = function(req, user)  {
+    req.session.passport.user = {};
+    req.session.passport.user.email=user.email;
+    req.session.passport.user.firstName=user.firstName;
+    req.session.passport.user.lastName=user.lastName;
+    req.session.passport.user.phoneNo=user.phoneNo;
+    req.session.passport.user.foreignId=user.foreignId;
+    req.session.passport.user.isVerified=user.isVerified;
+    req.session.passport.user.role=user.role;
+    req.session.passport.user.address=user.address;
+    req.session.passport.user.facebook_id=user.facebook_id;
+    req.session.passport.user.facebook_token=user.facebook_token;
+    req.session.passport.user.google_id=user.google_id;
+    req.session.passport.user.google_token=user.google_token;
+    return true;
+};
 
 module.exports = userHelper;
