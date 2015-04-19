@@ -1,5 +1,6 @@
 var mailer = require("../methods/mailerHandler");
 var verificationToken = require("../models/verification_token_schema");
+var ReviewModel=require("../models/ReviewsModel");
 
 var express = require('express'),
     router = express.Router(),
@@ -44,6 +45,7 @@ var express = require('express'),
 		phoneNo:   req.body.phone,
 		foreignId:  "",
 		role:      "",
+        address: "",
         isVerified: false,
         passwordHash: crypto.pbkdf2Sync(req.body.password, passwordSaltIn, cryptoIterations, cryptoKeyLen),
         passwordSalt: passwordSaltIn
@@ -82,6 +84,7 @@ var express = require('express'),
 						role: user.role,
                         isVerified: user.isVerified,
 						foreignId: user.foreignId,
+                        address: user.address,
                         facebook_id:user.facebook_id,
                         facebook_token:user.facebook_token,
                         google_id:user.google_id,
@@ -104,11 +107,11 @@ var express = require('express'),
 	
 router.route('/account/logon').post(function (req, res) {
 
-    var accountController = new AccountController(User, req.session);
+    var accountController = new AccountController(User, req.session, req);
 
     var userLogon = new UserLogon(req.body);
     console.log("userLogon: "+userLogon.email+" "+userLogon.password)
-    accountController.logon(userLogon.email, userLogon.password, res);
+    accountController.logon(userLogon.email, userLogon.password, req, res);
         
         
 });
@@ -119,7 +122,7 @@ router.route('/account/sendEmail').post(function(req,res){
 
 router.route('/account/logoff').get(function(req,res){
   console.log("inside logoff router");
-  var accountController=new AccountController(User, req.session);
+  var accountController=new AccountController(User, req.session, req);
   accountController.logoff();
   //res.redirect("/login"); 
     res.send({success: true});
@@ -163,7 +166,22 @@ router.get("/account/verify/:token", function (req, res, next) {
     });
 });
 
+router.route('/account/reviews').post(function(req,res){
+   console.log("in reviews route"+req.session.passport.user.firstName+" "+req.body.comment);
+   ReviewModel.SaveReview(req.session.passport.user.firstName+" "+req.session.passport.user.lastName, req.body.comment, function(err){
+           console.log("review saved in db- frm route");
+           res.send({success: true});
+                      
+   });
+});
 
+router.route('/account/fetch_reviews').post(function(req,res){
+   ReviewModel.ExtractReviews(function(data){
+       res.send(data);
+ });
+                   
+});
+                          
 
 module.exports = router;
    

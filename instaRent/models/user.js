@@ -11,6 +11,7 @@ var UserSchema = new Schema({
  phoneNo: String,
  foreignId: String,
  role: String,
+ address: String,    
  isVerified: Boolean,
  passwordHash: String,
  passwordSalt: String

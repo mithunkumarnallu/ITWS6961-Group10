@@ -42,7 +42,9 @@ router.get('/getTenantHomes', function(req, res, next) {
 
 router.post('/setDefaultHome', function(req, res, next) {
 	var userId = userHelper.getUserId(req);
-	res.send(userHelper.setDefaultHome(userId, req.body));
+	userHelper.setDefaultHome(req, userId, req.body, function(err, data) {
+        res.send("Success");
+    });
 });
 
 /*
