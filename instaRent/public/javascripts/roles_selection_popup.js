@@ -47,9 +47,9 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
                             //console.log(home);
                             var infoWindow = new google.maps.InfoWindow( {
                                 //content: "<div class='info_content'><h3>Landlord at:</h3> <p>" + home.address + "</p><label ng-click=open('lg') class='btn btn-primary'>Set Home</label>"
-                                content: '<div class="info_content"><h3>' + home.userType + ' at:</h3> <p>' + home.address +
-                                    "</p><label onclick=setHome(\"" + home._id + "\",\"" +
-                                    home.userType + "\",\"" + encodeURI(home.address) + "\") class=\"btn btn-primary\">Set Home</label>"
+                                content: "<div class='info_content'><h3>" + home.userType + " at:</h3> <p>" + home.address +
+                                    "</p><label onclick=setHome('" + home._id + "','" +
+                                    home.userType + "','" + encodeURI(home.address) + "') class='btn btn-primary'>Set Home</label>"
                             });
                             var p = loc.results[0].geometry.location
                             var latlng = new google.maps.LatLng(p.lat, p.lng);
@@ -404,7 +404,7 @@ function setHome(homeId, userType, address) {
     $.post("/managehome/setDefaultHome", {id: homeId, userType: userType, address: address})
     .done(function(data, status) {
         console.log("Successully set home");
-        window.location.replace("/");
+        window.location.replace("/dashboard");
     })
     .fail(function(err, status) {
         console.log(err);
