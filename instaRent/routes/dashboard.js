@@ -24,12 +24,14 @@ router.get("/", function (req, res) {
         }
         else {
             var currentUserInfo = userHelper.getUserInfo(req);
-            var rentDueIn = MoreHomeInfoHandler.getRentDueIn(data.leaseStartDate, data.leaseEndDate);
             var result = {
                 userName: currentUserInfo.firstName,
-                rentDueIn: rentDueIn.rentDueIn,
                 userRole: userType
             };
+            if(data.leaseStartDate) {
+                var rentDueIn = MoreHomeInfoHandler.getRentDueIn(data.leaseStartDate, data.leaseEndDate);
+                result.rentDueIn = rentDueIn.rentDueIn;
+            }
 
             if(userType == "Tenant") {
                 if(rentDueIn.isProRate) {
@@ -58,10 +60,12 @@ router.get("/", function (req, res) {
                         };
                     }
                     //res.send(result);
-                    res.render("dashboard.html", result);
+                    userHelper.renderTemplate("dashboard.html", result, req, res);
                 });
             }
-            else {
+            else if(!data.leaseStartDate) {
+                userHelper.renderTemplate("dashboard.html", result, req, res);
+            } else {
                 //User is a landlord. Fetch details correspondingly
                 if(rentDueIn.isProRate) {
                     result.rentDue = (data.rentPerMonth * rentDueIn.daysOfStay).toFixed(2);
@@ -100,6 +104,7 @@ router.get("/", function (req, res) {
                                 payment_history.getPaymentHistoryForAllUsers(tenantUserIds,true, function(err, data) {
                                     if(err) {
                                         console.log("Error in getting payment objects for the user: " + err.message);
+                                        userHelper.renderTemplate("dashboard.html", result, req, res);
                                     }
                                     else {
                                         var tenantPayments = [];
@@ -109,23 +114,16 @@ router.get("/", function (req, res) {
                                     }
                                     result.rentStatus = tenantPayments;
                                     console.log("RentStatus is: " + JSON.stringify(tenantPayments));
-                                    res.render("dashboard.html", result);
+                                    userHelper.renderTemplate("dashboard.html", result, req, res);
                                 });
-                                //res.send(result);
                             }
                         });
                     }
                 });
-                //res.send(result);
             }
 
         }
     });
-});
-
-//display the dashboard information for landloard
-router.get('/landloarddashboard',function(req,res){
-
 });
 
 module.exports=router;
