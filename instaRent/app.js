@@ -17,7 +17,7 @@ var dashboard = require("./routes/dashboard");
 var mailerHandler = require("./methods/mailerHandler");
 var settings = require("./routes/settings");
 var qrcodeLoginHandler = require("./routes/qrcodelogin");
-
+var qrCodeHandler = require("./models/qrcode_login_schema");
 var userHelper = require("./methods/userHelper");
 userHelper = new userHelper();
 
@@ -120,7 +120,14 @@ app.get('/reviews', function(req,res)
 
 app.get('/login',function(req,res)
 {
-    res.render('login.html', {foo:false});
+    var loginToken = new qrCodeHandler.LoginTokenModel();
+    loginToken.createLoginToken(function(err, data) {
+        if(err)
+            res.render("login.html", {foo:false,error: err});
+        else
+            res.render("login.html", {foo:false,data: data});
+    });
+    //res.render('login.html', {foo:false});
 });
 
 

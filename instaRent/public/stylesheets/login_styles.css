@@ -18,9 +18,9 @@
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
   top: 100px;
-  left: 30%;
+  left: 15%;
   
-  max-width: 35%;
+  max-width: 65%;
   position: fixed;
   margin-left: 20px;
   margin-right: 20px;
@@ -34,4 +34,32 @@
 
 .hide{
  display: none;    
+}
+
+.row.vdivide [class*='col-']:not(:last-child):after {
+    background: #e0e0e0;
+    width: 1px;
+    content: "";
+    display:block;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    right: 0;
+    min-height: 200px;
+}
+.row.vdiv [class*='col-']:not(:last-child):after {
+    background: #e0e0e0;
+    width: 1px;
+    content: "";
+    display:block;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    right: 0;
+    min-height: inherit;
+}
+
+
+.QRCode{
+    margin-left:40px;
 }

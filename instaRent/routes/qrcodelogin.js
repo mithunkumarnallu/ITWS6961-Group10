@@ -8,16 +8,16 @@ var userHelper = require("../methods/userHelper");
 userHelper = new userHelper();
 var user = require("../models/user");
 
-router.get("/", function(req, res) {
-    console.log("In qrcode login page loader");
-    var loginToken = new qrCodeHandler.LoginTokenModel();
-    loginToken.createLoginToken(function(err, data) {
-        if(err)
-            res.render("qrcode_login.html", {error: err});
-        else
-            res.render("qrcode_login.html", {data: data});
-    });
-});
+//router.get("/", function(req, res) {
+//    console.log("In qrcode login page loader");
+//    var loginToken = new qrCodeHandler.LoginTokenModel();
+//    loginToken.createLoginToken(function(err, data) {
+//        if(err)
+//            res.render("qrcode_login.html", {error: err});
+//        else
+//            res.render("qrcode_login.html", {data: data});
+//    });
+//});
 
 
 router.get("/isLoggedIn/:token", function(req, res) {

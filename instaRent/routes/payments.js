@@ -175,7 +175,9 @@ router.post('/charge', function(req, res) {
 });
 router.get('/testLandlord', function (req,res) {
 
-    res.render('LandLordAddBank.html');
+    //res.render('LandLordAddBank.html');
+    userHelper.renderTemplate('LandLordAddBank.html',{},req,res);
+
 
 });
 
@@ -183,7 +185,8 @@ router.get('/testLandlord', function (req,res) {
 router.get('/payment_history', function (req,res) {
     var userRole = userHelper.getUserType(req);
 
-    res.render('payment_history.html',{userRole:userRole});
+    //res.render('payment_history.html',{userRole:userRole});
+    userHelper.renderTemplate('payment_history.html',{userRole:userRole},req,res);
 
 });
 
