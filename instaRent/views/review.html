@@ -1,0 +1,32 @@
+{% extends 'partials/layout.html' %}
+ 
+{% block myHead %}
+    <!--<link href="/stylesheets/myStyle.css" rel="stylesheet"/>--->
+    <script src="/javascripts/review.js"></script>
+    
+{% endblock %}
+
+{% block myBody %}
+
+<div class="container">
+ {% if !foo %}
+  <h1>What do you think about us? </h1>
+  <form role="form" id="reviewform" method="post">
+    <div class="form-group">
+      <label for="comment">Enter your review here: </label>
+      <textarea class="form-control" rows="5" id="comment"></textarea>
+    </div>
+    <input type="submit" value="submit" class="btn btn-success" id="submit_review">
+  </form>
+ {% endif %}
+ {% if foo %}
+    <div class="panel panel-default centered-form panel-transparent" id="success">
+        <div class="panel-body panel-success">
+            Your review has been submitted. We appreciate your feedback. Thanks!
+            </br><a href="/dashboard" role="button" value="okay_error" class="btn btn-primary btn-sm" id="ok">OK</a>
+        </div>
+    </div>
+ {% endif %}
+</div>
+
+{% endblock %}

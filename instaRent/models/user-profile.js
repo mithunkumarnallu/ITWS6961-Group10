@@ -6,6 +6,7 @@ var UserProfileModel = function(cnf) {
 	this.foreignId=cnf.foreignId,
     this.isVerified=cnf.isVerified,    
 	this.role=cnf.role,
+    this.address=cnf.address,    
     this.facebook_id=cnf.facebook_id,
     this.facebook_token=cnf.facebook_token,
     this.google_id=cnf.google_id,

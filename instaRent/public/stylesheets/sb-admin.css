@@ -27,7 +27,6 @@ body {
     background-color: #fff;
 }
 
-
 .huge {
     font-size: 50px;
     line-height: normal;
@@ -47,6 +46,9 @@ body {
   background-image: none;
   background-repeat: no-repeat;
   filter: none;
+}
+.navbar-nav>li {
+  background-color: #fffccc;
 }
 
 /* Top Navigation */
@@ -129,7 +131,7 @@ ul.alert-dropdown {
         top: 51px;
         left: 225px;
         width: 250px;
-        height: 500px;
+        height: 600px;
         margin-left: -225px;
         border: none;
         border-radius: 0;
@@ -140,8 +142,8 @@ ul.alert-dropdown {
     .side-nav>li>a {
         width: 250px;
     }
-
 }
+
 .navbar-inverse .navbar-nav>li>a {
     color: #00A188;
 }
@@ -245,4 +247,8 @@ ul.alert-dropdown {
 
 .panel-yellow a:hover {
     color: #df8a13;
+}
+
+.navbar-default .navbar-text {
+  color: white;
 }

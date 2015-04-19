@@ -9,7 +9,9 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var manageHomeRoutes = require('./routes/managehome');
+
 var complaintsRoutes = require('./routes/complaints');
+
 var tenantPayments = require('./routes/payments');
 var dashboard = require("./routes/dashboard");
 var mailerHandler = require("./methods/mailerHandler");
@@ -30,6 +32,7 @@ var passport = require('passport');
 var cors=require("cors");
 var json = require('jsonfile');
 var mailer = require('express-mailer');
+var ReviewModel=require("./models/ReviewsModel");
 
 var mail = require("./methods/mailerHandler");
 
@@ -109,6 +112,12 @@ app.get('/signup',function(req,res)
 
 });
 
+app.get('/reviews', function(req,res)
+{
+    userHelper.renderTemplate('review.html',{},req,res);
+    //res.render('review.html');
+});
+
 app.get('/login',function(req,res)
 {
     res.render('login.html', {foo:false});
@@ -139,12 +148,15 @@ app.post('/send_mail', function(req,res)   //receives email from client and trig
    res.send({success: true});
 });
 
-
-
-
+app.get("/reviews_success", function(req,res)
+{
+    console.log("in /reviews_success");
+    
+    userHelper.renderTemplate('review.html',{foo: true},req,res);
+    //res.render('review.html',{foo: true});
+});
 
 // Amy routes
-
 app.get('/settings_password', function(req, res) {
     console.log("in settings_password");
     res.render('settings_password.html');
@@ -168,21 +180,6 @@ var job = new CronJob('00 00 00 * * 0-6', function() {
     "America/New_York"
 );
 
-
-
-
-
-
-//Luying routes
-//app.get('/dashboard', function(req,res)
-//{
-//  console.log("success");
-//  res.render('dashboard.html');
-//
-//});
-
-
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
@@ -191,7 +188,6 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {

@@ -18,6 +18,7 @@ module.exports = function(passport) {
             phoneNo: user.phoneNo,
             role: user.role,
             isVerified: user.isVerified,
+            address:user.address,
             foreignId: user.foreignId,
             facebook_id: user.facebook_id,
             facebook_token: user.facebook_token,
@@ -73,6 +74,7 @@ passport.use(new GoogleStrategy({
                     phoneNo:"",
                     foreignId:  "",
                     role:"",
+                    address: "",
                     isVerified:true,
                     passwordHash:"",
                     passwordSalt: ""
@@ -131,6 +133,7 @@ passport.use(new FacebookStrategy({
                     foreignId:  "",
                     role:"",
                     isVerified:true,
+                    address:"",    
                     passwordHash:"",
                     passwordSalt: ""    
                         
