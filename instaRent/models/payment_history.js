@@ -56,7 +56,6 @@ function getCurrentPaymentHistoryObject(emailId, isFetchLatest, HomeID, userType
        payment = payment.sort("-payment_date");
 
    payment.exec(function(err,data){
-
        if (err)
           callback(err);
        else{

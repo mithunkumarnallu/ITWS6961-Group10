@@ -34,6 +34,7 @@ router.get("/", function (req, res) {
             }
 
             if(userType == "Tenant") {
+
                 if(rentDueIn.isProRate) {
                     result.rentDue = (data.rentPerMonthPerUser * rentDueIn.daysOfStay).toFixed(2);
                 }
@@ -41,27 +42,34 @@ router.get("/", function (req, res) {
                     result.rentDue= data.rentPerMonthPerUser;
                 }
 
-                //Get landlord information
-                userHelper.getUserInfo(null, data.landlordEmail, null, function(err, landlordInfo) {
-                    if(err) {
-                        console.log("Error while fetching landlord details: " + err);
-                        res.status(500).send("Error in fetching data");
+                payment_history.getCurrentPaymentHistoryObject(currentUserInfo.email,true, currentUserInfo.foreignId, "Tenant", function(err, payments) {
+                    if(!err && payments && payments.length > 0) {
+                        if(payments[0].payment_date.getMonth() == new Date().getMonth())
+                            result.rentDue = 0;
                     }
-                    else if(landlordInfo) {
-                        result.landlord = {
-                            name: landlordInfo.firstName,
-                            email: landlordInfo.email,
-                            phone: landlordInfo.phoneNo
-                        };
-                    }
-                    else {
-                        result.landlord = {
-                            email: data.landlordEmail
-                        };
-                    }
-                    //res.send(result);
-                    userHelper.renderTemplate("dashboard.html", result, req, res);
-                });
+                    //Get landlord information
+                    userHelper.getUserInfo(null, data.landlordEmail, null, function(err, landlordInfo) {
+                        if(err) {
+                            console.log("Error while fetching landlord details: " + err);
+                            res.status(500).send("Error in fetching data");
+                        }
+                        else if(landlordInfo) {
+                            result.landlord = {
+                                name: landlordInfo.firstName,
+                                email: landlordInfo.email,
+                                phone: landlordInfo.phoneNo
+                            };
+                        }
+                        else {
+                            result.landlord = {
+                                email: data.landlordEmail
+                            };
+                        }
+                        //res.send(result);
+                        userHelper.renderTemplate("dashboard.html", result, req, res);
+                    });
+                })
+
             }
             else if(!data.leaseStartDate) {
                 userHelper.renderTemplate("dashboard.html", result, req, res);

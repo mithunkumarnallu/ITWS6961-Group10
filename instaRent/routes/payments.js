@@ -148,7 +148,7 @@ router.post('/charge', function(req, res) {
             res.status(409).send("Error: Getting Home");
         }
         else{
-            MoreHomeInfoHandler.getrentPerMonth(data,function(err,data){
+            MoreHomeInfoHandler.getrentPerMonth(data, userHelper.getUserInfo(req), function(err,data){
                 if(err)
                     res.status(409).send("Error: Getting rent");
                 else{
@@ -197,12 +197,13 @@ router.get('/getRent', function(req, res, next){
             if(err){
                 res.status(409).send("Error: Getting Home");
             }
-            else{
-                MoreHomeInfoHandler.getrentPerMonth(data,function(err,data){
+            else {
+                MoreHomeInfoHandler.getrentPerMonth(data, userHelper.getUserInfo(req), function(err,data){
                     if(err)
                         res.status(409).send("Error: Getting rent");
                     else{
-                        res.send(data);
+                        console.log(data);
+                        res.send(""+ data);
                     }
 
                 });

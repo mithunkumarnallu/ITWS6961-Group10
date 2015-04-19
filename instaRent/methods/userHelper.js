@@ -84,7 +84,9 @@ userHelper.prototype.getUserInfo=function(data, email, userIds, callback){
             firstName: firstName,
             lastName: lastName,
             email: email,
-            phoneNo: phoneNo
+            phoneNo: phoneNo,
+            foreignId: data.session.passport.user.foreignId,
+            role: data.session.passport.user.role
         };
         return userInfo;
     }
