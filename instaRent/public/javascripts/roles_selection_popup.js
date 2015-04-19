@@ -401,7 +401,7 @@ function createClickListener(infoWindow, marker) {
 function setHome(homeId, userType, address) {
     console.log("In setHome " + userType + " " + homeId + " " + address);
     
-    $.post("/managehome/setDefaultHome", {id: homeId, userType: userType, address: address})
+    $.post("/managehome/setDefaultHome", {id: homeId, userType: userType, address: decodeURI(address)})
     .done(function(data, status) {
         console.log("Successully set home");
         window.location.replace("/dashboard");
