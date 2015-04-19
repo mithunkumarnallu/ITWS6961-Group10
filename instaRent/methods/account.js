@@ -1,7 +1,10 @@
 var mailer = require("../methods/mailerHandler");
 var invitationHandler = require("../models/invitation_schema");
 
-var AccountController = function (userModel, session) {
+var userHelper = require("./userHelper");
+userHelper = new userHelper();
+
+var AccountController = function (userModel, session, req) {
 
     this.crypto = require('crypto');
     this.uuid = require('node-uuid');
@@ -30,7 +33,7 @@ AccountController.prototype.hashPassword = function (password, salt, callback) {
 };
 
 
-AccountController.prototype.logon = function(email, password,res) {
+AccountController.prototype.logon = function(email, password,req,res) {
 
     var me = this;
 
@@ -57,15 +60,17 @@ AccountController.prototype.logon = function(email, password,res) {
                         isVerified: user.isVerified,
 						foreignId: user.foreignId,
                         facebook_id: user.facebook_id,
+                        address:user.address,
                         facebook_token: user.facebook_token,
                         google_id:user.google_id,
                         google_token: user.google_token
                     });
+                    userHelper.SetQRSession(req,user);
 
-                    me.session.passport.user = userProfileModel;
+                    //me.session.passport.user = userProfileModel;
 					me.session.id = me.uuid.v4();
                     //me.session.cookie={userId: user.email};
-					console.log("session: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId );
+					//console.log("session: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId );
 
                     //Add any outstanding homes of the user to his/her home collection
                     invitationHandler.addUserToHome(user.email);

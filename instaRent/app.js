@@ -31,6 +31,7 @@ var passport = require('passport');
 var cors=require("cors");
 var json = require('jsonfile');
 var mailer = require('express-mailer');
+var ReviewModel=require("./models/ReviewsModel");
 
 var mail = require("./methods/mailerHandler");
 
@@ -112,6 +113,12 @@ app.get('/signup',function(req,res)
 
 });
 
+app.get('/reviews', function(req,res)
+{
+    userHelper.renderTemplate('review.html',{},req,res);
+    //res.render('review.html');
+});
+
 app.get('/login',function(req,res)
 {
     res.render('login.html', {foo:false});
@@ -140,6 +147,14 @@ app.post('/send_mail', function(req,res)   //receives email from client and trig
    console.log("in /send_email route");
    mail.sendPasswordResetMail(req, res, req.body.email); 
    res.send({success: true});
+});
+
+app.get("/reviews_success", function(req,res)
+{
+    console.log("in /reviews_success");
+    
+    userHelper.renderTemplate('review.html',{foo: true},req,res);
+    //res.render('review.html',{foo: true});
 });
 
 app.get('/payments/testLandlord', function (req,res) {
