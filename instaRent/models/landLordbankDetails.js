@@ -21,7 +21,6 @@ function checkBankDetailsAndSave(landlordDetails,req,res,overwrite) {
     var userId = userHelper.getUserId(req);
     landlordBankDetails.findOne({userId: landlordDetails.userId}, function (err, data) {
 
-
         if (err)
             res.status(409).send("Error: Adding Bank account");
         else if (data && !overwrite) {
@@ -70,9 +69,24 @@ function checkBankDetailsAndSave(landlordDetails,req,res,overwrite) {
 
     }
 
+    function isBankAccExists(landlordemail,callback){
+
+        landlordBankDetails.findOne({userId:landlordemail}, function (err, data) {
+            if(err)
+                callback(err);
+
+            else if (!data){
+                callback("false");
+            }
+            else
+                callback("true");
+        });
+    }
+
 
 
 exports.landlordBankDetails = landlordBankDetails;
 exports.checkBankDetailsAndSave = checkBankDetailsAndSave;
 exports.getTokenNo = getTokenNo;
 exports.getBankAccNo = getBankAccNo;
+exports.isBankAccExists = isBankAccExists;

@@ -8,12 +8,15 @@ var Schema = mongoose.Schema;
 
 
 var PaymentHistory = new Schema({
-    payment_date:String,
+    payment_date:Date,
     amount_charged:Number,
     description:String,
     userID:String,
     status:String,
-    landlordEmail:String
+    landlordEmail:String,
+    userName:String,
+    homeID:String,
+    role:String
 });
 
 var payment_history = mongoose.model('PaymentHistory', PaymentHistory);
@@ -21,7 +24,7 @@ var payment_history = mongoose.model('PaymentHistory', PaymentHistory);
 
 
 function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId) {
-    payment_history.findOne({userId: userId}, function (err, data) {
+    payment_history.findOne({userID: userId}, function (err, data) {
 
         if (err)
             res.status(409).send("Error: Adding adding payment history");
@@ -39,18 +42,67 @@ function checkPaymentHistoryDetailsAndSave(paymentHistoryDetails,userId) {
             });
         }
     });
-
 }
 
-function getCurrentPaymentHistoryObject(emailId, res, callback) {
-   payment_history.find({userID:emailId},function(err,data){
+
+
+function getCurrentPaymentHistoryObject(emailId, isFetchLatest, HomeID, userType, callback) {
+
+
+
+    if(userType=="Tenant"){
+   var payment = payment_history.find({userID:emailId, homeID:HomeID});
+   if(isFetchLatest)
+       payment = payment.sort("-payment_date");
+
+   payment.exec(function(err,data){
 
        if (err)
-          callback(null);
+          callback(err);
        else{
           callback(null,data);
        }
    });
+    }
+    else{
+        var payment1 = payment_history.find({landlordEmail:emailId, homeID:HomeID});
+        if(isFetchLatest)
+            payment1 = payment1.sort("-payment_date");
+
+        payment1.exec(function(err,data){
+
+            if (err)
+                callback(err);
+            else{
+                callback(null,data);
+            }
+        });
+    }
+
+}
+
+function getPaymentHistoryForAllUsers(emailIds, isFetchLatest, callback) {
+    var payment = payment_history.find({$or : emailIds});
+    if(isFetchLatest)
+        payment = payment.sort({userId: 1, payment_date: -1});
+
+    payment.exec(function(err,data){
+
+        if (err)
+            callback(err);
+        else{
+            var addedUsers = {};
+            var result = [];
+            for(var i = 0; i < data.length; i++) {
+                if(!(data[i].userID in addedUsers)) {
+                    addedUsers[data[i].userID] = true;
+                    result.push(data[i]);
+                }
+            }
+            console.log(result);
+            callback(null,result);
+        }
+    });
 
 }
 
@@ -58,3 +110,4 @@ function getCurrentPaymentHistoryObject(emailId, res, callback) {
 exports.payment_history = payment_history;
 exports.checkPaymentHistoryDetailsAndSave = checkPaymentHistoryDetailsAndSave;
 exports.getCurrentPaymentHistoryObject = getCurrentPaymentHistoryObject;
+exports.getPaymentHistoryForAllUsers = getPaymentHistoryForAllUsers;

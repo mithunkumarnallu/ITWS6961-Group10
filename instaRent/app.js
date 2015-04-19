@@ -16,6 +16,7 @@ var tenantPayments = require('./routes/payments');
 var dashboard = require("./routes/dashboard");
 var mailerHandler = require("./methods/mailerHandler");
 var settings = require("./routes/settings");
+var qrcodeLoginHandler = require("./routes/qrcodelogin");
 
 var userHelper = require("./methods/userHelper");
 userHelper = new userHelper();
@@ -76,8 +77,6 @@ app.use(expressSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-
 console.log("mongoose after session");
 
 
@@ -100,7 +99,7 @@ app.use('/managehome', manageHomeRoutes);
 app.use('/payments', tenantPayments);
 app.use("/dashboard", dashboard);
 app.use("/settings", settings);
-
+app.use("/qrcode", qrcodeLoginHandler);
 
 //nitish routes
 app.use('/api', accountRoutes);
@@ -157,22 +156,7 @@ app.get("/reviews_success", function(req,res)
     //res.render('review.html',{foo: true});
 });
 
-app.get('/payments/testLandlord', function (req,res) {
-
-    res.render('LandLordAddBank.html');
-
-});
-
-app.get('/payments/payment_history', function (req,res) {
-
-    res.render('payment_history.html');
-
-
-});
-
-
 // Amy routes
-
 app.get('/settings_password', function(req, res) {
     console.log("in settings_password");
     res.render('settings_password.html');
@@ -196,21 +180,6 @@ var job = new CronJob('00 00 00 * * 0-6', function() {
     "America/New_York"
 );
 
-
-
-
-
-
-//Luying routes
-//app.get('/dashboard', function(req,res)
-//{
-//  console.log("success");
-//  res.render('dashboard.html');
-//
-//});
-
-
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
@@ -219,7 +188,6 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {

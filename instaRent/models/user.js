@@ -30,6 +30,10 @@ function update(user,res){
   });
 };
 
+function getUserByPhoneNo(phoneNo, callback) {
+    User.findOne({phoneNo: phoneNo}, callback);
+}
 
 exports.User=User;
 exports.update=update;
+exports.getUserByPhoneNo = getUserByPhoneNo;

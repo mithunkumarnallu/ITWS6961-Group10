@@ -1,0 +1,35 @@
+{% extends 'partials/layout.html' %}
+
+{% block myHead %}
+
+    <script src="/javascripts/qrcode/qrcode.min.js"></script>
+
+{% endblock %}
+
+{% block myBody %}
+    <div id="qrcode"></div>
+        {% if error %}
+            <div class="alert alert-danger alert-error">There was an error in loading this page<div>
+        {% else %}
+            <script type="text/javascript">
+                new QRCode(document.getElementById("qrcode"), "{{data}}");
+                var loginCheckHandler = setInterval(isLoggedIn, 5000);
+                function isLoggedIn() {
+                    $.ajax({
+                        type: 'GET',
+                        url: "/qrcode/isLoggedIn/{{data}}",
+                        success: function(responseData, status){
+                            if(responseData) {
+                                clearInterval(loginCheckHandler);
+                                window.location.href = "/dashboard";
+                            }
+                        },
+                        error: function(err){
+                            console.log(err);
+                        }
+                    })
+                }
+
+            </script>
+        {% endif %}
+{% endblock %}

@@ -1,22 +1,15 @@
 User = require('../models/user.js').User;
 MoreHomeInfo=require('../models/more_home_info.js').MoreHomeInfo;
 
-
 userHelper = function() {};
 
 userHelper.prototype.getUserId = function(data) {
-
     console.log("returning userId: "+data.session.passport.user.email);
 	return data.session.passport.user.email;
-
 };
 
-
-
 userHelper.prototype.getTenantName = function(data,callback){
-
     User.findOne({email:data},function(err,data){
-
         if(err)
             console.log("Cannot find the user" + err);
         else {
@@ -24,7 +17,7 @@ userHelper.prototype.getTenantName = function(data,callback){
             callback(null,fullname);
          }
     });
-}
+};
 
 userHelper.prototype.isUserLoggedIn = function(data) {
     return data.session.passport;
@@ -59,8 +52,11 @@ userHelper.prototype.getDefaultHome = function (userId, res, callback) {
         else
             callback(err, data.foreignId);
     });
-}
+};
 
+userHelper.prototype.getDefaultHomeID = function(data){
+    return data.session.passport.user.foreignId;
+};
 
 userHelper.prototype.getUserType = function (req) {
     return req.session.passport.user.role;
@@ -91,9 +87,6 @@ userHelper.prototype.getUserInfo=function(data, email, userIds, callback){
             phoneNo: phoneNo
         };
         return userInfo;
-        //var userInfoJsonParse = [];
-        //userInfoJsonParse = JSON.parse(userInfo);
-        //return userInfoJsonParse;
     }
 };
 
@@ -114,8 +107,6 @@ userHelper.prototype.SetQRSession = function(req, user)  {
     return true;
 };
 
-
-
 userHelper.prototype.renderTemplate=function(viewName, obj, req, res){//data- session object, obj- object to which session info is appended
     console.log("inside renderTemplate: "+req.session.passport.user.foreignId+" "+req.session.passport.user.address);
     if(!req.session.passport.user)
@@ -134,7 +125,6 @@ userHelper.prototype.renderTemplate=function(viewName, obj, req, res){//data- se
           res.render(viewName,obj);   
         }
     
-}
-
+};
 
 module.exports = userHelper;

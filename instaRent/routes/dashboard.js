@@ -4,9 +4,11 @@ var userHelper = require("../methods/userHelper");
 userHelper = new userHelper();
 var User=require("../models/user").User;
 var UserHandler=require("../models/user");
-
 var Home = require("../models/home").Home;
 var HomeHandler = require("../models/home");
+
+var payment_history = require("../models/payment_history");
+
 //HomeHandler = new HomeHandler();
 
 var MoreHomeInfo = require("../models/more_home_info").MoreHomeInfo;
@@ -84,15 +86,31 @@ router.get("/", function (req, res) {
                             }
                             else {
                                 var tenantInfo = [];
+                                var tenantUserIds = [];
                                 for(var i = 0; i < data.length; i++) {
                                     var tenant = {};
                                     tenant.name = data[i].firstName;
                                     tenant.email = data[i].email;
                                     tenant.phone = data[i].phoneNo;
                                     tenantInfo.push(tenant);
+                                    tenantUserIds.push({"userID": data[i].email});
                                 }
                                 result.tenants = tenantInfo;
-                                res.render("dashboard.html", result);
+
+                                payment_history.getPaymentHistoryForAllUsers(tenantUserIds,true, function(err, data) {
+                                    if(err) {
+                                        console.log("Error in getting payment objects for the user: " + err.message);
+                                    }
+                                    else {
+                                        var tenantPayments = [];
+                                        for(var i = 0; i < data.length; i++) {
+                                            tenantPayments.push({name: data[i].userName, rentPaidOn: data[i].payment_date.toDateString()});
+                                        }
+                                    }
+                                    result.rentStatus = tenantPayments;
+                                    console.log("RentStatus is: " + JSON.stringify(tenantPayments));
+                                    res.render("dashboard.html", result);
+                                });
                                 //res.send(result);
                             }
                         });
@@ -104,23 +122,6 @@ router.get("/", function (req, res) {
         }
     });
 });
-
-
-//display the dashboard information for tenant
-/*router.get('/tenantdashboard',function(req,res){
-      var tenantInfo={};
-      var useFirstName=userHelper.getUserInfo(req).firstName;
-      var homeId=HomeHandler.getHomeId(req).response;
-      var rentDue=MoreHomeInfoHandler.getrentPerMonth(homeId,res).response;
-      var rentDuein;
-      var landLord={};
-      var userRole;
-
-      tenantInfo={
-        "userFirstName"
-      }
-});*/
-
 
 //display the dashboard information for landloard
 router.get('/landloarddashboard',function(req,res){
