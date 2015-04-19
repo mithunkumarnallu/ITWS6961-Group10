@@ -12,7 +12,7 @@ var LoginTokenSchema = new Schema({
     token: {type: String, required: true},
     phoneNo: String,
     isLoggedIn: Boolean,
-    createdAt: {type: Date, required: true, default: Date.now, expires: '4h'}
+    createdAt: {type: Date, required: true, default: Date.now, expires: 300}
 });
 
 LoginTokenSchema.methods.createLoginToken = function (done) {
