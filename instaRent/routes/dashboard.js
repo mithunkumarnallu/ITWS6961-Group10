@@ -24,12 +24,14 @@ router.get("/", function (req, res) {
         }
         else {
             var currentUserInfo = userHelper.getUserInfo(req);
-            var rentDueIn = MoreHomeInfoHandler.getRentDueIn(data.leaseStartDate, data.leaseEndDate);
             var result = {
                 userName: currentUserInfo.firstName,
-                rentDueIn: rentDueIn.rentDueIn,
                 userRole: userType
             };
+            if(data.leaseStartDate) {
+                var rentDueIn = MoreHomeInfoHandler.getRentDueIn(data.leaseStartDate, data.leaseEndDate);
+                result.rentDueIn = rentDueIn.rentDueIn;
+            }
 
             if(userType == "Tenant") {
                 if(rentDueIn.isProRate) {
@@ -61,7 +63,9 @@ router.get("/", function (req, res) {
                     userHelper.renderTemplate("dashboard.html", result, req, res);
                 });
             }
-            else {
+            else if(!data.leaseStartDate) {
+                userHelper.renderTemplate("dashboard.html", result, req, res);
+            } else {
                 //User is a landlord. Fetch details correspondingly
                 if(rentDueIn.isProRate) {
                     result.rentDue = (data.rentPerMonth * rentDueIn.daysOfStay).toFixed(2);
