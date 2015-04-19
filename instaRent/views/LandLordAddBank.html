@@ -19,7 +19,8 @@
 
     <div class = "container">
         <legend>Bank Accounts</legend>
-
+        <div class="row">
+            <div class="col-sm-8">
                 <form method="POST" id="inst-form" role="form">
                     <div class="form-group">
                         <label for="tbAccountNo">Account No</label>
@@ -27,7 +28,7 @@
                     </div>
                     <div class="form-group">
                         <label for="routingno">Routing No</label>
-                       <input id="routingno" class="form-control" type="text" data-stripe="routingNumber">
+                       <input size="15" id="routingno" class="form-control" type="text" data-stripe="routingNumber">
                     </div>
                     <div class="form-group">
                         <label for="firstname">First Name</label>
@@ -39,6 +40,8 @@
                     </div>
                     <button type="submit" class="btn btn-danger" id="button">Submit</button>
                 </form>
+                </div>
+            </div>
     </div>
 
 <script type="text/javascript">
