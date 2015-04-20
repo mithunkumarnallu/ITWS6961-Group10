@@ -95,7 +95,11 @@
                                         <!--Complaints-->
                                         <!--Show the complaints? Not included in the json file-->
                                         <p id = "ActiveComplaintsForTenant" style="display:none;">
-                                            Roof is leaking
+                                            {% if userRole == 'Tenant'%}
+                                                {{ complaints }} 
+                                            {% elseif userRole == 'Landlord'%}
+                                                {{ complaints }}
+                                            {% endif %}
                                         </p></span>
                                     <div class="clearfix"></div>
                                 </div>

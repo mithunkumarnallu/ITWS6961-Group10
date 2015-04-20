@@ -7,6 +7,7 @@ var Home = require("../models/home").Home;
 var HomeHandler = require("../models/home");
 var mailHandler = require("../methods/mailerHandler");
 var invitationHandler = require("../models/invitation_schema");
+var payment_history = require("../models/payment_history");
 
 var moreHomeInfo = new mongoose.Schema({
   //homeId: String,
@@ -237,8 +238,7 @@ function getUserHomeAddresses(userId, res) {
 };
 
 
-
-function getrentPerMonth(homeId, callback){
+function getrentPerMonth(homeId, currentUserInfo, callback){
     MoreHomeInfo.findOne({_id:homeId}, function(err, data){
         //if(err || data.length == 0)
         // res.status(409).send({status: "Error", response: "Error: No such home!"});
@@ -247,12 +247,19 @@ function getrentPerMonth(homeId, callback){
         else {
             var rentDueIn = getRentDueIn(data.leaseStartDate, data.leaseEndDate);
 
-            if (rentDueIn.isProRate)
-                data = (data.rentPerMonthPerUser * rentDueIn.daysOfStay).toFixed(2);
-            else
-                data = data.rentPerMonthPerUser;
+            //Return rent due as 0 if user has already paid for this month
+            payment_history.getCurrentPaymentHistoryObject(currentUserInfo.email, true, currentUserInfo.foreignId, currentUserInfo.role, function(err, payments) {
+                if (!err && payments && payments.length > 0) {
+                    if (payments[0].payment_date.getMonth() == new Date().getMonth())
+                        return callback(null, 0);
+                }
+                else if (rentDueIn.isProRate)
+                    data = (data.rentPerMonthPerUser * rentDueIn.daysOfStay).toFixed(2);
+                else
+                    data = data.rentPerMonthPerUser;
 
-            callback(null, data);
+                callback(null, data);
+            });
         }
         //res.send({status: "Success", response: data.rentPerMonth});
     });
@@ -263,22 +270,32 @@ function daysInMonth(month,year) {
 }
 
 function getRentDueIn(leastStartDate, leaseEndDate) {
+
     var result = {
         isProRate: false
     };
     var d = new Date();
-    if (d.getMonth() == leastStartDate.getMonth()) {
+    if(leaseEndDate <= leastStartDate || d > leaseEndDate) {
         result.isProRate = true;
-        result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - leastStartDate.getDate();
-        result.daysOfStay = 1 - (d.getDate() / (daysInMonth(d.getMonth(), d.getYear()) - d.getDate())).toFixed(2);
-    }
-    else if (d.getMonth() == leaseEndDate.getMonth()) {
-        result.isProRate = true;
-        result.rentDueIn = leaseEndDate.getDate() - d.getDate();
-        result.daysOfStay = 1 - (d.getDate() / leaseEndDate.getDate()).toFixed(2);
+        result.rentDueIn = 0;
+        result.daysOfStay = 0;
     }
     else {
-        result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - d.getDate();
+        if (d.getMonth() == leastStartDate.getMonth()) {
+            result.isProRate = true;
+            result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - d.getDate();
+            result.daysOfStay = ((daysInMonth(d.getMonth(), d.getYear()) - leastStartDate.getDate() + 1)/daysInMonth(d.getMonth(), d.getYear())).toFixed(2);
+            //result.daysOfStay = 1 - (d.getDate() / (daysInMonth(d.getMonth(), d.getYear()) - d.getDate())).toFixed(2);
+        }
+        else if (d.getMonth() == leaseEndDate.getMonth()) {
+            result.isProRate = true;
+            result.rentDueIn = leaseEndDate.getDate() - d.getDate();
+            result.daysOfStay = (leaseEndDate.getDate() / daysInMonth(d.getMonth(), d.getYear())).toFixed(2);
+            //result.daysOfStay = 1 - (d.getDate() / leaseEndDate.getDate()).toFixed(2);
+        }
+        else {
+            result.rentDueIn = daysInMonth(d.getMonth(), d.getYear()) - d.getDate();
+        }
     }
     return result;
 }
