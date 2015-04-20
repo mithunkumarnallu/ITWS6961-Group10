@@ -109,12 +109,37 @@ router.post('/topic', function(req,res) {
 	//res.end();
 });
 
+router.put('/topic', function(req,res) {
+    console.log("got put request to change a topic");
+    console.log("request body:");
+    console.log(req.body);
+    //console.log(JSON.stringify(req));
+    //console.log(JSON.stringify(req.body));
+    topicHelper.updateTopic(req.body, res);
+    res.end();
+    //res.end();
+});
+
 router.get('/topic', function(req,res) {
 	var info = url.parse(req.url ,true);
-	
+	console.log("fetching topics per:");
+    console.log(info.query);
 	topicHelper.getTopics(info.query, res);
+});
 
+router.get('/topiccount', function(req,res) {
+    var info = url.parse(req.url ,true);
+    
+    console.log(JSON.stringify(info.query));
 
+    topicHelper.getTopicCount(info.query, res, function(err, res, count) {
+        console.log("got count:"+ count);
+        var result = {};
+        result.count = count;
+        result.cid = info.query.cid;
+        res.send(result);
+        res.end();
+    });
 });
 
 router.post('/msg', function(req,res) {
