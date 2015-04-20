@@ -30,7 +30,6 @@ msgHelper.prototype.getMsgs = function(data, res) {
             
         else {
             console.log("fetching messages succeeded");
-
             res.send(data);
             res.end();
         }

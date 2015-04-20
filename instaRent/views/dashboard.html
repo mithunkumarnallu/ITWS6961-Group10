@@ -44,7 +44,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                             {{ userName }},   Welcome back!
+                             {{ sessionDetail.firstName }},   Welcome back!
                             <!--to distinguish the landlord and renter-->
                         </h1>
                         <ol class="breadcrumb">
@@ -75,10 +75,9 @@
                                     <div class="col-xs-9 text-right" >
                                         <div class="huge" >
                                             <small>
-                                                <!--Here didn't tell the difference between two roles, need fix-->
-                                                {% if userRole == 'Tenant'%}
+                                                {% if sessionDetail.role == 'Tenant'%}
                                                     {{ activeComplaints }} 
-                                                {% elseif userRole == 'Landlord'%}
+                                                {% elseif sessionDetail.role == 'Landlord'%}
                                                     {{ activeComplaints }} 
                                                 {% endif %}
 
@@ -95,9 +94,9 @@
                                         <!--Complaints-->
                                         <!--Show the complaints? Not included in the json file-->
                                         <p id = "ActiveComplaintsForTenant" style="display:none;">
-                                            {% if userRole == 'Tenant'%}
+                                            {% if sessionDetail.role == 'Tenant'%}
                                                 {{ complaints }} 
-                                            {% elseif userRole == 'Landlord'%}
+                                            {% elseif sessionDetail.role == 'Landlord'%}
                                                 {{ complaints }}
                                             {% endif %}
                                         </p></span>
@@ -117,9 +116,9 @@
                                         <div class="huge" >
                                             <small>
                                                 <!--Here didn't tell the difference between two roles, need fix-->
-                                                {% if userRole == 'Tenant'%}
+                                                {% if sessionDetail.role == 'Tenant'%}
                                                      {{ rentDue }} 
-                                                {% elseif userRole == 'Landlord'%}
+                                                {% elseif sessionDetail.role == 'Landlord'%}
                                                      {{ rentDue }}
                                                 {% endif %}
                                                 
@@ -152,18 +151,18 @@
                                     <div class="col-xs-9 text-right">
                                         <div class="huge" >
                                             <small>
-                                                {% if userRole == 'Tenant'%}
+                                                {% if sessionDetail.role == 'Tenant'%}
                                                     {{rentDueIn}}  Days
-                                                {% elseif userRole == 'Landlord'%}
+                                                {% elseif sessionDetail.role == 'Landlord'%}
                                                     {{rentToBePaid}} not paid
                                                 {% endif %}
                                             </small>
                                         </div>
                                         <div>
-                                            {% if userRole == 'Tenant'%}
+                                            {% if sessionDetail.role == 'Tenant'%}
                                                 Days to pay
-                                            {% elseif userRole == 'Landlord'%}
-                                                Rent Status
+                                            {% elseif sessionDetail.role == 'Landlord'%}
+                                                {{Rent Status}}
                                             {% endif %}
                                         </div>
                                     </div>
@@ -175,7 +174,7 @@
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show_Dueday"></i>
                                         <!--Due day-->
                                         <p id = "DueDay" style="display:none;">
-                                            {% if userRole == 'Landlord'%}
+                                            {% if sessionDetail.role == 'Landlord'%}
                                                 {% for x in rentStatus %}
                                                     {% if loop.first %}<ul>{% endif %}
                                                     Name: {{ x.name }}</br>
@@ -209,18 +208,19 @@
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show_Landlord"></i>
                                         <!--Landlord info include ="name" + "email"-->
                                         <p id = "LandlordInfo" style="display:none;">
-                                            {% if userRole == 'Tenant'%}
+                                            {% if sessionDetail.role == 'Tenant'%}
                                                     Name: {{landlord.name}}</br>
                                                     Email: {{landlord.email}}</br>
                                                     Tel: {{landlord.phone}}
-                                                {% elseif userRole == 'Landlord'%}
-                                                    {% for x in rents %}
-                                                        {% if loop.first %}<ul>{% endif %}
-                                                        Name: {{ x.name }}</br>
-                                                        Email: {{ x.email }}</br>
-                                                        Tel: {{x.phone}}
-                                                        {% if loop.last %}</ul>{% endif %}
-                                                    {% endfor %}
+                                                {% elseif sessionDetail.role == 'Landlord'%}
+                                                    <ul>  
+                                                        {% for x in rents %}
+                                                            {% if loop.first %}{% endif %}
+                                                                Name: {{ x.name }}</br>
+                                                                Email: {{ x.email }}</br>
+                                                                Tel: {{x.phone}}
+                                                        {% endfor %}
+                                                    </ul>
                                                 {% endif %}
                                             
                                         </p>

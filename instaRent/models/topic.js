@@ -8,8 +8,9 @@ var TopicSchema = new Schema({
  landlordid: String,
  date: Date,
  status: String,
- category: String
-
+ category: String,
+ houseid: String
+ 
 });
 
 
