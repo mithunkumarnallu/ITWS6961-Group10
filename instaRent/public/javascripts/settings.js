@@ -1,4 +1,9 @@
 $(document).ready(function update_profile() {
+	var email;
+	 $.get('/settings/getEmail',{},function(res){
+		    email=res.email;
+
+	});
 	console.log("update_profile outside");
 	$('#update_profile').bootstrapValidator({
 		feedbackIcons: {
@@ -36,18 +41,19 @@ $(document).ready(function update_profile() {
 
 	$('#update_profile').submit(function() {
 		console.log("update_profile");
+		//console.log($("#getemail").text());
 		var $first_name=$("#first_name");
 		var $last_name=$("#last_name");
-		var $email=$("#getemail").val(); //no eamil in new json data?
+
+
 		var $phone=$("#number");
 
 		var firstName=$first_name.val().trim();
 		var lastName=$last_name.val().trim();
-		var email=$email;
+	//	var email=$email;
 		//var email=$email.val().trim();
 		var phone=$phone.val().trim();
-
-		console.log(firstName, lastName, phone);
+		console.log(email,firstName, lastName, phone);
 
 		$.ajax({
 			type: 'POST',
@@ -67,7 +73,7 @@ $(document).ready(function update_profile() {
 			},
 			error: function(xhr, textStatus, err) {
 				console.log("error log");
-                console.log("readyState: " + xhr.readyState);
+        console.log("readyState: " + xhr.readyState);
 				console.log("responseText: "+ xhr.responseText);
 				console.log("status: " + xhr.status);
 				console.log("text status: " + textStatus);

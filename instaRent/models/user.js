@@ -19,25 +19,48 @@ var UserSchema = new Schema({
 
 var User=mongoose.model('User',UserSchema);
 
+
+
+
 ////update the user info
 function update(user){
-  console.log("here we are!");
-  var query={email:user.email};
-  var update={
-    firstName:user.firstName,
-    lastName:user.lastName,
-    phoneNo:user.phoneNo
-  };
-  var options={new:true};
-  User.findOneAndUpdate(query, update,options,function(err,person){
-      if (err){
-        console.log("got an error");
-      }
+ var useremail=user.email;
+ var newphone=user.phoneNo;
+ var newfname=user.firstName;
+ var newlname=user.lastName;
+ var stringemail=JSON.stringify(useremail);
 
-      else{
-        console.log("success yoyoyo!");
-      }
+ console.log("the new"+stringemail);
+ //var query={email:useremail};
+ //var update={phoneNo:newphone};
+// var options={new:true};
+ User.findOneAndUpdate({email:useremail},{phoneNo:newphone},{},function(err,numAffected, raw){
+
+ });
+
+ User.findById('5535460110148d5866253d80',function(err,people){
+   console.log(people);
+ });
+
+ /*
+  User.findById('5535460110148d5866253d80',function(err,people){
+    console.log(newphone);
+    console.log(newfname);
+    console.log(newlname);
+    if(err)
+    return console.error(err);
+    //console.dir(people);
+    //people.firstName=user.firstName;
+    //people.lastName=user.lastName;
+    //people.phoneNo=user.phoneNo;
+    console.dir("!!!!");
+    people.update({phoneNo:newphone}).exec();
+    console.log(people);
   });
+
+  */
+
+}
   /*User.findOne=({email:user.email},function(err, doc){
     doc.firstName=user.firstName;
     doc.lastName=user.lastName;
@@ -46,7 +69,7 @@ function update(user){
     doc.save();
     */
   //});
-};
+
 
 function getUserByPhoneNo(phoneNo, callback) {
     User.findOne({phoneNo: phoneNo}, callback);
