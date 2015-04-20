@@ -8,7 +8,8 @@ var Home = require("../models/home").Home;
 var HomeHandler = require("../models/home");
 
 var payment_history = require("../models/payment_history");
-
+var topicHelper = require("../methods/topicHelper");
+topicHelper = new topicHelper();
 //HomeHandler = new HomeHandler();
 
 var MoreHomeInfo = require("../models/more_home_info").MoreHomeInfo;
@@ -81,7 +82,8 @@ router.get("/", function (req, res) {
                 else {
                     result.rentDue= data.rentPerMonth;
                 }
-                HomeHandler.getUserIdsForAHome(data._id, "Tenant", function (err, data) {
+                result.rentToBePaid = 0;
+                HomeHandler.getUserIdsForAHome(data._id.toString(), "Tenant", function (err, data) {
                     if(err) {
                         console.log("Error while fetching tenants living in a house: " + err);
                         res.status(500).send("Error in fetching data");
@@ -116,13 +118,28 @@ router.get("/", function (req, res) {
                                     }
                                     else {
                                         var tenantPayments = [];
+                                        var d = new Date();
                                         for(var i = 0; i < data.length; i++) {
                                             tenantPayments.push({name: data[i].userName, rentPaidOn: data[i].payment_date.toDateString()});
+                                            if(d.getMonth() == data[i].payment_date.getMonth() && d.getYear() == data[i].payment_date.getYear())
+                                                result.rentDue -= data[i].amount_charged;
+                                            else
+                                                result.rentToBePaid += 1;
                                         }
                                     }
+                                    result.rentToBePaid += (tenantUserIds.length - data.length);
                                     result.rentStatus = tenantPayments;
+
+                                    //Code to get active complaints count
+                                    topicHelper.getTopicCount({userId: currentUserInfo.email, houseId: currentUserInfo.foreignId, nestatus: "finished" }, null,
+                                        function(err, obj, data) {
+                                            if(!err)
+                                                result.activeComplaints = data;
+                                            userHelper.renderTemplate("dashboard.html", result, req, res);
+                                        });
                                     console.log("RentStatus is: " + JSON.stringify(tenantPayments));
-                                    userHelper.renderTemplate("dashboard.html", result, req, res);
+                                    console.log("Object set for dashboard is : " + JSON.stringify(result));
+
                                 });
                             }
                         });

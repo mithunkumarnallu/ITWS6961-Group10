@@ -47,4 +47,8 @@ topicHelper.prototype.getTopics = function(data, res) {
     });
 };
 
+topicHelper.prototype.getTopicCount = function(query, res, callBack) {
+    callBack(null, null, 2);
+};
+
 module.exports = topicHelper;
