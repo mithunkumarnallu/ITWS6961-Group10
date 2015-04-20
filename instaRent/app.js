@@ -163,10 +163,11 @@ app.get("/reviews_success", function(req,res)
     //res.render('review.html',{foo: true});
 });
 
+
 // Amy routes
 app.get('/settings_password', function(req, res) {
     console.log("in settings_password");
-    res.render('settings_password.html');
+    res.render('settings_password.html',  userHelper.getUserInfo(req));
 });
 
 
