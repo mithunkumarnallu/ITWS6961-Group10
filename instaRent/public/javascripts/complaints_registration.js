@@ -229,6 +229,8 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
 
   this.setDate = function() {
     this.date = new Date();
+    $scope.files = [];
+    $scope.fname = "";
   }
 
   this.hasFile = function(msg) {
@@ -302,6 +304,7 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
   }
 
   this.newMsg = function() {
+
     this.topicid = $scope.topicid;
     var info = {
       topicid: $scope.topicid + "",
@@ -378,6 +381,7 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
     uploadFile(0)
       .then(function () {
         //alert('All Files Uploaded');
+        
       });
   };
 

@@ -1,6 +1,6 @@
 var url = require('url');
-var fs = require('fs');
-var path = require('path');
+//var fs = require('fs');
+//var path = require('path');
 
 var express = require('express');
 var router = express.Router();
@@ -17,6 +17,19 @@ var HomeHandler = require("../models/home");
 var MoreHomeInfo = require("../models/more_home_info").MoreHomeInfo;
 var MoreHomeInfoHandler = require("../models/more_home_info");
 
+//General
+var Promise = require('bluebird');
+var Q = require('q');
+var moment = require('moment');
+var lodash = require('lodash');
+//File upload
+var fs = Promise.promisifyAll(require('fs')); 
+var multiparty = require('multiparty'); 
+var path = require('path'); 
+var uuid = require('node-uuid'); 
+
+//ref: https://medium.com/@chaseellsworth/file-upload-with-angularjs-and-node-js-part-1-69682ce76
+//ref: https://medium.com/@chaseellsworth/file-upload-2-3-node-to-server-file-system-f200aadac57e
 
 
 router.get("/userinfo", function (req, res) {
@@ -140,6 +153,64 @@ router.get('/topiccount', function(req,res) {
         res.send(result);
         res.end();
     });
+});
+
+router.post('/upload', function(req,res) {
+    console.log("got post request to upload a file");
+
+    var fileName = '';  
+    var size = '';    
+    var tempPath;
+    var destPath = '';
+    var extension;    
+    var imageName;    
+    var destPath = '';
+    var inputStream;
+    var outputStream;
+    var form = new multiparty.Form();     
+    
+    form.on('error', function(err){      
+      console.log('Error parsing form: ' + err.stack);    
+    }); 
+
+    form.on('part', function(part){      
+        if(!part.filename){        
+            return;      
+        }   
+
+        size = part.byteCount;      
+        fileName = part.filename;    
+    });     
+
+    form.on('file', function(name, file){      
+        tempPath = file.path;      
+        extension = file.path.substring(file.path.lastIndexOf('.')); 
+        console.log(JSON.stringify(file));     
+        imageName = file.originalFilename;      
+        destPath = path.join(__dirname, '../public/uploads/', imageName);      
+        
+        console.log("destpath:");
+        console.log(destPath);
+
+        inputStream = fs.createReadStream(tempPath);        
+        outputStream = fs.createWriteStream(destPath);       
+        inputStream.pipe(outputStream);
+
+        inputStream.on('end', function(){         
+            fs.unlinkSync(tempPath);        
+            console.log('Uploaded: ', imageName, file.size);        
+            res.send(imageName);
+            res.end();
+        });    
+    });     
+
+    form.on('close', function(){      
+      console.log('Uploaded!!');   
+
+    });
+
+    form.parse(req);   
+    
 });
 
 router.post('/msg', function(req,res) {

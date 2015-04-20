@@ -79,6 +79,7 @@ topicHelper.prototype.updateTopic = function(data, res) {
 };
 
 topicHelper.prototype.getTopicCount = function(data, res, callback) {
+    console.log("getting count:");
     console.log("category:"+data.category);
     console.log("houseid:"+data.houseid);
 
@@ -99,6 +100,7 @@ topicHelper.prototype.getTopicCount = function(data, res, callback) {
                     status: {$ne: data.nestatus}
                 } ]
         };
+
 
     } else {
         console.log("fetching topics count without category");
