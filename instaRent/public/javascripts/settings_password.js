@@ -2,11 +2,11 @@ $(document).ready(function update_password() {
 	console.log("update_password outside");
 	console.log($('#getpassword').val());
 	$('#update_password').bootstrapValidator({
-		feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },
+	feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
         fields: {
         	password: {
         		validators: {
