@@ -1,13 +1,12 @@
 {% extends 'partials/layout.html' %}
  
 {% block myHead %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
     
     <script src="/javascripts/complaints_registration.js"></script>
     <link href="/stylesheets/complaints.css" rel="stylesheet"/>
-    
+    <script src="/javascripts/angular-file-upload.min.js"></script>
+
 {% endblock %}
 
 {% block myBody %}
@@ -92,7 +91,11 @@
                     <textarea class="form-control" ng-model="ctrl.newmsg" ></textarea>
                   </div>
 
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <div class="form-group">
+                    <input type="file" ng-model='files' ng-file-select ng-file-change="onFileSelect(files)" ng-multiple="true" class="app-prompt-upload"/> 
+                  </div>
+
+                  <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="ctrl.clear()">Close</button>
                   <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="ctrl.newMsg()">Send</button>
 
                 </form>
@@ -103,9 +106,12 @@
         </div>
 
         <!-- categories -->
-        <div ng-show="ctrl.mode === 'categories'" ng-repeat="category in ctrl.categories" class="panel panel-default" ng-click="ctrl.fetchTopics(category)">
+        <div ng-show="ctrl.mode === 'categories'" ng-repeat="category in categories" class="panel {{category.css}}" ng-click="ctrl.fetchTopics(category)">
+          <div class="panel-heading ">
+            {{category.name}} <span class="badge">{{category.count}}</span>
+          </div>
           <div class="panel-body" >
-            <a> {{category.name}} </a>
+            {{category.desc}}
           </div>
         </div>
         
@@ -114,62 +120,98 @@
         <div ng-show="ctrl.mode==='topics'">
           <div>
           
-            <div class="panel panel-primary" ng-show="topic.status==='new'" ng-repeat="topic in topics">
-
-              <div>
-                <button class="btn btn-primary" ng-click="ctrl.changeStatus(topic)" >{{topic.status}}</button>
+            <div class="panel {{topicstyle[topic.status]}}" ng-show="topic.status==='new'" ng-repeat="topic in topics">
+              <div class="panel-heading">
+                  <span class="badge" ng-click="ctrl.changeStatus(topic)">{{topic.status}}</span>
+                  {{"Created By: " + topic.userid }}
               </div>
 
-              <div class="panel-body" ng-click="ctrl.fetchMsgs(topic)">
-                <a>{{topic.name}}</a>
+              <div class="panel-body" >
+                <a ng-click="ctrl.fetchMsgs(topic)">{{topic.name}}</a>
+                <!-- <em>{{'created on:' + topic.date }}</em> -->
               </div>
+
+              <div class="panel-footer" >
+                {{'Created on:  ' + topic.date.substring(2, 10)}}
+              </div>
+
             </div>
           </div>
 
           <div>
-            <div class="panel panel-danger" ng-show="topic.status==='processing'" ng-repeat="topic in topics">
-
-              <div>
-                <button class="btn btn-danger" ng-click="ctrl.changeStatus(topic)" >{{topic.status}}</button>
+            <div class="panel {{topicstyle[topic.status]}}" ng-show="topic.status==='processing'" ng-repeat="topic in topics">
+              <div class="panel-heading">
+                  <span class="badge" ng-click="ctrl.changeStatus(topic)">{{topic.status}}</span>
+                  {{"Created By: " + topic.userid }}
               </div>
 
-              <div class="panel-body" ng-click="ctrl.fetchMsgs(topic)" >
-                <a>{{topic.name}}</a>
+              <div class="panel-body" >
+                <a ng-click="ctrl.fetchMsgs(topic)">{{topic.name}}</a>
+                <!-- <em>{{'created on:' + topic.date }}</em> -->
               </div>
+
+              <div class="panel-footer" >
+                {{'Created on:  ' + topic.date.substring(2, 10)}}
+              </div>
+
             </div>
           </div>
 
           <div>
-            <div class="panel panel-success" ng-show="topic.status==='finished'" ng-repeat="topic in topics">
-
-              <div>
-                <button class="btn btn-success" ng-click="ctrl.changeStatus(topic)" >{{topic.status}}</button>
+          
+            <div class="panel {{topicstyle[topic.status]}}" ng-show="topic.status==='finished'" ng-repeat="topic in topics">
+              <div class="panel-heading">
+                  <span class="badge" ng-click="ctrl.changeStatus(topic)">{{topic.status}}</span>
+                  {{"Created By: " + topic.userid }}
               </div>
 
-              <div class="panel-body" ng-click="ctrl.fetchMsgs(topic)">
-                <a>{{topic.name}}</a>
+              <div class="panel-body" >
+                <a ng-click="ctrl.fetchMsgs(topic)">{{topic.name}}</a>
+                <!-- <em>{{'created on:' + topic.date }}</em> -->
               </div>
+
+              <div class="panel-footer" >
+                {{'Created on:  ' + topic.date.substring(2, 10)}}
+              </div>
+
             </div>
           </div>
+
         </div>
 
         <!-- messages -->
         <div ng-show="ctrl.mode==='msgs'">
           
           <div>
-            <div class="panel panel-primary" ng-repeat="msg in msgs | orderBy: '-date'">
+            <div class="panel {{ctrl.msgStyle(msg)}}" ng-repeat="msg in msgs | orderBy: '-date'">
 
-              <div>
-                <button class="btn btn-danger" ng-show="msg.senderid === ctrl.userid" >{{"From: " + msg.senderid }}</button>
+              <div class="panel-heading">
+                {{"From: " + msg.senderid }}
               </div>
 
               <div>
-                <button class="btn btn-success" ng-hide="msg.senderid === ctrl.userid" >{{"From:" + msg.senderid}}</button>
+                <button class="btn btn-info">{{"Created On: " + msg.date.substring(2, 10) }}</button>
               </div>
 
               <div class="panel-body" ng-click="ctrl.setDate()" data-toggle="modal" data-target="#createMsgModal">
                 <a>{{msg.message}}</a>
               </div>
+
+              <!-- <div class="panel-footer">
+                <a class="btn btn-success" ng-click="ctrl.fetchFile(msg.fname)" ng-show="ctrl.hasFile(msg)">{{msg.fname}}</a>
+              </div> -->
+
+              <div class="panel-footer">
+                <a ng-show="ctrl.normalFile(msg)" href="/uploads/{{msg.fname}}" class="btn btn-success" download>
+                  {{msg.fname}}
+                </a>
+
+                <a ng-show="ctrl.imageFile(msg)" href="/uploads/{{msg.fname}}"  download>
+                  
+                  <img border="0" ng-src="/uploads/{{msg.fname}}" alt="{{msg.fname}}" width="104" height="142">
+                </a>
+              </div>
+
             </div>
           </div>
 
@@ -178,7 +220,6 @@
       </div >
       
     </div> 
-
 
     {% endraw %}
     
