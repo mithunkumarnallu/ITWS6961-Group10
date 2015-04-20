@@ -33,6 +33,8 @@ router.get("/userinfo", function (req, res) {
         }
         else {
             var currentUserInfo = userHelper.getUserInfo(req);
+            userInfo.houseid = userHelper.getDefaultHomeID(req);
+            console.log("houseid:" + userInfo.houseid);
 
             if(userType == "Tenant") {
 
@@ -103,10 +105,8 @@ router.post('/topic', function(req,res) {
     console.log(req);
     //console.log(JSON.stringify(req));
 	//console.log(JSON.stringify(req.body));
-  	var result = topicHelper.newTopic(req.body);
-  	console.log(result);
-  	res.send(result);
-	res.end();
+  	result = topicHelper.newTopic(req.body, res);
+	//res.end();
 });
 
 router.get('/topic', function(req,res) {
