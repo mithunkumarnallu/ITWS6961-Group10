@@ -11,7 +11,7 @@ var UserSchema = new Schema({
  phoneNo: String,
  foreignId: String,
  role: String,
- address: String,    
+ address: String,
  isVerified: Boolean,
  passwordHash: String,
  passwordSalt: String
@@ -20,18 +20,40 @@ var UserSchema = new Schema({
 var User=mongoose.model('User',UserSchema);
 
 ////update the user info
-function update(user,res){
-  User.update({email:user.email,firstName:user.firstName, lastName: user.lastName,
-  phoneNo: user.phoneNo},user,{},function(err,numEffected){
-    if(err||numEffected==0)
-      res.status(409).send("Error,Could not find user");
-    else
-    res.send("Success");
+function update(user){
+  console.log("here we are!");
+  var query={email:user.email};
+  var update={
+    firstName:user.firstName,
+    lastName:user.lastName,
+    phoneNo:user.phoneNo
+  };
+  var options={new:true};
+  User.findOneAndUpdate(query, update,options,function(err,person){
+      if (err){
+        console.log("got an error");
+      }
+
+      else{
+        console.log("success yoyoyo!");
+      }
   });
+  /*User.findOne=({email:user.email},function(err, doc){
+    doc.firstName=user.firstName;
+    doc.lastName=user.lastName;
+    doc.phoneNo=user.phoneNo;
+    doc.visits.$inc();
+    doc.save();
+    */
+  //});
 };
 
 function getUserByPhoneNo(phoneNo, callback) {
     User.findOne({phoneNo: phoneNo}, callback);
+}
+
+function getUserByEmail(email,callback){
+    User.findOne({email:email},callback);
 }
 
 exports.User=User;

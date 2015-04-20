@@ -20,7 +20,8 @@ router.get('/displayprofile', function(req, res, next){
 });
 
 //change user setting, firstname, lastname, phonenumber and email, pwd cannot be changed
-router.post('/changeuserprofile',function(req,res,next){
+router.post('/changeuserprofile',function(req,res){
+  //var email=req.body.email;
   var userInfo;
   userInfo={
     email: req.body.email,
@@ -28,7 +29,9 @@ router.post('/changeuserprofile',function(req,res,next){
     lastName: req.body.lastName,
     phoneNo: req.body.phoneNo
   };
-  UserHandler.update(userInfo,res);
+
+  console.log("hello!");
+  UserHandler.update(userInfo);
 });
 
 

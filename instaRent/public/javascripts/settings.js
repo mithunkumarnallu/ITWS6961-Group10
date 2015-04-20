@@ -38,11 +38,12 @@ $(document).ready(function update_profile() {
 		console.log("update_profile");
 		var $first_name=$("#first_name");
 		var $last_name=$("#last_name");
-		//var $email=$("#email"); no eamil in new json data?
+		var $email=$("#getemail").val(); //no eamil in new json data?
 		var $phone=$("#number");
 
 		var firstName=$first_name.val().trim();
 		var lastName=$last_name.val().trim();
+		var email=$email;
 		//var email=$email.val().trim();
 		var phone=$phone.val().trim();
 
@@ -51,7 +52,12 @@ $(document).ready(function update_profile() {
 		$.ajax({
 			type: 'POST',
 			url: "/settings/changeuserprofile",  // needed changes in account.js file, not done yet
-			data: "&firstName=" + firstName + "&lastName=" +lastName + "&phoneNo=" + phone,
+			data: {
+				email:email,
+				firstName:firstName,
+				lastName:lastName,
+				phoneNo:phone
+			},
 			//dataType: "jsonp",
 			success: function(resp) {
 				if(resp=="Success") {
@@ -66,7 +72,7 @@ $(document).ready(function update_profile() {
 				console.log("status: " + xhr.status);
 				console.log("text status: " + textStatus);
 				console.log("error: " + err);
-			}	
+			}
 		});
 	});
 });
