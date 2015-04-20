@@ -51,6 +51,7 @@ topicHelper.prototype.getTopics = function(data, res) {
     });
 };
 
+
 topicHelper.prototype.updateTopic = function(data, res) {
     console.log("updating a topic");
 
@@ -154,5 +155,10 @@ topicHelper.prototype.getTopicCount = function(data, res, callback) {
     });
 };
 
+
+
+/*topicHelper.prototype.getTopicCount = function(query, res, callBack) {
+    callBack(null, null, 2);
+};*/
 
 module.exports = topicHelper;

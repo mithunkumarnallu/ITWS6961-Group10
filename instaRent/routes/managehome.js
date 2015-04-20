@@ -14,7 +14,7 @@ var userHelper = require("../methods/userHelper");
 userHelper = new userHelper();
 
 router.get('/', function(req, res, next) {
-  res.render('Role Selection.html', { title: 'instaRent' });
+  userHelper.renderTemplate('Role Selection.html',{ title: 'instaRent' }, req, res);
 });
 
 router.get('/mail', function(req, res, next) {

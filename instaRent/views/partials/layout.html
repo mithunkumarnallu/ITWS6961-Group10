@@ -19,14 +19,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#" style="font-weight: 700; font-family: 'Montserrat','Helvetica Neue','Helvetica','Arial','sans-serif'; color: white"><i class="fa fa-play-circle"></i>  <span class="light" style="font-weight: 500;color:#7FED11">INSTA</span>RENT</a>
+                <a class="navbar-brand" href="/dashboard" style="font-weight: 700; font-family: 'Montserrat','Helvetica Neue','Helvetica','Arial','sans-serif'; color: white"><i class="fa fa-play-circle"></i>  <span class="light" style="font-weight: 500;color:#7FED11">INSTA</span>RENT</a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
                 
                
                 <li class="dropdown" >
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" ><i class="fa fa-user"></i> <span id="userName">{{ userName }}</span><b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" ><i class="fa fa-user"></i> <span id="userName">{{ sessionDetail.firstName }}</span><b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
@@ -58,16 +58,18 @@
                         <a href="/settings"><i class="fa fa-fw fa-wrench"></i> Settings</a>
                     </li>
                     <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Payments <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="demo" class="collapse">
-                            <li>
-                                <a href="#" id="pay">Rent Payments</a>
-                            </li>
-                            <li>
-                                <a href="#">Payments for Repairs</a>
-                            </li>
-                        </ul>
+                        <a href="#" id="pay"><i class="fa fa-fw fa-cc-stripe"></i> Quick Rent Pay</a>
                     </li>
+                    <li>
+                        <a href="/payments/payment_history"><i class="fa fa-fw fa-credit-card"></i>Payment History</a>
+                    </li>
+                    <li>
+                        <a href="/payments/testLandlord"><i class="fa fa-fw fa-university"></i> Add Bank Account</a>
+                    </li>
+                    <li>
+                        <a href="/reviews"><i class="fa fa-fw fa-pencil"></i>Submit Feedback</a>
+                    </li>
+
                     
                 </ul>
             </div>

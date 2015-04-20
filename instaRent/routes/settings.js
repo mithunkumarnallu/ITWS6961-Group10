@@ -8,6 +8,7 @@ var UserHandler=require("../models/user");
 
 router.get('/', function(req, res, next) {
   res.render('settings.html', userHelper.getUserInfo(req) );
+  //userHelper.renderTemplate('settings.html', userHelper.getUserInfo(req), req,res);
 });
 
 //display the user profile, return type is in JSON

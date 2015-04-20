@@ -148,7 +148,7 @@ router.post('/charge', function(req, res) {
             res.status(409).send("Error: Getting Home");
         }
         else{
-            MoreHomeInfoHandler.getrentPerMonth(data,function(err,data){
+            MoreHomeInfoHandler.getrentPerMonth(data, userHelper.getUserInfo(req), function(err,data){
                 if(err)
                     res.status(409).send("Error: Getting rent");
                 else{
@@ -175,7 +175,9 @@ router.post('/charge', function(req, res) {
 });
 router.get('/testLandlord', function (req,res) {
 
-    res.render('LandLordAddBank.html');
+    //res.render('LandLordAddBank.html');
+    userHelper.renderTemplate('LandLordAddBank.html',{},req,res);
+
 
 });
 
@@ -183,7 +185,8 @@ router.get('/testLandlord', function (req,res) {
 router.get('/payment_history', function (req,res) {
     var userRole = userHelper.getUserType(req);
 
-    res.render('payment_history.html',{userRole:userRole});
+    //res.render('payment_history.html',{userRole:userRole});
+    userHelper.renderTemplate('payment_history.html',{userRole:userRole},req,res);
 
 });
 
@@ -194,12 +197,13 @@ router.get('/getRent', function(req, res, next){
             if(err){
                 res.status(409).send("Error: Getting Home");
             }
-            else{
-                MoreHomeInfoHandler.getrentPerMonth(data,function(err,data){
+            else {
+                MoreHomeInfoHandler.getrentPerMonth(data, userHelper.getUserInfo(req), function(err,data){
                     if(err)
                         res.status(409).send("Error: Getting rent");
                     else{
-                        res.send(data);
+                        console.log(data);
+                        res.send(""+ data);
                     }
 
                 });

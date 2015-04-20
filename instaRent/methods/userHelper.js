@@ -84,7 +84,9 @@ userHelper.prototype.getUserInfo=function(data, email, userIds, callback){
             firstName: firstName,
             lastName: lastName,
             email: email,
-            phoneNo: phoneNo
+            phoneNo: phoneNo,
+            foreignId: data.session.passport.user.foreignId,
+            role: data.session.passport.user.role
         };
         return userInfo;
     }
@@ -109,12 +111,13 @@ userHelper.prototype.SetQRSession = function(req, user)  {
 
 userHelper.prototype.renderTemplate=function(viewName, obj, req, res){//data- session object, obj- object to which session info is appended
     console.log("inside renderTemplate: "+req.session.passport.user.foreignId+" "+req.session.passport.user.address);
+
     if(!req.session.passport.user)
     {
         res.redirect('/login');
         console.log("not logged in");
     }
-    else if(req.session.passport.user.foreignId=='')
+    else if(req.session.passport.user.foreignId=='' && req.originalUrl !== "/managehome")
     {
         res.redirect('/managehome');
         console.log("no default home set");
