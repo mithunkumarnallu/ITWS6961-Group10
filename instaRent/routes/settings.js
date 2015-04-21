@@ -4,7 +4,7 @@ var userHelper = require("../methods/userHelper");
 userHelper = new userHelper();
 var User=require("../models/user").User;
 var UserHandler=require("../models/user");
-
+var email;
 
 router.get('/', function(req, res, next) {
   res.render('settings.html', userHelper.getUserInfo(req) );
@@ -19,16 +19,38 @@ router.get('/displayprofile', function(req, res, next){
      res.send(JSON.stringify(userInfo));
 });
 
+router.get('/getEmail',function(req,res){
+  res.send(userHelper.getUserInfo(req));
+});
+
+
+
 //change user setting, firstname, lastname, phonenumber and email, pwd cannot be changed
-router.post('/changeuserprofile',function(req,res,next){
-  var userInfo;
+router.post('/changeuserprofile',function(req,res){
+
+  var userInfo={};
   userInfo={
     email: req.body.email,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     phoneNo: req.body.phoneNo
   };
-  UserHandler.update(userInfo,res);
+
+  console.log("hello!");
+  console.log(userInfo.email);
+  UserHandler.update(userInfo);
+
+
+/*
+  var userInfo=[];
+  userInfo.push(req.body.email);
+  userInfo.push(req.body.firstName);
+  userInfo.push(req.body.lastName);
+  userInfo.push(req.body.phoneNo);
+  console.log("user email: ", userInfo[0]);
+  UserHandler.update(userInfo);
+
+  */
 });
 
 

@@ -1,20 +1,20 @@
 {% extends 'partials/layout.html' %}
- 
+
 {% block myHead %}
-		<!-- javaScripts -->	    
-		
+		<!-- javaScripts -->
+
 		<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js"></script>
 
 	    <script type="text/javascript" src="./javascripts/settings.js"></script>
-    
+
 	    <!-- Stylesheets -->
-		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/css/bootstrapvalidator.min.css"> 
-	   
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/css/bootstrapvalidator.min.css">
+
 	    <link href="./stylesheets/settings.css" rel="stylesheet">
-		
+
 {% endblock %}
 
-{% block myBody %}		
+{% block myBody %}
 		        <!-- Page Heading -->
 		        <div class="row">
 		            <div class="col-lg-12">
@@ -22,9 +22,12 @@
 		                    Settings
 		                </h1>
 		                <ol class="breadcrumb">
-		                    <li class="active">
-		                        <i class="fa fa-wrench"></i> Hi, {{firstName}}!
-		                    </li>
+		                    <li>
+                        		<i class="fa fa-dashboard"></i>  <a href="/dashboard">Dashboard</a>
+                    		</li>
+                    		<li class="active">
+                        		<i class="fa fa-fw fa-wrench" ></i> Settings
+                    		</li>  
 		                </ol>
 		            </div>
 		        </div>
@@ -39,9 +42,11 @@
 		        				</div>
 		        			</div>
 		        			<div class="col-lg-9">
-		        				<div class="form-group">
+		        				<div class="form-group" id="getemail">
 		        					{{email}}
 		        				</div>
+									<!--	<div id="getemail" value={{email}} style="visibility:hidden">
+									</div>-->
 		        			</div>
 		        		</div>
 		        		<!-- /.row -->
@@ -70,7 +75,7 @@
 		        			<div class="col-lg-9">
 		        				<div class="form-group">
 		        					<!-- input user last name from backend-->
-									<input type="text" value = {{lastName}} name="last_name" id="last_name" class="form-control">	
+									<input type="text" value = {{lastName}} name="last_name" id="last_name" class="form-control">
 								</div>
 							</div>
 						</div>
@@ -84,7 +89,7 @@
 		        			</div>
 		        			<div class="col-lg-9">
 		        				<div class="form-group">
-		        					<!-- input user phone number from backend--> 
+		        					<!-- input user phone number from backend-->
 									<input type="tel" value={{phoneNo}} name="number" id="number" class="form-control">
 								</div>
 							</div>
@@ -108,7 +113,7 @@
 							<!-- change password button-->
 							<div class="col-lg-9">
 								<input type="submit" class="btn btn-default" id="submit_btn" value="Save and Update">
-								<!-- submit button-->	
+								<!-- submit button-->
 				    		</div>
 				    	</div>
 				    	<!-- /.row -->

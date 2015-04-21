@@ -3,6 +3,8 @@
 {% block myHead %}
     <link href="/stylesheets/myStyle.css" rel="stylesheet"/>
     <script src="/javascripts/roles_selection_popup.js"></script>
+
+
     
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;signed_in=true&amp;libraries=places"></script>
     
@@ -19,7 +21,18 @@
         <div class="container-fluid" style="margin-top: 4%">        
             <div class="row">
                 <div class="col-lg-10">
-                    <h1>Locate your Home!</h1>
+                    <h2 class="page-header">
+                    Locate your Home!
+                    </h2>
+                    
+                    <ol class="breadcrumb">
+                        <li>
+                            <i class="fa fa-dashboard"></i>  <a href="/dashboard">Dashboard</a>
+                        </li>
+                        <li class="active">
+                            <i class="fa fa-fw fa-desktop"></i> Manage home
+                        </li>
+                    </ol>
                 </div>
                 <div class="col-lg-2">                       
                     <label class="btn btn-primary custom" ng-click="open('lg')" style="margin-top:3%">Add home</label>
@@ -62,7 +75,7 @@
             </div>
             <div class="modal-body">
 
-                <form class="form-horizontal" >
+                <form class="form-horizontal" name="myForm" novalidate>
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="userType" class="col-lg-3 control-label">Who are you?</label>
@@ -76,21 +89,24 @@
                             <div class="form-group">
                                 <label for="description" class="col-lg-3 control-label">Description:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="description" ng-model="owner_description" placeholder="Enter short description"></input>
+                                    <input type="text" class="form-control" id="description" ng-model="owner_description" placeholder="Enter short description" ></input>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="address" class="col-lg-3 control-label">Address:</label> 
                                 <div class="col-lg-9">
                                     <landlord-Container>
-                                        <input type="text" ng-disabled="isDisabled" class="form-control" id="owner_address" ng-model="owner_address" 
-                                        placeholder="Enter Street address"></input>
+                                        <input type="text" ng-disabled="isDisabled" class="form-control" id="owner_address" name="owner_address" ng-model="owner_address" 
+                                        placeholder="Enter Street address" required></input>
+                                        <span style="color:red" ng-show="myForm.owner_address.$dirty && myForm.owner_address.$invalid">
+                                        <span ng-show="myForm.owner_address.$error.required"> The owner address is required and should not be empty</span></span>
                                     </landlord-Container>
                                 </div>
                             </div>
                         </section>
 
                         <section ng-show="radioModel == 'Tenant'">
+
                             <div class="form-group">
                                 <label for="description" class="col-lg-3 control-label">Description:</label> 
                                 <div class="col-lg-9">
@@ -101,15 +117,21 @@
                                 <label for="address" class="col-lg-3 control-label">Address:</label> 
                                 <div class="col-lg-9">
                                     <tenant-Container>
-                                        <input type="text" ng-disabled="isDisabled" class="form-control" id="tenant_address" ng-model="tenant_address" autocomplete="on" placeholder="Enter Street address">
+                                        <input type="text" ng-disabled="isDisabled" class="form-control" id="tenant_address" name="tenant_address" ng-model="tenant_address" autocomplete="on" placeholder="Enter Street address" required>
                                         </input>
+                                        <span style="color:red" ng-show="myForm.tenant_address.$dirty && myForm.tenant_address.$invalid">
+                                       <span ng-show="myForm.tenant_address.$error.required"> The tenant address is required and should not be empty</span></span>
                                     </tenant-Container>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="landlordId" class="col-lg-3 control-label">Landlord email:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" ng-disabled="isDisabled" class="form-control" id="landlordId" ng-model="tenant_landlordEmail" placeholder="Enter Landlord's email address"></input>
+                                    <input type="email" ng-disabled="isDisabled" class="form-control" id="landlordId" name="landlordId"  ng-model="tenant_landlordEmail" placeholder="Enter Landlord's email address" required></input>
+                                    <span style="color:red" ng-show="myForm.landlordId.$dirty && myForm.landlordId.$invalid">
+                                    <span ng-show="myForm.landlordId.$error.required"> The landlord email is required and should not be empty</span>
+                                    <span ng-show="myForm.landlordId.$error.email"> The landlord email is not invalid</span>
+                                    </span>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -145,19 +167,33 @@
                             <div class="form-group">
                                 <label for="securityDeposit" class="col-lg-3 control-label">Security Deposit:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="securityDeposit" ng-model="tenant_securityDeposit" placeholder="Enter the Security Deposit"></input>
+                                    <input type="number" class="form-control" id="securityDeposit" name="securityDeposit" min="0" ng-model="tenant_securityDeposit" placeholder="Enter the Security Deposit" required></input>
+                                    <span style="color:red" ng-show="myForm.securityDeposit.$dirty && myForm.securityDeposit.$invalid">
+                                    <span ng-show="myForm.securityDeposit.$error.required"> The security deposit is required and should not be empty</span>
+                                    <span ng-show="myForm.securityDeposit.$error.number"> The security deposit is not invalid, should be a positive number</span>
+                                    <span ng-show="myForm.securityDeposit.$error.min"> The security deposit is not invalid, should be a positive number</span>
+                                    </span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="rentPerMonth" class="col-lg-3 control-label">Rent per month:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="rentPerMonth" ng-model="tenant_rentPerMonth" placeholder="Enter the rent per month"></input>
+                                    <input type="number" class="form-control" id="rentPerMonth" name="rentPerMonth" min="0" ng-model="tenant_rentPerMonth" placeholder="Enter the rent per month" required></input>
+                                    <span style="color:red" ng-show="myForm.rentPerMonth.$dirty && myForm.rentPerMonth.$invalid">
+                                    <span ng-show="myForm.rentPerMonth.$error.required"> The rent per month is required and should not be empty</span>
+                                    <span ng-show="myForm.rentPerMonth.$error.number"> The rent per month is not invalid, should be a positive number</span>
+                                    <span ng-show="myForm.rentPerMonth.$error.min"> The rent per month is not invalid, should be a positive number</span>
+                                    </span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="tenantIds" class="col-lg-3 control-label">Add Other tenants:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="tenantIds" ng-model="tenant_tenantsEmails" placeholder="Enter other tenants email ids"></input>
+                                    <input type="text" class="form-control" id="tenantIds" name="tenantIds" ng-model="tenant_tenantsEmails" placeholder="Enter other tenants email ids" multiple-emails required></input>
+                                    <span style="color:red" ng-show="myForm.tenantIds.$dirty && myForm.tenantIds.$invalid">
+                                    <span ng-show="myForm.tenantIds.$error.required"> The tenant Id is required and should not be empty</span>
+                                    <span ng-show="myForm.tenantIds.$invalid"> The tenant Id is not invalid, should be a list of emails</span>
+                                    </span>
                                 </div>
                             </div>
                         </section>
@@ -167,7 +203,15 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="ok()">OK</button>
+                <button class="btn btn-primary" 
+                     ng-disabled="myForm.owner_address.$dirty && myForm.owner_address.$invalid || 
+                     myForm.tenant_address.$dirty && myForm.tenant_address.$invalid || 
+                     myForm.landlordId.$dirty && myForm.landlordId.$invalid || 
+                     myForm.securityDeposit.$dirty && myForm.securityDeposit.$invalid || 
+                     myForm.rentPerMonth.$dirty && myForm.rentPerMonth.$invalid || 
+                     myForm.tenantIds.$dirty && myForm.tenantIds.$invalid"  
+                     ng-click="ok()">OK</button>
+
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
             </div>
         </script>

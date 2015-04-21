@@ -11,7 +11,7 @@ var UserSchema = new Schema({
  phoneNo: String,
  foreignId: String,
  role: String,
- address: String,    
+ address: String,
  isVerified: Boolean,
  passwordHash: String,
  passwordSalt: String
@@ -19,19 +19,64 @@ var UserSchema = new Schema({
 
 var User=mongoose.model('User',UserSchema);
 
+
+
+
 ////update the user info
-function update(user,res){
-  User.update({email:user.email,firstName:user.firstName, lastName: user.lastName,
-  phoneNo: user.phoneNo},user,{},function(err,numEffected){
-    if(err||numEffected==0)
-      res.status(409).send("Error,Could not find user");
-    else
-    res.send("Success");
+function update(user){
+ var useremail=user.email;
+ var newphone=user.phoneNo;
+ var newfname=user.firstName;
+ var newlname=user.lastName;
+ var stringemail=JSON.stringify(useremail);
+
+ console.log("the new"+stringemail);
+ //var query={email:useremail};
+ //var update={phoneNo:newphone};
+// var options={new:true};
+ User.findOneAndUpdate({email:useremail},{phoneNo:newphone},{},function(err,numAffected, raw){
+
+ });
+
+ User.findById('5535460110148d5866253d80',function(err,people){
+   console.log(people);
+ });
+
+ /*
+  User.findById('5535460110148d5866253d80',function(err,people){
+    console.log(newphone);
+    console.log(newfname);
+    console.log(newlname);
+    if(err)
+    return console.error(err);
+    //console.dir(people);
+    //people.firstName=user.firstName;
+    //people.lastName=user.lastName;
+    //people.phoneNo=user.phoneNo;
+    console.dir("!!!!");
+    people.update({phoneNo:newphone}).exec();
+    console.log(people);
   });
-};
+
+  */
+
+}
+  /*User.findOne=({email:user.email},function(err, doc){
+    doc.firstName=user.firstName;
+    doc.lastName=user.lastName;
+    doc.phoneNo=user.phoneNo;
+    doc.visits.$inc();
+    doc.save();
+    */
+  //});
+
 
 function getUserByPhoneNo(phoneNo, callback) {
     User.findOne({phoneNo: phoneNo}, callback);
+}
+
+function getUserByEmail(email,callback){
+    User.findOne({email:email},callback);
 }
 
 exports.User=User;
