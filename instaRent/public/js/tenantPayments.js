@@ -19,6 +19,10 @@ function dynamicRent(){
 
         success: function (responseData, status) {
             rent = responseData;
+            if(rent==0){
+                alert("Rent amount is Zero");
+                return;
+            }
             var checkout = StripeCheckout.configure({
                 key: 'pk_test_jwW7JFcTZaD8HmJdFZgeh4TR',
                 token: onReceiveToken,
@@ -33,6 +37,21 @@ function dynamicRent(){
 }
 
 $('#pay').on('click', function() {
-    dynamicRent();
-    return false;
+
+    $.ajax({
+        type: "GET",
+        url: '/payments/getUserTypeForPayment',
+
+        success: function (responseData) {
+            if(responseData=="Tenant"){
+                dynamicRent();
+                return false;
+            }
+            else{
+                alert("You are a Landlord, You cannot pay Rent");
+            }
+
+        }
+    });
+
 });

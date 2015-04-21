@@ -57,14 +57,19 @@
                     <li>
                         <a href="/settings"><i class="fa fa-fw fa-wrench"></i> Settings</a>
                     </li>
+                    <p>
+                    {% if sessionDetail.role == 'Tenant'%}
                     <li>
-                        <a href="#" id="pay"><i class="fa fa-fw fa-cc-stripe"></i> Quick Rent Pay</a>
+                        <a href="#" id="pay"><i class="fa fa-fw fa-cc-stripe"></i>Quick Rent Pay </a>
                     </li>
-                    <li>
-                        <a href="/payments/payment_history"><i class="fa fa-fw fa-credit-card"></i>Payment History</a>
-                    </li>
+                    {% elseif sessionDetail.role == 'Landlord'%}
                     <li>
                         <a href="/payments/testLandlord"><i class="fa fa-fw fa-university"></i> Add Bank Account</a>
+                    </li>
+                    {% endif %}
+                    </p>
+                    <li>
+                        <a href="/payments/payment_history"><i class="fa fa-fw fa-credit-card"></i>Payment History</a>
                     </li>
                     <li>
                         <a href="/reviews"><i class="fa fa-fw fa-pencil"></i>Submit Feedback</a>

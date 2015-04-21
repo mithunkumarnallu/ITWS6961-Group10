@@ -29,6 +29,14 @@ router.get('/getAllTransactions',function(req,res){
 });
 
 
+
+router.get('/getUserTypeForPayment',function(req,res){
+    console.log("Insidee getUseerType");
+    var userRole = userHelper.getUserType(req);
+    res.send(userRole);
+});
+
+
 router.post('/addLandlordAccount', function (req, res) {
 
     var addLandlordBankdetails;
@@ -149,6 +157,11 @@ router.post('/charge', function(req, res) {
         }
         else{
             MoreHomeInfoHandler.getrentPerMonth(data, userHelper.getUserInfo(req), function(err,data){
+                if(Math.round(parseFloat(data))==0){
+                    //alert("Rent amount is Zero");
+                    res.status(409).send("Rent amount is zero");
+                    return;
+                }
                 if(err)
                     res.status(409).send("Error: Getting rent");
                 else{
