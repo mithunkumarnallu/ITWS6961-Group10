@@ -81,12 +81,12 @@ $(document).ready(function update_password() {
 			},
 			error: function(xhr, textStatus, err) {
 				console.log("error log");
-                console.log("readyState: " + xhr.readyState);
+        console.log("readyState: " + xhr.readyState);
 				console.log("responseText: "+ xhr.responseText);
 				console.log("status: " + xhr.status);
 				console.log("text status: " + textStatus);
 				console.log("error: " + err);
-			}	
+			}
 		});
 	});
 });

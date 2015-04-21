@@ -6,17 +6,32 @@ var User=require("../models/user").User;
 var UserHandler=require("../models/user");
 var email;
 
+var updated=false;
+var userInfo={};
+
 router.get('/', function(req, res, next) {
-  res.render('settings.html', userHelper.getUserInfo(req) );
-  //userHelper.renderTemplate('settings.html', userHelper.getUserInfo(req));
-  //userHelper.renderTemplate('settings.html', userHelper.getUserInfo(req), req,res);
+  var obj;
+  if(updated==false){
+    obj={
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      email:req.user.email,
+      phoneNo:req.user.phoneNo
+    }
+    userHelper.renderTemplate('settings.html', obj ,req,res);
+  }
+    //  res.render('settings.html', userHelper.getUserInfo(req) );
+  else{
+    userHelper.renderTemplate('settings.html', userInfo ,req,res);
+  }
+
 });
 
 //display the user profile, return type is in JSON
 router.get('/displayprofile', function(req, res, next){
      var userInfo={};
      userInfo=userHelper.getUserInfo(req);
-     //not quite sure if Json.stringify() is required
+    
      res.send(JSON.stringify(userInfo));
 });
 
@@ -28,8 +43,8 @@ router.get('/getEmail',function(req,res){
 
 //change user setting, firstname, lastname, phonenumber and email, pwd cannot be changed
 router.post('/changeuserprofile',function(req,res){
-
-  var userInfo={};
+updated=true;
+//  var userInfo={};
   userInfo={
     email: req.body.email,
     firstName: req.body.firstName,
@@ -37,25 +52,11 @@ router.post('/changeuserprofile',function(req,res){
     phoneNo: req.body.phoneNo
   };
   console.log(req.body);
-  
+
   // ===== changed by Amy here========
   // should send response from update function instead of send req.body
   //console.log(userInfo.email);
   UserHandler.update(userInfo, res);
-  console.log("here test userHelper res", res);
-  //res.send(req.body);
-
-
-/*
-  var userInfo=[];
-  userInfo.push(req.body.email);
-  userInfo.push(req.body.firstName);
-  userInfo.push(req.body.lastName);
-  userInfo.push(req.body.phoneNo);
-  console.log("user email: ", userInfo[0]);
-  UserHandler.update(userInfo);
-
-  */
 });
 
 
@@ -69,7 +70,5 @@ router.post('/changeUserPassword',function(req,res,next){
   };
   UserHandler.update(userPassword,res);
 });
-
-
 
 module.exports=router;
