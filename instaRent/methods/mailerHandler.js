@@ -61,9 +61,14 @@ function sendInvitationEmail(err, mailer, homeAddress, data) {
 
 function sendInvitation(mailer, emailId, userType, homeId, homeAddress) {
 	console.log("In sendAccountConfirmationMail");
-    homeHandler.isHomeAddedToUser(emailId, homeId, function(emailId, homeId) {
-        var InvitationObject = new invitationHandler.InvitationModel({emailId: emailId, userType: userType, _homeId: homeId});
-        InvitationObject.createInvitation(mailer, homeAddress, sendInvitationEmail);
+    homeHandler.isHomeAddedToUser(emailId, homeId, function(emailId, homeId, msg) {
+        if(!msg)
+            invitationHandler.isInvitationSentToUser(emailId, userType, homeId, function(err, data) {
+                if(!err && data.length == 0) {
+                    var InvitationObject = new invitationHandler.InvitationModel({emailId: emailId, userType: userType, _homeId: homeId});
+                    InvitationObject.createInvitation(mailer, homeAddress, sendInvitationEmail);
+                }
+            });
     });
 }
 

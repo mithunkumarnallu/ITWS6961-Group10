@@ -131,7 +131,7 @@ router.get("/", function (req, res) {
                                     result.rentStatus = tenantPayments;
 
                                     //Code to get active complaints count
-                                    topicHelper.getTopicCount({userId: currentUserInfo.email, houseId: currentUserInfo.foreignId, nestatus: "finished" }, null,
+                                    topicHelper.getTopicCount({userid: currentUserInfo.email, houseid: currentUserInfo.foreignId, nestatus: "finished" }, null,
                                         function(err, obj, data) {
                                             if(!err)
                                                 result.activeComplaints = data;

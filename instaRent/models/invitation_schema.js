@@ -69,7 +69,12 @@ function deleteOldUsersInvitations(emailIds, homeId) {
     });
 }
 
+function isInvitationSentToUser(emailId, userType, homeId, callback) {
+    InvitationModel.find({emailId: emailId, userType: userType, _homeId: homeId}, callback);
+}
+
 var InvitationModel = mongoose.model('InvitationModel', invitationSchema);
 exports.InvitationModel = InvitationModel;
 exports.addUserToHome = addUserToHome;
 exports.deleteOldUsersInvitations = deleteOldUsersInvitations;
+exports.isInvitationSentToUser = isInvitationSentToUser;
