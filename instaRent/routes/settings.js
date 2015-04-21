@@ -6,8 +6,18 @@ var User=require("../models/user").User;
 var UserHandler=require("../models/user");
 var email;
 
+var userinfo;
+var update = false;
+
+
+
 router.get('/', function(req, res, next) {
-  res.render('settings.html', userHelper.getUserInfo(req) );
+  if (!update) {
+  userinfo  = userHelper.getUserInfo(req);
+}
+
+  res.render('settings.html', userinfo);
+  
   //userHelper.renderTemplate('settings.html', userHelper.getUserInfo(req));
   //userHelper.renderTemplate('settings.html', userHelper.getUserInfo(req), req,res);
 });
@@ -28,6 +38,9 @@ router.get('/getEmail',function(req,res){
 
 //change user setting, firstname, lastname, phonenumber and email, pwd cannot be changed
 router.post('/changeuserprofile',function(req,res){
+  update = true;
+
+  userinfo = req.body;
 
   var userInfo={};
   userInfo={
@@ -36,26 +49,26 @@ router.post('/changeuserprofile',function(req,res){
     lastName: req.body.lastName,
     phoneNo: req.body.phoneNo
   };
-  console.log(req.body);
+ // console.log(req.body);
   
   // ===== changed by Amy here========
   // should send response from update function instead of send req.body
   //console.log(userInfo.email);
   UserHandler.update(userInfo, res);
-  console.log("here test userHelper res", res);
+  
   //res.send(req.body);
 
 
 /*
-  var userInfo=[];
-  userInfo.push(req.body.email);
-  userInfo.push(req.body.firstName);
-  userInfo.push(req.body.lastName);
-  userInfo.push(req.body.phoneNo);
+  var userinfo;
+  userinfo.push(req.body.email);
+  userinfo.push(req.body.firstName);
+  userinfo.push(req.body.lastName);
+  userinfo.push(req.body.phoneNo);
   console.log("user email: ", userInfo[0]);
-  UserHandler.update(userInfo);
+  //UserHandler.update(userInfo);
 
-  */
+*/
 });
 
 
