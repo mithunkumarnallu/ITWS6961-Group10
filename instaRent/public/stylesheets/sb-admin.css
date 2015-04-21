@@ -48,7 +48,8 @@ body {
   filter: none;
 }
 .navbar-nav>li {
-  background-color: #fffccc;
+    /* Color of the sidebar*/
+  background-color: #E6F6F3;/*#ccebeb;*/
 }
 
 /* Top Navigation */
@@ -131,7 +132,7 @@ ul.alert-dropdown {
         top: 51px;
         left: 225px;
         width: 250px;
-        height: 600px;
+       
         margin-left: -225px;
         border: none;
         border-radius: 0;
@@ -247,8 +248,4 @@ ul.alert-dropdown {
 
 .panel-yellow a:hover {
     color: #df8a13;
-}
-
-.navbar-default .navbar-text {
-  color: white;
 }
