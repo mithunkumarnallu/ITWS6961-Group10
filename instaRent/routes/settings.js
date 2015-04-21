@@ -8,6 +8,7 @@ var email;
 
 router.get('/', function(req, res, next) {
   res.render('settings.html', userHelper.getUserInfo(req) );
+  //userHelper.renderTemplate('settings.html', userHelper.getUserInfo(req));
   //userHelper.renderTemplate('settings.html', userHelper.getUserInfo(req), req,res);
 });
 
@@ -35,10 +36,11 @@ router.post('/changeuserprofile',function(req,res){
     lastName: req.body.lastName,
     phoneNo: req.body.phoneNo
   };
-
+  console.log(req.body);
   console.log("hello!");
   console.log(userInfo.email);
   UserHandler.update(userInfo);
+  res.send(req.body);
 
 
 /*

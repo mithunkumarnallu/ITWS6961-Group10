@@ -44,17 +44,11 @@ $(document).ready(function update_profile() {
 		//console.log($("#getemail").text());
 		var $first_name=$("#first_name");
 		var $last_name=$("#last_name");
-
-
 		var $phone=$("#number");
-
 		var firstName=$first_name.val().trim();
 		var lastName=$last_name.val().trim();
-	//	var email=$email;
-		//var email=$email.val().trim();
 		var phone=$phone.val().trim();
 		console.log(email,firstName, lastName, phone);
-
 		$.ajax({
 			type: 'POST',
 			url: "/settings/changeuserprofile",  // needed changes in account.js file, not done yet
@@ -65,11 +59,16 @@ $(document).ready(function update_profile() {
 				phoneNo:phone
 			},
 			//dataType: "jsonp",
-			success: function(resp) {
-				if(resp=="Success") {
-					console.log("response success");
-					alert("Updated successfully!");
-				}
+			success: function(res) {
+				console.log('!!!!');
+				console.log(res);
+			  console.log(res.firstName);
+				$("#first_name").html(res.firstName);
+				$("#first_name").val(res.firstName);
+				$("#last_name").html(res.lastName);
+				$("#last_name").val(res.lastName);
+				$("#number").html(res.phoneNo);
+				$("#number").val(res.phoneNo);
 			},
 			error: function(xhr, textStatus, err) {
 				console.log("error log");

@@ -34,7 +34,7 @@ function update(user){
  //var query={email:useremail};
  //var update={phoneNo:newphone};
 // var options={new:true};
- User.findOneAndUpdate({email:useremail},{phoneNo:newphone},{},function(err,numAffected, raw){
+ User.findOneAndUpdate({email:useremail},{phoneNo:newphone,firstName:newfname,lastName:newlname},{},function(err,numAffected, raw){
 
  });
 
@@ -61,16 +61,7 @@ function update(user){
   */
 
 }
-  /*User.findOne=({email:user.email},function(err, doc){
-    doc.firstName=user.firstName;
-    doc.lastName=user.lastName;
-    doc.phoneNo=user.phoneNo;
-    doc.visits.$inc();
-    doc.save();
-    */
-  //});
-
-
+  
 function getUserByPhoneNo(phoneNo, callback) {
     User.findOne({phoneNo: phoneNo}, callback);
 }
