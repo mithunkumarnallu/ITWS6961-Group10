@@ -60,19 +60,27 @@ $(document).ready(function update_profile() {
 			},
 			//dataType: "jsonp",
 			success: function(res) {
-				console.log('!!!!');
+				//console.log('!!!!');
 				console.log(res);
-			  console.log(res.firstName);
+				// ========= changed by Amy here===========
+				// the response from server is Success here instead of user json data
+				if(res =="Success") {
+					console.log("response success");
+					alert("Updated successfully!");
+				}
+				/*
+			  	console.log(res.firstName);
 				$("#first_name").html(res.firstName);
 				$("#first_name").val(res.firstName);
 				$("#last_name").html(res.lastName);
 				$("#last_name").val(res.lastName);
 				$("#number").html(res.phoneNo);
 				$("#number").val(res.phoneNo);
+				*/
 			},
 			error: function(xhr, textStatus, err) {
 				console.log("error log");
-        console.log("readyState: " + xhr.readyState);
+        			console.log("readyState: " + xhr.readyState);
 				console.log("responseText: "+ xhr.responseText);
 				console.log("status: " + xhr.status);
 				console.log("text status: " + textStatus);

@@ -37,10 +37,13 @@ router.post('/changeuserprofile',function(req,res){
     phoneNo: req.body.phoneNo
   };
   console.log(req.body);
-  console.log("hello!");
-  console.log(userInfo.email);
-  UserHandler.update(userInfo);
-  res.send(req.body);
+  
+  // ===== changed by Amy here========
+  // should send response from update function instead of send req.body
+  //console.log(userInfo.email);
+  UserHandler.update(userInfo, res);
+  console.log("here test userHelper res", res);
+  //res.send(req.body);
 
 
 /*

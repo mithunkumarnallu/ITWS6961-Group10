@@ -23,7 +23,7 @@ var User=mongoose.model('User',UserSchema);
 
 
 ////update the user info
-function update(user){
+function update(user, res){
  var useremail=user.email;
  var newphone=user.phoneNo;
  var newfname=user.firstName;
@@ -35,7 +35,9 @@ function update(user){
  //var update={phoneNo:newphone};
 // var options={new:true};
  User.findOneAndUpdate({email:useremail},{phoneNo:newphone,firstName:newfname,lastName:newlname},{},function(err,numAffected, raw){
-
+    // changed by Amy here, send response back to settings page
+    if(err) res.status(409).send("Error,Could not find user");
+    else  res.send("Success");
  });
 
  User.findById('5535460110148d5866253d80',function(err,people){
