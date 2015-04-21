@@ -6,7 +6,7 @@ var User=require("../models/user").User;
 var UserHandler=require("../models/user");
 var email;
 
-<<<<<<< HEAD
+
 var updated=false;
 var userInfo={};
 
@@ -26,29 +26,29 @@ router.get('/', function(req, res, next) {
     userHelper.renderTemplate('settings.html', userInfo ,req,res);
   }
 
-=======
-var userinfo;
-var update = false;
+});
 
 
-
+/*
 router.get('/', function(req, res, next) {
   if (!update) {
   userinfo  = userHelper.getUserInfo(req);
 }
 
   res.render('settings.html', userinfo);
-  
+
   //userHelper.renderTemplate('settings.html', userHelper.getUserInfo(req));
   //userHelper.renderTemplate('settings.html', userHelper.getUserInfo(req), req,res);
 >>>>>>> origin/master
 });
 
+*/
+
 //display the user profile, return type is in JSON
 router.get('/displayprofile', function(req, res, next){
      var userInfo={};
      userInfo=userHelper.getUserInfo(req);
-    
+
      res.send(JSON.stringify(userInfo));
 });
 
@@ -60,36 +60,26 @@ router.get('/getEmail',function(req,res){
 
 //change user setting, firstname, lastname, phonenumber and email, pwd cannot be changed
 router.post('/changeuserprofile',function(req,res){
-<<<<<<< HEAD
+
 updated=true;
 //  var userInfo={};
-=======
-  update = true;
 
-  userinfo = req.body;
 
-  var userInfo={};
->>>>>>> origin/master
   userInfo={
     email: req.body.email,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     phoneNo: req.body.phoneNo
   };
-<<<<<<< HEAD
   console.log(req.body);
 
-=======
- // console.log(req.body);
-  
->>>>>>> origin/master
+
   // ===== changed by Amy here========
   // should send response from update function instead of send req.body
   //console.log(userInfo.email);
   UserHandler.update(userInfo, res);
-<<<<<<< HEAD
-=======
-  
+
+
   //res.send(req.body);
 
 
@@ -103,7 +93,7 @@ updated=true;
   //UserHandler.update(userInfo);
 
 */
->>>>>>> origin/master
+
 });
 
 
