@@ -30,6 +30,7 @@ function dynamicRent(){
                 name: 'InstaRent.com',
                 description: 'Pay rent',
                 amount: rent*100
+
             });
             checkout.open();
         }

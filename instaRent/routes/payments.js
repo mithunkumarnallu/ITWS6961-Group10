@@ -157,11 +157,6 @@ router.post('/charge', function(req, res) {
         }
         else{
             MoreHomeInfoHandler.getrentPerMonth(data, userHelper.getUserInfo(req), function(err,data){
-                if(Math.round(parseFloat(data))==0){
-                    //alert("Rent amount is Zero");
-                    res.status(409).send("Rent amount is zero");
-                    return;
-                }
                 if(err)
                     res.status(409).send("Error: Getting rent");
                 else{
@@ -169,8 +164,6 @@ router.post('/charge', function(req, res) {
                             card: stripeToken,
                             currency: 'usd',
                             amount: Math.abs(Math.round(parseFloat(data)*100))
-
-
                         },
                         function(err, charge) {
                             if (err) {
