@@ -1,3 +1,20 @@
+
+{% extends 'partials/mail.html' %}
+
+{% block myBody %}
+<div style = "font-size: 24px;">Payment Received</div>
+</div>
+                     
+</tr>
+<tr>
+<td align="left" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#525252;">
+                    
+<br>
+
 Hi there!<br/><br/>
 Your tenant <strong>{{otherProperty.tenantname}}</strong> residing at <strong>{{otherProperty.add}}</strong> has transferred ${{otherProperty.rent}} to your bank account no. ending with <strong>{{otherProperty.bankAcc}}</strong> as house rent for this month.
 <br/>Thank you for using <strong>InstaRent.com</strong>!<br/>
+
+<br>
+
+{% endblock %}
