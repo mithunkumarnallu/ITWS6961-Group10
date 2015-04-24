@@ -54,33 +54,33 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav navbar-default side-nav">
                     <li >
-                        <a href="/dashboard" id="side-dashboard" class="animated bounceInLeft"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                        <a href="/dashboard" id="side-dashboard" class="animated rotateInDownLeft"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
                     <li>
-                        <a href="/managehome" id="side-managehome" class="animated bounceInLeft"><i class="fa fa-fw fa-desktop"></i> Manage Home</a>
+                        <a href="/managehome" id="side-managehome" class="animated rotateInDownLeft"><i class="fa fa-fw fa-desktop"></i> Manage Home</a>
                     </li>
                     <li>
-                        <a href="/complaints" id="side-complaints" class="animated bounceInLeft"><i class="fa fa-fw fa-edit"></i> Complaints Board</a>
+                        <a href="/complaints" id="side-complaints" class="animated rotateInDownLeft"><i class="fa fa-fw fa-edit"></i> Complaints Board</a>
                     </li>
                     <li>
-                        <a href="/settings" id="side-settings" class="animated bounceInLeft"><i class="fa fa-fw fa-wrench"></i> Settings</a>
+                        <a href="/settings" id="side-settings" class="animated rotateInDownLeft"><i class="fa fa-fw fa-wrench"></i> Settings</a>
                     </li>
                     <p>
                     {% if sessionDetail.role == 'Tenant'%}
                     <li>
-                        <a href="#" id="pay"  class="animated bounceInLeft"><i class="fa fa-fw fa-cc-stripe"></i>Quick Rent Pay </a>
+                        <a href="#" id="pay"  class="animated rotateInDownLeft"><i class="fa fa-fw fa-cc-stripe"></i>Quick Rent Pay </a>
                     </li>
                     {% elseif sessionDetail.role == 'Landlord'%}
                     <li>
-                        <a href="/payments/testLandlord"  class="animated bounceInLeft"><i class="fa fa-fw fa-university"></i> Add Bank Account</a>
+                        <a href="/payments/testLandlord" id = "side-addAccount" class="animated rotateInDownLeft"><i class="fa fa-fw fa-university"></i> Add Bank Account</a>
                     </li>
                     {% endif %}
                     </p>
                     <li>
-                        <a href="/payments/payment_history" id="side-payment" class="animated bounceInLeft"><i class="fa fa-fw fa-credit-card"></i>Payment History</a>
+                        <a href="/payments/payment_history" id="side-payment" class="animated rotateInDownLeft"><i class="fa fa-fw fa-credit-card"></i>Payment History</a>
                     </li>
                     <li>
-                        <a href="/reviews" id="side-feedback" class="animated bounceInLeft"><i class="fa fa-fw fa-pencil"></i>Submit Feedback</a>
+                        <a href="/reviews" id="side-feedback" class="animated rotateInDownLeft"><i class="fa fa-fw fa-pencil"></i>Submit Feedback</a>
                     </li>
 
                     
