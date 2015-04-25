@@ -11,6 +11,7 @@ var Landlordmodel = require("../models/landLordbankDetails");
 var payment_history_model = require("../models/payment_history");
 var mailHandler = require("../methods/mailerHandler");
 var userHelper = require("../methods/userHelper");
+var defaultbankAccDetails = require("../models/defaultLandlordBankAccount");
 userHelper = new userHelper();
 
 
@@ -38,10 +39,11 @@ router.get('/getUserTypeForPayment',function(req,res){
 
 
 router.post('/addLandlordAccount', function (req, res) {
-
-    var addLandlordBankdetails;
+    console.log("insided add bank acc");
+    var addLandlordBankdetails,defaultBankAccDetails;
     var stripeToken = req.body.tokenID;
     var id = userHelper.getUserId(req);
+    var homeID = userHelper.getDefaultHomeID(req);
 
     stripe.recipients.create({
         name: req.body.fn+" "+req.body.ln,
@@ -57,10 +59,22 @@ router.post('/addLandlordAccount', function (req, res) {
                 userId: id,
                 bankAcc: req.body.accNo,
                 routingNo: req.body.routeNo,
-                token: recipient.id
+                token: recipient.id,
+                firstName:req.body.fn,
+                lastName:req.body.ln,
+                homeID:homeID,
+                defaultBankAcc:req.body.accNo
 
             };
+
+            defaultBankAccDetails={
+                userId: id,
+                defaultBankAcc:req.body.accNo,
+                token: recipient.id,
+                homeID:homeID
+            }
             Landlordmodel.checkBankDetailsAndSave(addLandlordBankdetails, req, res, true);
+            defaultbankAccDetails.checkandsave(defaultBankAccDetails);
         }
 
     });
@@ -101,7 +115,7 @@ function depositRent(amt,res, id,homeID){
                }
 
                 else{
-                   Landlordmodel.getTokenNo(landlord_emailId, function (err,data) {
+                   defaultbankAccDetails.getDefaultToken(landlord_emailId,homeID, function (err,data) {
                        if (err)
                            res.status(409).send("Error: getting landlord token");
                        else {
@@ -112,29 +126,34 @@ function depositRent(amt,res, id,homeID){
                                recipient: tokenID,
                                statement_descriptor: description
                            }, function(err, transfer) {
+                               if(err){
+                                   res.send("Transfer Failed " + err);
+                               }
+                                else {
+                                   userHelper.getTenantName(userid, function (err, tenantFullName) {
+                                       var addPaymentHistory = {
+                                           payment_date: new Date(),
+                                           amount_charged: parseFloat(amt),
+                                           description: description,
+                                           userID: userid,
+                                           landlordEmail: landlord_emailId,
+                                           userName: tenantFullName,
+                                           homeID: homeID
+                                       };
+                                       if (err) {
+                                           console.log(err + " inside create transfer");
+                                           addPaymentHistory.status = "Failed";
+                                           payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory, userid);
+                                       } else {
+                                           console.log("transfer Successful");
+                                           addPaymentHistory.status = "Success";
+                                           payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory, userid);
+                                           sendConfirmationEmailLandlord(id, res, landlord_emailId, amt, TenantAddress);
 
-                               userHelper.getTenantName(userid, function (err,tenantFullName) {
-                                   var addPaymentHistory = {
-                                       payment_date: new Date(),
-                                       amount_charged:parseFloat(amt),
-                                       description:description,
-                                       userID:userid,
-                                       landlordEmail:landlord_emailId,
-                                       userName:tenantFullName,
-                                       homeID:homeID
-                                   };
-                                   if (err) {
-                                       console.log(err + " inside create transfer");
-                                       addPaymentHistory.status = "Failed";
-                                       payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid);
-                                   } else {
-                                       console.log("transfer Successful");
-                                       addPaymentHistory.status = "Success";
-                                       payment_history_model.checkPaymentHistoryDetailsAndSave(addPaymentHistory,userid);
-                                       sendConfirmationEmailLandlord(id,res,landlord_emailId,amt,TenantAddress);
+                                       }
 
-                                   }
-                               });
+                                   });
+                               }
                            });
                        }
                    });
@@ -181,6 +200,7 @@ router.post('/charge', function(req, res) {
 });
 router.get('/testLandlord', function (req,res) {
     userHelper.renderTemplate('LandLordAddBank.html',{},req,res);
+    //res.render('LandLordAddBank.html');
 });
 
 
@@ -211,6 +231,42 @@ router.get('/getRent', function(req, res, next){
 
         });
 });
+
+router.get('/getBankAccountHistory',function(req,res) {
+
+    var Name = userHelper.getUserName(req);
+    var email = userHelper.getUserId(req);
+    var homeID = userHelper.getDefaultHomeID(req);
+
+
+
+    Landlordmodel.getCurrentlandlordBankAccObject(email, homeID, function (err, data) {
+        if (err) {
+            res.status(409).send("Error: Getting bank Acc object.");
+            return;
+        }
+        else {
+            console.log(data);
+            var obj;
+            var results =[];
+
+            for (var i = 0; i < data.length; i++) {
+                obj = {
+                    fname:data[i].firstName,
+                    lname:data[i].lastName,
+                    bankacc:data[i].bankAcc
+                };
+                results.push(obj);
+            }
+
+            res.send(results);
+        }
+
+    });
+
+});
+
+
 
 router.get('/getPaymentHistory',function(req,res,next){
     var userId = userHelper.getUserId(req);
@@ -252,5 +308,22 @@ router.get('/getPaymentHistory',function(req,res,next){
 
     });
 });
+router.get('/getDefaultBankAccno',function(req,res){
 
+    var emailID = userHelper.getUserId(req);
+    var homeID = userHelper.getDefaultHomeID(req);
+    //console.log(req.query.input);
+    Landlordmodel.getTokenNo(emailID, homeID,req.query.input,function (err,data) {
+
+        defaultbankAccDetails.saveDefaultBankAcc(emailID,req.query.input,homeID,data,function(err,data){
+            if(err)
+                res.status(409).send("Error: updating default bank account");
+            else if(data=="success")
+                res.send("successfully updated default account no");
+
+        });
+
+    });
+
+});
 module.exports = router;
