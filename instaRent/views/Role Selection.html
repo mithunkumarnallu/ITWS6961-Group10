@@ -16,15 +16,15 @@
 
 {% block myBody %}
 
-<div ng-app="ui.managehomes">
-    <div id="page-content-wrapper" ng-controller="ModalDemoCtrl">
-        <div class="container-fluid" style="margin-top: 4%">        
+<div id="page-wrapper" ng-app="ui.managehomes">
+    <div id="page-content-wrapper" style="margin-top: 0.5%" ng-controller="ModalDemoCtrl">
+        <div class="container-fluid" >
             <div class="row">
-                <div class="col-lg-10">
+                <div class="col-lg-12">
                     <h2 class="page-header">
                     Locate your Home!
                     </h2>
-                    
+
                     <ol class="breadcrumb">
                         <li>
                             <i class="fa fa-dashboard"></i>  <a href="/dashboard">Dashboard</a>
@@ -34,9 +34,11 @@
                         </li>
                     </ol>
                 </div>
-                <div class="col-lg-2">                       
-                    <label class="btn btn-primary custom" ng-click="open('lg')" style="margin-top:3%">Add home</label>
-                    <div class="btn-group custom" dropdown is-open="status.isopen" style="margin-top:3%">
+            </div>
+            <div class="row">
+                <div class="pull-right" style="padding-right: 10px;">
+                    <label class="btn btn-primary custom" ng-click="open('lg')" style="margin-top:1%">Add home</label>
+                    <div class="btn-group custom" dropdown is-open="status.isopen" style="margin-top:1%">
                         <button type="button" class="btn btn-primary custom dropdown-toggle" dropdown-toggle ng-disabled="disabled">
                             Update home <span class="caret"></span>
                         </button>
@@ -47,17 +49,18 @@
                         </ul>
                     </div>
                     <!--<label class="btn btn-primary">Update home</label>-->
-                </div>                
+                </div>
             </div>
             <div class="row">
                 <!-- Responsive iFrame -->
              <!--iframe-->
-                <div id="mapHolder" scrolling="no" class="Flexible-container" marginheight="0" marginwidth="0" style="margin-top:2%">
+                <div id="mapHolder" scrolling="no" class="Flexible-container" marginheight="0" marginwidth="0" >
                 
                 <!--    <iframe id="mapHolder" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.ch/maps?f=q&amp;q=USA&amp;ie=UTF8&amp;output=embed"></iframe>-->
                 
                 <!--</div>-->
                 </div>
+            </div>
             <!--/iframe-->
         </div>
     </div>

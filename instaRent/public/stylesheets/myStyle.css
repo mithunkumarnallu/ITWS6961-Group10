@@ -2,11 +2,12 @@
 
 .Flexible-container {
     position: relative;
-    padding-bottom: 38%;
+    padding-bottom: 32%;
     padding-top: 30px;
-    margin-right: 3%;
-    height: 0;
-    overflow: hidden;
+    margin-right: 1%;
+    margin-left: 1%;
+    margin-top: 1.5%;
+    overflow: scroll;
 }
 
 .Flexible-container iframe,   
@@ -26,4 +27,8 @@
 
 .custom {
     width: 120px !important;
+}
+.my-right-align {
+    position: absolute;
+    right: 0px;
 }
