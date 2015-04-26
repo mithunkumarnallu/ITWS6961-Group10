@@ -1,6 +1,8 @@
 var mailer = require("../methods/mailerHandler");
 var verificationToken = require("../models/verification_token_schema");
 var ReviewModel=require("../models/ReviewsModel");
+var userHelper = require("../methods/userHelper");
+userHelper = new userHelper();
 
 var express = require('express'),
     router = express.Router(),
@@ -179,9 +181,19 @@ router.route('/account/fetch_reviews').post(function(req,res){
    ReviewModel.ExtractReviews(function(data){
        res.send(data);
  });
-                   
 });
-                          
+
+//Access to the current logged in user's emailId to the front end
+router.route("/account/getUserId").get(function(req, res) {
+    if(userHelper.isUserLoggedIn(req)) {
+        var userId = userHelper.getUserId(req);
+        res.send(userId);
+    }
+    else
+        res.redirect("/login");
+
+});
+
 
 module.exports = router;
    

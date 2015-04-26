@@ -30,6 +30,7 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
     };
     
     $scope.homes = [];//[{address: "123, 123, 123"},{address: "234, 234, 234"}];
+    $scope.userId = "";
 
     $scope.addMapMarkers = function() {
         addMap();
@@ -173,6 +174,17 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
         }
     }
 
+    $scope.getUserId = function() {
+        $http.get("/api/account/getUserId",{})
+        .success(function(data, status) {
+            console.log("getUserId returned");
+            $scope.userId = data;
+        })
+        .error(function(data, status) {
+            console.log("getUserId failed: " + data);
+        });
+    };
+    $scope.getUserId();
     $scope.addMapMarkers();
     
     $scope.openForUpdate = function(address, userType) {
@@ -203,7 +215,7 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
     };
 
     $scope.open = function (size) {
-
+        $scope.tenant_showTenantEmails = true;
         var modalInstance = $modal.open({
           templateUrl: 'myModalContent.html',
           controller: 'ModalInstanceCtrl',
@@ -274,7 +286,8 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
                 $scope.tenant_rentPerMonth = homeInfo.rentPerMonth;
                 $scope.tenant_tenantsEmails = homeInfo.tenantsEmails;
                 $scope.tenant_leaseStartDate = homeInfo.leaseStartDate;
-                $scope.tenant_leaseEndDate = homeInfo.leaseEndDate;       
+                $scope.tenant_leaseEndDate = homeInfo.leaseEndDate;
+                $scope.tenant_showTenantEmails = (homeInfo.createdByTenant === $scope.userId);
             }
         }
     }
@@ -394,29 +407,34 @@ angular.module('ui.managehomes').controller('ModalInstanceCtrl', ['$scope', '$ht
         require: 'ngModel',
         link: function(scope, element, attrs, ctrl) {
           ctrl.$parsers.unshift(function(viewValue) {
-  
-            var emails = viewValue.split(',');
-            // define single email validator here
-            var re = /\S+@\S+\.\S+/; 
-              
-            // angular.foreach(emails, function() {
-              var validityArr = emails.map(function(str){
-                  return re.test(str.trim());
-              }); // sample return is [true, true, true, false, false, false]
-              console.log(emails, validityArr); 
-              var atLeastOneInvalid = false;
-              angular.forEach(validityArr, function(value) {
-                if(value === false)
-                  atLeastOneInvalid = true; 
-              }); 
-              if(!atLeastOneInvalid) { 
-                // ^ all I need is to call the angular email checker here, I think.
+            if(viewValue) {
+                var emails = viewValue.split(';');
+                // define single email validator here
+                var re = /\S+@\S+\.\S+/;
+
+                // angular.foreach(emails, function() {
+                var validityArr = emails.map(function(str){
+                    return re.test(str.trim());
+                }); // sample return is [true, true, true, false, false, false]
+                console.log(emails, validityArr);
+                var atLeastOneInvalid = false;
+                angular.forEach(validityArr, function(value) {
+                    if(value === false)
+                        atLeastOneInvalid = true;
+                });
+                if(!atLeastOneInvalid) {
+                    // ^ all I need is to call the angular email checker here, I think.
+                    ctrl.$setValidity('multipleEmails', true);
+                    return viewValue;
+                } else {
+                    ctrl.$setValidity('multipleEmails', false);
+                    return undefined;
+                }
+            }
+            else {
                 ctrl.$setValidity('multipleEmails', true);
                 return viewValue;
-              } else {
-                ctrl.$setValidity('multipleEmails', false);
-                return undefined;
-              }
+            }
           });
         }
       };

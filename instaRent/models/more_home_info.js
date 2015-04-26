@@ -10,15 +10,16 @@ var invitationHandler = require("../models/invitation_schema");
 var payment_history = require("../models/payment_history");
 
 var moreHomeInfo = new mongoose.Schema({
-  //homeId: String,
-  address: String,
-  landlordEmail: String,
-  leaseStartDate: Date,
-  leaseEndDate: Date,
-  rentPerMonth: Number,
-  rentPerMonthPerUser: Number,
-  securityDeposit: Number,
-  tenantsEmails: String
+    //homeId: String,
+    address: String,
+    landlordEmail: String,
+    leaseStartDate: Date,
+    leaseEndDate: Date,
+    rentPerMonth: Number,
+    rentPerMonthPerUser: Number,
+    securityDeposit: Number,
+    tenantsEmails: String,
+    createdByTenant: String
 });
 
 var MoreHomeInfo = mongoose.model('MoreHomeInfo', moreHomeInfo);
@@ -66,7 +67,7 @@ function checkAndSave(moreHome, req, res, overwrite) {
 			res.status(409).send("Error: Home already exists");
 		}
 		else if(data) {
-			HomeHandler.isHomeAddedToUser(userHelper.getUserId(req), data._id, function (emailId, homeId, err) {
+			HomeHandler.isHomeAddedToUser(userHelper.getUserId(req), data._id, null, function (emailId, homeId, err) {
                 if(err)
                     res.status(409).send("Error: Home already exists");
                 else {
@@ -74,7 +75,10 @@ function checkAndSave(moreHome, req, res, overwrite) {
                     if(req.body.userType == "Tenant") {
                         var tenantEmails = getTenantEmails(moreHome);
                         moreHome.rentPerMonthPerUser = (moreHome.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+                        if(!moreHome.createdByTenant)
+                            moreHome.createdByTenant = userHelper.getUserId(req);
                     }
+
                     MoreHomeInfo.update({address : moreHome.address}, moreHome, {}, function(err, numEffected) {
                         console.log(numEffected);
                         if(err || numEffected == 0) {
@@ -104,6 +108,7 @@ function checkAndSave(moreHome, req, res, overwrite) {
             {
                 var tenantEmails = getTenantEmails(moreHome);
                 moreHome.rentPerMonthPerUser = (moreHome.rentPerMonth / (tenantEmails.length + 1)).toFixed(2);
+                moreHome.createdByTenant = userHelper.getUserId(req);
             }
 
             moreHome.save(function(err, moreHome) {
@@ -135,6 +140,7 @@ function update(home, userId, req, res) {
 			res.status(409).send("Error: Could not find existing home");
 		}
 		else {
+            HomeHandler.deleteOldUsersFromHome(tenantEmails, req.body.homeId, userId);
             sendInvitationsToUsers(res.mailer,req.body.userType, home);
             var moreHomeInfo = {
 				userId: userId,
@@ -149,12 +155,12 @@ function update(home, userId, req, res) {
 
 //gets landlord as well as tenant home addresses
 function getUserHomeAddresses(userId, res) {
-	homeInfo.Home.find({userId: userId, userType: "Landlord"}, function(err, data) {		
+	homeInfo.Home.find({userId: userId, userType: "Landlord", isHomeActiveForUser: true}, function(err, data) {
 		if(err)
 			res.status(409).send({status: "Error", response: "Error: No homes added!"});
 		else if(data.length == 0) {
 			var result = [];
-			homeInfo.Home.find({userId: userId, userType: "Tenant"}, function(err, data) {
+			homeInfo.Home.find({userId: userId, userType: "Tenant", isHomeActiveForUser: true}, function(err, data) {
 				console.log("Tenant home ids are: " + JSON.stringify(data));				
 				if(err)
 					res.status(409).send({status: "Error", response: "Error: No homes added!"});
@@ -202,7 +208,7 @@ function getUserHomeAddresses(userId, res) {
 						landlordHome["description"] = data[i].description;
 						result.push(landlordHome);
 					}
-					homeInfo.Home.find({userId: userId, userType: "Tenant"}, function(err, data) {
+					homeInfo.Home.find({userId: userId, userType: "Tenant", isHomeActiveForUser: true}, function(err, data) {
 					console.log("Tenant home ids are: " + JSON.stringify(data));				
 					if(err)
 						res.status(409).send({status: "Error", response: "Error: No homes added!"});

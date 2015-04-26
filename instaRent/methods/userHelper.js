@@ -29,7 +29,7 @@ userHelper.prototype.setDefaultHome = function(req, userId, homeInfo, callback) 
     User.update({email: userId}, {role: homeInfo.userType, foreignId: homeInfo.id, address: homeInfo.address},{},function(err,numberAffected){
         if(err)
             console.log("setDefaultHome database update error" + err);
-        else
+        else if(req)
         {
             req.session.passport.user.foreignId=homeInfo.id;
             req.session.passport.user.role=homeInfo.userType;
@@ -46,7 +46,7 @@ userHelper.prototype.getDefaultHome = function (userId, res, callback) {
 	User.findOne({email: userId}, function (err, data) {
         if(err)
             callback(err);
-        else if(!data.foreignId) {
+        else if(!data.foreignId && res) {
             res.redirect("/manageHome");
         }
         else

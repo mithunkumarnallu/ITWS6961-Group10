@@ -189,10 +189,10 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" data-ng-show="tenant_showTenantEmails">
                                 <label for="tenantIds" class="col-lg-3 control-label">Add Other tenants:</label> 
                                 <div class="col-lg-9">
-                                    <input type="text" class="form-control" id="tenantIds" name="tenantIds" ng-model="tenant_tenantsEmails" placeholder="Enter other tenants email ids" multiple-emails required></input>
+                                    <input type="text" class="form-control" id="tenantIds" name="tenantIds" ng-model="tenant_tenantsEmails" placeholder="Enter other tenants email ids" multiple-emails></input>
                                     <span style="color:red" ng-show="myForm.tenantIds.$dirty && myForm.tenantIds.$invalid">
                                     <span ng-show="myForm.tenantIds.$error.required"> The tenant Id is required and should not be empty</span>
                                     <span ng-show="myForm.tenantIds.$invalid"> The tenant Id is not invalid, should be a list of emails</span>
