@@ -91,6 +91,10 @@ userHelper.prototype.getUserInfo=function(data, email, userIds, callback){
         return userInfo;
     }
 };
+userHelper.prototype.getUserName = function(req){
+    return {fn:req.session.passport.user.firstName, ln:req.session.passport.user.lastName};
+}
+
 
 userHelper.prototype.SetQRSession = function(req, user)  {
     req.session.passport.user = {};
@@ -128,6 +132,11 @@ userHelper.prototype.renderTemplate=function(viewName, obj, req, res){//data- se
           res.render(viewName,obj);   
         }
     
+};
+
+
+userHelper.prototype.getUserHomeAddress = function(req){
+    return req.session.passport.user.address;
 };
 
 module.exports = userHelper;

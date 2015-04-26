@@ -11,7 +11,11 @@ var LandLordBankDetails = new Schema({
     userId:String,
     bankAcc:String,
     routingNo:String,
-    token:String
+    token:String,
+    firstName:String,
+    lastName:String,
+    homeID:String,
+    defaultBankAcc:String
 });
 
 var landlordBankDetails = mongoose.model('landLordBankDetails', LandLordBankDetails);
@@ -49,24 +53,26 @@ function checkBankDetailsAndSave(landlordDetails,req,res,overwrite) {
         landlordBankDetails.findOne({userId:landlordemail}, function (err, data) {
                 if(err)
                     callback(err);
-
-            else{
-               callback(err,data.bankAcc);
-            }
+                else if(!data){
+                    callback(err);
+                }
+                 else{
+                    callback(err,data.bankAcc);
+                 }
         });
     }
 
-    function getTokenNo(landlordemail,callback){
+    function getTokenNo(landlordemail,homeID,bankAcc,callback){
             var result;
-        landlordBankDetails.findOne({userId:landlordemail}, function (err, data) {
+        landlordBankDetails.findOne({userId:landlordemail,homeID:homeID,bankAcc:bankAcc}, function (err, data) {
             if(err)
                 callback(err);
 
             else{
+                console.log(data);
                 callback(err,data.token);
             }
         });
-
     }
 
     function isBankAccExists(landlordemail,callback){
@@ -84,9 +90,22 @@ function checkBankDetailsAndSave(landlordDetails,req,res,overwrite) {
     }
 
 
+function getCurrentlandlordBankAccObject(emailID,homeID,callback){
+    landlordBankDetails.find({userId:emailID,homeID:homeID}, function (err, data) {
+        if(err)
+            callback(err);
+
+        else if (!data){
+            callback(err);
+        }
+        else
+            callback(err,data);
+    });
+}
 
 exports.landlordBankDetails = landlordBankDetails;
 exports.checkBankDetailsAndSave = checkBankDetailsAndSave;
 exports.getTokenNo = getTokenNo;
 exports.getBankAccNo = getBankAccNo;
 exports.isBankAccExists = isBankAccExists;
+exports.getCurrentlandlordBankAccObject = getCurrentlandlordBankAccObject;

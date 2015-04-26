@@ -52,6 +52,9 @@ body {
   background-color: #E6F6F3;/*#ccebeb;*/
 }
 
+.navbar-default .navbar-text {
+  color: white;
+}
 /* Top Navigation */
 /* Username */
 .top-nav {

@@ -40,7 +40,7 @@
                             <a href="/settings"><i class="fa fa-fw fa-user"></i> Profile</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+                            <a href="/complaints"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
                         </li>
                         
                         <li class="divider"></li>
@@ -65,7 +65,7 @@
                     <li>
                         <a href="/settings" id="side-settings" class="animated rotateInDownLeft"><i class="fa fa-fw fa-wrench"></i> Settings</a>
                     </li>
-                    <p>
+                    
                     {% if sessionDetail.role == 'Tenant'%}
                     <li>
                         <a href="#" id="pay"  class="animated rotateInDownLeft"><i class="fa fa-fw fa-cc-stripe"></i>Quick Rent Pay </a>
@@ -75,7 +75,7 @@
                         <a href="/payments/testLandlord" id = "side-addAccount" class="animated rotateInDownLeft"><i class="fa fa-fw fa-university"></i> Add Bank Account</a>
                     </li>
                     {% endif %}
-                    </p>
+                    
                     <li>
                         <a href="/payments/payment_history" id="side-payment" class="animated rotateInDownLeft"><i class="fa fa-fw fa-credit-card"></i>Payment History</a>
                     </li>

@@ -328,6 +328,18 @@ function getCurrentHomeObject(emailId, res, callback) {
     });
 }
 
+function getLandlordemailID(homeID,callback){
+    MoreHomeInfo.findOne({_id:homeID},function(err,data){
+
+        if(err)
+            callback(err);
+        else {
+            console.log(data.landlordEmail);
+            callback(null, data.landlordEmail);
+        }
+    });
+}
+
 exports.update = update;
 exports.getUserHomeAddresses = getUserHomeAddresses;
 exports.checkAndSave = checkAndSave;
@@ -335,4 +347,5 @@ exports.MoreHomeInfo = MoreHomeInfo;
 exports.getrentPerMonth = getrentPerMonth;
 exports.getCurrentHomeObject = getCurrentHomeObject;
 exports.getRentDueIn = getRentDueIn;
+exports.getLandlordemailID = getLandlordemailID;
 
