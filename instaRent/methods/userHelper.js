@@ -134,4 +134,9 @@ userHelper.prototype.renderTemplate=function(viewName, obj, req, res){//data- se
     
 };
 
+
+userHelper.prototype.getUserHomeAddress = function(req){
+    return req.session.passport.user.address;
+};
+
 module.exports = userHelper;

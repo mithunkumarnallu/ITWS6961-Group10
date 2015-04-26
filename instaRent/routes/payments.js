@@ -30,14 +30,6 @@ router.get('/getAllTransactions',function(req,res){
 });
 
 
-
-router.get('/getUserTypeForPayment',function(req,res){
-    console.log("Insidee getUseerType");
-    var userRole = userHelper.getUserType(req);
-    res.send(userRole);
-});
-
-
 router.post('/addLandlordAccount', function (req, res) {
     console.log("insided add bank acc");
     var addLandlordBankdetails,defaultBankAccDetails;
@@ -232,13 +224,52 @@ router.get('/getRent', function(req, res, next){
         });
 });
 
+router.get('/checkLandlordBankAccount',function(req,res){
+
+    var homeID = userHelper.getDefaultHomeID(req);
+    var tenantName = userHelper.getUserName(req);
+    var address= userHelper.getUserHomeAddress(req);
+    console.log("Inside payments address" + address);
+    MoreHomeInfoHandler.getLandlordemailID(homeID,function(err,landlordEmailID){
+
+        if(err) {
+            res.send("false");
+        }
+
+        else{
+            defaultbankAccDetails.getDefaultToken(landlordEmailID,homeID,function(err,data){
+                console.log("token" + data);
+                if(err){
+                    res.send("false");
+                }
+                else if(data){
+                    res.send("true");
+                }
+
+
+                else {
+                    sendNoBankAccountEmailLandlord(res,tenantName,landlordEmailID,address);
+                    res.send("false");
+                }
+
+            });
+        }
+    });
+});
+
+
+function sendNoBankAccountEmailLandlord(res,tenantName,landlordEmailID,homeAddress){
+
+    mailHandler.sendAddBankAccountLandlord(res,tenantName,landlordEmailID,homeAddress);
+
+}
+
+
 router.get('/getBankAccountHistory',function(req,res) {
 
     var Name = userHelper.getUserName(req);
     var email = userHelper.getUserId(req);
     var homeID = userHelper.getDefaultHomeID(req);
-
-
 
     Landlordmodel.getCurrentlandlordBankAccObject(email, homeID, function (err, data) {
         if (err) {
@@ -265,8 +296,6 @@ router.get('/getBankAccountHistory',function(req,res) {
     });
 
 });
-
-
 
 router.get('/getPaymentHistory',function(req,res,next){
     var userId = userHelper.getUserId(req);
@@ -320,10 +349,7 @@ router.get('/getDefaultBankAccno',function(req,res){
                 res.status(409).send("Error: updating default bank account");
             else if(data=="success")
                 res.send("successfully updated default account no");
-
         });
-
     });
-
 });
 module.exports = router;

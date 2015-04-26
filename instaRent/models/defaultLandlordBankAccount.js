@@ -45,9 +45,13 @@ function saveDefaultBankAcc(landlordemail,defaultBankAcc,homeID,token,callback){
     });
 }
 
-function getDefaultToken(landlordemail,homeID,callback){
-    DefaultBankAcc.findOne({userId:landlordemail,homeID:homeID}, function (err, data) {
+function getDefaultToken(email,homeID,callback){
+
+    DefaultBankAcc.findOne({userId:email,homeID:homeID}, function (err, data) {
         if(err)
+            callback(err);
+
+        else if(!data)
             callback(err);
 
         else{
