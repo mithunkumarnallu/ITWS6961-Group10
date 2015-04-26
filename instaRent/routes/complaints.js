@@ -244,7 +244,8 @@ router.get('/sample', function(req,res) {
 
 router.get('/', function(req, res, next) {
 	console.log("rendering complaints.html");
-	res.render('complaints.html', { title: 'instaRent-complaints' });
+	//res.render('complaints.html', { title: 'instaRent-complaints' });
+    userHelper.renderTemplate('complaints.html', { title: 'instaRent-complaints' }, req, res);
 });
 
 module.exports = router;
