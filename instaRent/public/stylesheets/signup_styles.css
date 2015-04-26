@@ -47,6 +47,10 @@ font-weight: bold;
 	margin-top: 10px;
 }
 
+#confirmation{
+  max-width: 65%; 
+}
+
 h3 {
 	font-family: 'Allerta', Helvetica, Arial, sans-serif;
     font-size: 20px;

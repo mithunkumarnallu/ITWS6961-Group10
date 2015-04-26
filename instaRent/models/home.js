@@ -4,11 +4,15 @@ var db = require("./mongoose_connector").db;
 var MoreHomeInfo = require("../models/more_home_info").MoreHomeInfo;
 var MoreHomeInfoHandler = require("../models/more_home_info");
 
+var userHelper = require("../methods/userHelper");
+userHelper = new userHelper();
+
 var homeSchema = new mongoose.Schema({
-  userId: String,
-  homeId: String,
-  description: String,
-  userType: String
+    userId: String,
+    homeId: String,
+    description: String,
+    userType: String,
+    isHomeActiveForUser: {type: Boolean, required: false, default: true}
 });
 
 var Home = mongoose.model('Home', homeSchema);
@@ -67,44 +71,56 @@ function update(home, res) {
 };
 
 function getUserHomeAddresses(userId, res) {
-	Home.find({userId: userId}, function(err, data) {
+	Home.find({userId: userId, isHomeActiveForUser: true}, function(err, data) {
 		if(err || data.length == 0)
 			res.status(409).send({status: "Error", response: "Error: No homes added!"});
 		else{
 		  	var addresses = [];
-			/*
-			for(var i = 0; i < data.length; i++) {
-				addresses.push({address: data[i].address, id: data[i]._id, userType: "Landlord"});
-			}
-			*/
 		  	res.send({status: "Success", response: data});
          }
 	});
 };
 
-function isHomeAddedToUser(emailId, homeId, callback) {
-    Home.findOne({userId: emailId, homeId: homeId}, function(err, data) {
-        if(!err && data === null)
-            callback(emailId, homeId);
-        else
-            callback(emailId, homeId, "Home already exists");
-    });
+function isHomeAddedToUser(emailId, homeId, isHomeActive, callback) {
+    if(isHomeActive === true || isHomeActive === false) {
+        Home.findOne({userId: emailId, homeId: homeId, isHomeActiveForUser: isHomeActive}, function(err, data) {
+            if(!err && data === null)
+                callback(emailId, homeId);
+            else
+                callback(emailId, homeId, "Home already exists");
+        });
+    }
+    else {
+        Home.findOne({userId: emailId, homeId: homeId}, function (err, data) {
+            if (!err && data === null)
+                callback(emailId, homeId);
+            else
+                callback(emailId, homeId, "Home already exists");
+        });
+    }
 };
 
-function deleteOldUsersFromHome(emailIds, homeId) {
-    Home.find({homeId: homeId}, function (err, data) {
+function deleteOldUsersFromHome(emailIds, homeId, loggedInUserId) {
+    Home.find({homeId: homeId, userType: "Tenant"}, function (err, homes) {
         if(err)
             console.log("Could not get users for homeId: " + homeId);
         else {
             var emailIdsMap = {};
-            for(var i = 0; i < emailIds.length; i++) {
+            for (var i = 0; i < emailIds.length; i++) {
                 emailIdsMap[emailIds[i]] = "";
             }
-            for(var i = 0; i < data.length; i++) {
-                if(!(data[i].userId in emailIdsMap)) {
-                    data[i].remove();
+            homes.forEach(function (data) {
+                if (!(data.userId in emailIdsMap) && data.userId !== loggedInUserId) {
+                    userHelper.getDefaultHome(data.userId, null, function (err, defaultHome) {
+                        if (!err && defaultHome && defaultHome === homeId) {
+                            userHelper.setDefaultHome(null, data.userId, {}, function (err, data1) {
+                            });
+                        }
+                    });
+                    data.isHomeActiveForUser = false;
+                    data.save();
                 }
-            }
+            });
         }
     });
 }

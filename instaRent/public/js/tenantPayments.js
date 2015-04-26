@@ -15,44 +15,48 @@ function dynamicRent(){
 
     $.ajax({
         type: "GET",
-        url: '/payments/getRent',
+        url: '/payments/checkLandlordBankAccount',
 
-        success: function (responseData, status) {
-            rent = responseData;
-            if(rent==0){
-                alert("Rent amount is Zero");
+        success: function (responseData) {
+            console.log(responseData);
+
+            if(responseData=="false"){
+                alert("Your landlord has not added a bank account yet");
                 return;
             }
-            var checkout = StripeCheckout.configure({
-                key: 'pk_test_jwW7JFcTZaD8HmJdFZgeh4TR',
-                token: onReceiveToken,
-                image: '',
-                name: 'InstaRent.com',
-                description: 'Pay rent',
-                amount: rent*100
+            else{
+                $.ajax({
+                    type: "GET",
+                    url: '/payments/getRent',
 
-            });
-            checkout.open();
+                    success: function (responseData, status) {
+                        rent = responseData;
+                        if(rent==0){
+                            alert("Rent amount is Zero");
+                            return;
+                        }
+                        var checkout = StripeCheckout.configure({
+                            key: 'pk_test_jwW7JFcTZaD8HmJdFZgeh4TR',
+                            token: onReceiveToken,
+                            image: '',
+                            name: 'InstaRent.com',
+                            description: 'Pay rent',
+                            amount: rent*100
+
+                        });
+                        checkout.open();
+                    }
+                });
+            }
         }
     });
+
+
+
+
 }
 
 $('#pay').on('click', function() {
-
-    $.ajax({
-        type: "GET",
-        url: '/payments/getUserTypeForPayment',
-
-        success: function (responseData) {
-            if(responseData=="Tenant"){
-                dynamicRent();
-                return false;
-            }
-            else{
-                alert("You are a Landlord, You cannot pay Rent");
-            }
-
-        }
-    });
+    dynamicRent();
 
 });

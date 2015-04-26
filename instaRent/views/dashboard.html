@@ -171,10 +171,9 @@
                                         <p id = "DueDay" style="display:none;">
                                             {% if sessionDetail.role == 'Landlord'%}
                                                 {% for x in rentStatus %}
-                                                    {% if loop.first %}<ul>{% endif %}
                                                     Name: {{ x.name }}</br>
                                                     Last Paid:{{ x.rentPaidOn }}</br>
-                                                    {% if loop.last %}</ul>{% endif %}
+                                                    </br>
                                                 {% endfor %}
                                             {% endif %}
                                         </p>
@@ -203,19 +202,19 @@
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right" id = "show_Landlord"></i>
                                         <!--Landlord info include ="name" + "email"-->
                                         <p id = "LandlordInfo" style="display:none;">
+
                                             {% if sessionDetail.role == 'Tenant'%}
                                                     Name: {{landlord.name}}</br>
                                                     Email: {{landlord.email}}</br>
                                                     Tel: {{landlord.phone}}</br>
                                             {% elseif sessionDetail.role == 'Landlord'%}
-                                        
-                                                {% for x in rents %}
-                                                    {% if loop.first %}{% endif %}
+                                                {% for x in tenants %}
+                                                    
                                                         Name: {{ x.name }}</br>
                                                         Email: {{ x.email }}</br>
                                                         Tel: {{x.phone}}</br>
-                                                {% endfor %}
-                                                    
+                                                        ===================</br>
+                                                {% endfor %}   
                                             {% endif %}
                                         </p>
                                     </span>

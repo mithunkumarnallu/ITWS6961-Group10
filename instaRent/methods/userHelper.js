@@ -29,7 +29,7 @@ userHelper.prototype.setDefaultHome = function(req, userId, homeInfo, callback) 
     User.update({email: userId}, {role: homeInfo.userType, foreignId: homeInfo.id, address: homeInfo.address},{},function(err,numberAffected){
         if(err)
             console.log("setDefaultHome database update error" + err);
-        else
+        else if(req)
         {
             req.session.passport.user.foreignId=homeInfo.id;
             req.session.passport.user.role=homeInfo.userType;
@@ -46,7 +46,7 @@ userHelper.prototype.getDefaultHome = function (userId, res, callback) {
 	User.findOne({email: userId}, function (err, data) {
         if(err)
             callback(err);
-        else if(!data.foreignId) {
+        else if(!data.foreignId && res) {
             res.redirect("/manageHome");
         }
         else
@@ -91,6 +91,10 @@ userHelper.prototype.getUserInfo=function(data, email, userIds, callback){
         return userInfo;
     }
 };
+userHelper.prototype.getUserName = function(req){
+    return {fn:req.session.passport.user.firstName, ln:req.session.passport.user.lastName};
+}
+
 
 userHelper.prototype.SetQRSession = function(req, user)  {
     req.session.passport.user = {};
@@ -128,6 +132,11 @@ userHelper.prototype.renderTemplate=function(viewName, obj, req, res){//data- se
           res.render(viewName,obj);   
         }
     
+};
+
+
+userHelper.prototype.getUserHomeAddress = function(req){
+    return req.session.passport.user.address;
 };
 
 module.exports = userHelper;

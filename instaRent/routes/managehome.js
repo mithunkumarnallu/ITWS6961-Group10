@@ -134,6 +134,12 @@ router.post('/updatehome', function(req, res, next) {
 	}
 });
 
+router.get("/getDefaultHomeId", function(req,res) {
+    if(userHelper.isUserLoggedIn(req)) {
+        res.send(userHelper.getDefaultHomeID(req));
+    }
+});
+
 /*
 router.post('/updatehome', function(req, res, next) {
   	var userId = userHelper.getUserId(req);

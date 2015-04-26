@@ -1,6 +1,8 @@
 var mailer = require("../methods/mailerHandler");
 var verificationToken = require("../models/verification_token_schema");
 var ReviewModel=require("../models/ReviewsModel");
+var userHelper = require("../methods/userHelper");
+userHelper = new userHelper();
 
 var express = require('express'),
     router = express.Router(),
@@ -159,10 +161,15 @@ router.get("/account/verify/:token", function (req, res, next) {
     //console.log("Verifying user user");
     verificationToken.verifyEmail(token, req.session.email, function(err) {
         console.log("printing err: "+err);
-     if (err==null) 
+     if (err==null) {
+         console.log("redirect to reset verify fail route");
        res.redirect("/reset_verify_fail");
+     }
     else 
+    {
+         console.log("redirect to forgot pwd route");
        res.redirect("/forgot_password_route");
+    }
     });
 });
 
@@ -179,9 +186,19 @@ router.route('/account/fetch_reviews').post(function(req,res){
    ReviewModel.ExtractReviews(function(data){
        res.send(data);
  });
-                   
 });
-                          
+
+//Access to the current logged in user's emailId to the front end
+router.route("/account/getUserId").get(function(req, res) {
+    if(userHelper.isUserLoggedIn(req)) {
+        var userId = userHelper.getUserId(req);
+        res.send(userId);
+    }
+    else
+        res.redirect("/login");
+
+});
+
 
 module.exports = router;
    

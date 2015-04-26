@@ -18,10 +18,6 @@ var UserSchema = new Schema({
 });
 
 var User=mongoose.model('User',UserSchema);
-
-
-
-
 ////update the user info
 function update(user, res){
  var useremail=user.email;

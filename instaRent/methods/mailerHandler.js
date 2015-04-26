@@ -61,7 +61,7 @@ function sendInvitationEmail(err, mailer, homeAddress, data) {
 
 function sendInvitation(mailer, emailId, userType, homeId, homeAddress) {
 	console.log("In sendAccountConfirmationMail");
-    homeHandler.isHomeAddedToUser(emailId, homeId, function(emailId, homeId, msg) {
+    homeHandler.isHomeAddedToUser(emailId, homeId, true, function(emailId, homeId, msg) {
         if(!msg)
             invitationHandler.isInvitationSentToUser(emailId, userType, homeId, function(err, data) {
                 if(!err && data.length == 0) {
@@ -152,6 +152,25 @@ var lastFourdigits = bankAcc.substring(bankAcc.length-4);
 
 }
 
+
+function sendAddBankAccountLandlord(res,tenantName,landlordEmailID,homeAddress) {
+
+    console.log(tenantName,landlordEmailID,homeAddress);
+
+    res.mailer.send('sendNoBankAccEmail.html', {
+        to: landlordEmailID, // REQUIRED. This can be a comma delimited string just like a normal email to field.
+        subject: 'Add a Bank Account', // REQUIRED.
+        otherProperty: {landlordEmail: landlordEmailID, add: homeAddress, tenantname: tenantName.fn+" "+tenantName.ln} // All additional properties are also passed to the template as local variables.
+    }, function (err) {
+        if (err) {
+            // handle error
+            console.log(err);
+            return;
+        }
+
+
+    });
+}
 //Function to send rent due notifications to all users who need to pay rent in less than 7 days
 function sendRentDueNotifications(mailer) {
     var allHomes = moreHomeHandler.MoreHomeInfo.find();
@@ -215,5 +234,6 @@ exports.sendPasswordResetMail=sendPasswordResetMail;
 exports.sendRentDueNotifications = sendRentDueNotifications;
 exports.sendLeaseRenewalNotifications = sendLeaseRenewalNotifications;
 exports.sendPaymentConfirmationLandlord = sendPaymentConfirmationLandlord;
+exports.sendAddBankAccountLandlord = sendAddBankAccountLandlord;
 
 //exports.sendAccountConfirmationMail = sendAccountConfirmationMail;

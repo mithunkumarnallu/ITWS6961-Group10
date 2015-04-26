@@ -1,6 +1,7 @@
 $(document).ready(function update_password() {
 	console.log("update_password outside");
-	console.log($('#getpassword').val());
+	var password_org;
+         
 	$('#update_password').bootstrapValidator({
 	feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
