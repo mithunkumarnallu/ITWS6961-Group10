@@ -1,15 +1,13 @@
 body{
-	background-image: url("/images/back4.jpg");
-	min-height:100%;
-	
-}
-.centered-form{
-	margin-top: 60px;
+	background-image: url("/images/back9.jpg");
+    background-size: cover;
+
 }
 
-.centered-form .panel{
-	background: rgba(255, 255, 255, 0.8);
-	box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;
+
+
+.container{
+margin-left: 100px
 }
 
 #text{
@@ -17,9 +15,7 @@ body{
 
 }
 
-.container{
- background-image:url("/images/back4.jpg");
-}
+
 
 h4{
 color: #332914;
@@ -32,13 +28,42 @@ font-weight: bold;
  display: none;    
 }
 
-.panel-transparent .panel-heading{
-        background: rgba(122, 130, 136, 0.2)!important;
-    }
+.panel{
+  background: rgba(255, 255, 255, 0.35);
+  /*border-radius: 3px;*/
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  top: 100px;
+  /*left: 15%;
+  max-width: 65%; 
+  position: relative;
+ /* margin-left: 05px;
+  margin-right: 05px; */
+  right: 0;
+  z-index: 2;
+  padding: 0 10px;
+}
+.panel .panel-heading{
+	margin-top: 10px;
+}
 
-.panel-transparent .panel-body{
-        background: rgba(46, 51, 56, 0.2)!important;
-    }
+h3 {
+	font-family: 'Allerta', Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    line-height: 10px;
+}
+
+#heading{
+font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+font-size: 50px;
+line-height: 65px;
+}
+
+h4{
+ font-family: 'Vollkorn', Georgia, Times, serif;
+    font-size: 25px;
+    line-height: 25px;   
+}
 
 
 

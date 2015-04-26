@@ -228,6 +228,7 @@ $(document).ready(function register_logon()
     
     $("#forgot_password").click(function(){
         $("#login_panel").addClass("hide");
+        $("#login_qr").addClass("hide");
         $("#submit_email").removeClass("hide");
         
     });

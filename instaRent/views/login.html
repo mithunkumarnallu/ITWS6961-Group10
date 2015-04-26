@@ -4,19 +4,25 @@
      <title>InstaRent Login</title>
 	 <meta name="viewport" content="width=device-width, initial-scale=1">
      <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+     <link href="http://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet" type="text/css">
 	 <link rel="stylesheet" href="http://lipis.github.io/bootstrap-social/bootstrap-social.css">
 	 <link rel="stylesheet" href="./stylesheets/login_styles.css">
+     
 	 <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
       <script src="/javascripts/qrcode/qrcode.min.js"></script>
 
   </head>
 
 <body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="navbar-header">
+        <a href='/' class="navbar-brand" href="/dashboard" style="font-weight: 700; font-family: 'Montserrat','Helvetica Neue','Helvetica','Arial','sans-serif'; color: white"><i class="fa fa-play-circle"></i>  <span class="light" style="font-weight: 500;color:#7FED11">INSTA</span>RENT</a>
+    </div>
+</nav>
 <div class="background-image"></div>
 <div class="container">
-    <div class="row vdivide">
-        <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-            <div class="panel panel-default hide centered-form panel-transparent" id="submit_email">
+        <!--<div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">-->
+            <div class="panel panel-default hide centered-form panel-transparent center-block" style="width:65%" id="submit_email">
                 <div class="panel-heading">
                     <h1 class="panel-title"><strong>Enter your email</strong></h1>
                 </div>
@@ -32,21 +38,26 @@
                 </div>
             </div>
             <div class="panel panel-default hide centered-form panel-transparent" id="send_email">
-                <div class="panel-heading">
-                    <h1 class="panel-title"><strong>Check you email</strong></h1>
+                <div class="panel-heading center-block" style="width:65%">
+                    <strong>Check Email !</strong>
                 </div>
                 <div class="panel-body panel-success">
                     <strong>Check your email to receive a link to reset your password</strong>
                 </div>
             </div>
+    
+    
+    
+         <div class="row no-gutter">
+           <div class="col-lg-7">
             <div class="panel panel-default" id="login_panel" >
-
                     <div class="panel-heading">
-                        <div class="panel-title">Sign In</div>
-                        <div style="float: right; font-size: medium; position: relative">Got our app? Scan below to login</div>
-                        <div style="float: none; font-size: 80%; position: relative"><a href="#" id="forgot_password">Forgot password?</a></div>
+                        <p  style="float: right; font-size: 90%"><a href="#" id="forgot_password">Forgot password?</a></p>
+                        <p style="float: left" ><h3>Sign In</h3><p>
+                        <div style="clear: both;"></div>
+                        
                     </div>
-                <div class="col-lg-6">
+                
                     <div style="padding-top:30px" class="panel-body" >
                         <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
                         <form id="loginform" class="form-horizontal" role="form" method="post">
@@ -86,7 +97,7 @@
                                 </div>
                             </div>
                             </br>
-                            <div class="row vdiv">
+                            <div class="row">
                                 <div class="col-xs-6 col-sm-6 col-md-6">
                                     <a id="facebook" href='/auth/facebook' class="btn btn-block btn-social btn-facebook">
                                     <i class="fa fa-facebook"></i> Sign in
@@ -101,11 +112,16 @@
                             </br></br>
                         </form>
                     </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class = "QRCode">
+                </div>     
+           </div>
+         <div class="col-lg-4">
+           <div class="panel panel-default" id="login_qr" >
+              <div class="panel-heading">
+                  <div class="panel-title"><h3>Scan QR code and Login!</h3></div>
+              </div>
+              <div class = "QRCode center-block">
                         <div style="padding-top:30px" class="panel-body" >
-                            <div id="qrcode"></div>
+                            <div id="qrcode"> </div>
                             {% if error %}
                             <div class="alert alert-danger alert-error">There was an error in loading this page</div>
                             {% else %}
@@ -129,12 +145,21 @@
                                 }
                             </script>
                             {% endif %}
+                            </br></br>
                         </div>
-                    </div>
             </div>
+          </div>
         </div>
     </div>
+    <!-- </div>-->
+<footer>
+ <div class="navbar navbar-inverse navbar-fixed-bottom">
+        <div class="container">
+            <p class="navbar-text"><i class="fa fa-copyright"></i> InstaRent 2015</p>
+        </div>
     </div>
+</footer><!-- footer -->
+    
 </div>
 
 
