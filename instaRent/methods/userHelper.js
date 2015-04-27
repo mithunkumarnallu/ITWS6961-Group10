@@ -20,7 +20,7 @@ userHelper.prototype.getTenantName = function(data,callback){
 };
 
 userHelper.prototype.isUserLoggedIn = function(data) {
-    return data.session.passport;
+    return data.session.passport.user;
 };
 
 userHelper.prototype.setDefaultHome = function(req, userId, homeInfo, callback) {

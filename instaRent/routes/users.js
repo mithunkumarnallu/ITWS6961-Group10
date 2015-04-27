@@ -23,9 +23,11 @@ router.get("/verify/:token", function (req, res, next) {
 
 router.get("/confirmHouse/:homeId", function (req, res, next) {
    if(userHelper.isUserLoggedIn(req)) {
+       console.log(" confirm house- logged in");
        invitationHandler.addUserToHome(userHelper.getUserId(req));
        res.redirect("/managehome");
    } else {
+        console.log(" confirm house- not logged in");
         res.redirect("/login");
    }
 });
