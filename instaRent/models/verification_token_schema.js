@@ -26,6 +26,8 @@ exports.verifyUser = function(token, done) {
     VerificationTokenModel.findOne({token: token}, function (err, doc){
         if (err) 
         	return done(err);
+        else if(doc)
+        {
         //return done();
         
         userModel.findOne({_id: doc._userId}, function (err, user) {
@@ -41,6 +43,9 @@ exports.verifyUser = function(token, done) {
                 done(err);
             })
         })
+       }
+       else
+          done();    
     })
 };
 
@@ -58,7 +63,7 @@ exports.verifyEmail=function(token, email, done){
             } 
         if(user){
             console.log("email found in db: "+rec._userId);
-            return done();
+            return done(user);
         }
         else
         {   console.log("email not found in db");

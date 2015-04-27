@@ -1,4 +1,10 @@
 $(document).ready(function update_password() {
+	//get the email
+	var email;
+	 $.get('/settings/getEmail',{},function(res){
+		    email=res.email;
+
+	});
 	console.log("update_password outside");
 	var password_org;
          

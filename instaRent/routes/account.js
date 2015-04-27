@@ -161,10 +161,15 @@ router.get("/account/verify/:token", function (req, res, next) {
     //console.log("Verifying user user");
     verificationToken.verifyEmail(token, req.session.email, function(err) {
         console.log("printing err: "+err);
-     if (err==null) 
+     if (err==null) {
+         console.log("redirect to reset verify fail route");
        res.redirect("/reset_verify_fail");
+     }
     else 
+    {
+         console.log("redirect to forgot pwd route");
        res.redirect("/forgot_password_route");
+    }
     });
 });
 

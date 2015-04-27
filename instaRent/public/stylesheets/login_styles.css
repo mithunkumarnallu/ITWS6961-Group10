@@ -14,16 +14,15 @@
 
 .panel{
   background: rgba(255, 255, 255, 0.35);
-  border-radius: 3px;
+  /*border-radius: 3px;*/
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
   top: 100px;
-  left: 15%;
-  
-  max-width: 65%;
-  position: fixed;
-  margin-left: 20px;
-  margin-right: 20px;
+  /*left: 15%;
+  max-width: 65%; */
+  position: relative;
+ /* margin-left: 05px;
+  margin-right: 05px; */
   right: 0;
   z-index: 2;
   padding: 0 10px;
@@ -36,30 +35,30 @@
  display: none;    
 }
 
-.row.vdivide [class*='col-']:not(:last-child):after {
-    background: #e0e0e0;
-    width: 1px;
-    content: "OR";
-    display:block;
-    position: absolute;
-    top:0;
-    bottom: 0;
-    right: 0;
-    min-height: 200px;
+no-gutter [class*='col-']:not(:first-child),.row.no-gutter [class*='col-']:not(:last-child) {
+  padding-right:0;
+  padding-left:0;
 }
-.row.vdiv [class*='col-']:not(:last-child):after {
-    background: #e0e0e0;
-    width: 1px;
-    content: "";
-    display:block;
-    position: absolute;
-    top:0;
-    bottom: 0;
-    right: 0;
-    min-height: inherit;
+
+#qrcode{
+    padding-left: 25px;
+    padding-top: 25px;
+
+}
+
+h3 {
+	font-family: 'Allerta', Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    line-height: 10px;
+}
+
+#forgot_password{
+margin-top: 15px;
+    font-style: normal;
+	font-variant: normal;
+	font-weight: 500;
 }
 
 
-.QRCode{
-    margin-left:40px;
-}
+
+

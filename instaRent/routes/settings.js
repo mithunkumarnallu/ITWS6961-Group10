@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var userHelper = require("../methods/userHelper");
+//add this models where I can use to change the password.
+var AccountController = require('../methods/account.js'),
 userHelper = new userHelper();
 var User=require("../models/user").User;
 var UserHandler=require("../models/user");
@@ -9,6 +11,8 @@ var email;
 
 var updated=false;
 var userInfo={};
+//to verify the password
+var pwdverified=false;
 
 router.get('/', function(req, res, next) {
   var obj;
@@ -28,27 +32,10 @@ router.get('/', function(req, res, next) {
 
 });
 
-
-/*
-router.get('/', function(req, res, next) {
-  if (!update) {
-  userinfo  = userHelper.getUserInfo(req);
-}
-
-  res.render('settings.html', userinfo);
-
-  //userHelper.renderTemplate('settings.html', userHelper.getUserInfo(req));
-  //userHelper.renderTemplate('settings.html', userHelper.getUserInfo(req), req,res);
->>>>>>> origin/master
-});
-
-*/
-
 //display the user profile, return type is in JSON
 router.get('/displayprofile', function(req, res, next){
      var userInfo={};
      userInfo=userHelper.getUserInfo(req);
-
      res.send(JSON.stringify(userInfo));
 });
 
@@ -56,14 +43,9 @@ router.get('/getEmail',function(req,res){
   res.send(userHelper.getUserInfo(req));
 });
 
-
-
-//change user setting, firstname, lastname, phonenumber and email, pwd cannot be changed
 router.post('/changeuserprofile',function(req,res){
 
 updated=true;
-//  var userInfo={};
-
 
   userInfo={
     email: req.body.email,
@@ -72,40 +54,37 @@ updated=true;
     phoneNo: req.body.phoneNo
   };
   console.log(req.body);
-
-
-  // ===== changed by Amy here========
-  // should send response from update function instead of send req.body
-  //console.log(userInfo.email);
   UserHandler.update(userInfo, res);
-
-
-  //res.send(req.body);
-
-
-/*
-  var userinfo;
-  userinfo.push(req.body.email);
-  userinfo.push(req.body.firstName);
-  userinfo.push(req.body.lastName);
-  userinfo.push(req.body.phoneNo);
-  console.log("user email: ", userInfo[0]);
-  //UserHandler.update(userInfo);
-
-*/
-
 });
 
+//here we verify the password
+router.post('/verifypassword',function(req,res,next){
+  //get the password from the user
+    var password=req.body.password;
+    var email=req.body.email;
+    var accountController = new AccountController(User, req.session, req);
+    //and then use the verify password function written in the account.js
+    var ismatched=accountController.verifyoldpassword(email,password);
+    if(ismatched==true){
+      console.log("password matched, could go on and change it!")
+      res.send({success:true});
+    }
+    else{
+      console.log("password incorrect, please type again!");
+      res.send({success:false});
+    }
+});
 
-// added by Amy, parse the data to backend, not tested yet
+//add another route to change the user password
 router.post('/changeUserPassword',function(req,res,next){
-  var userPassword;
-  userPassword={
-    password: req.body.password,
-    password_new: req.body.password_new,
+  var userpwd;
+  userpwd={
+    email: req.body.email,
+    //password: req.body.password,
+    //password_new: req.body.password_new,
     password_conf: req.body.password_conf
   };
-  UserHandler.update(userPassword,res);
+  UserHandler.updatepassword(userpwd,res);
 });
 
 module.exports=router;
