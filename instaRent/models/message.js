@@ -8,7 +8,9 @@ var MsgSchema = new Schema({
  senderid: String,
  landlordid: String,
  date: Date,
- fname: String
+ fname: String,
+ firstname: String,
+ lastname: String
 
 });
 

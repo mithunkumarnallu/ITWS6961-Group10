@@ -18,6 +18,14 @@ topicHelper.prototype.newTopic = function(data, res) {
     });
 };
 
+topicHelper.prototype.deleteTopic = function(data, res) {
+    Topic.find({ _id:data.topicid }).remove( function() {
+        console.log("deleted topic:");
+        console.log(data.topicid);
+        res.end();
+    } ); 
+}
+
 topicHelper.prototype.getTopics = function(data, res) {
     console.log("category"+data.category);
     console.log("houseid:"+data.houseid);

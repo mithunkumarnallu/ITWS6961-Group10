@@ -15,23 +15,70 @@
     <div ng-app = "complaintsApp" class="top-buffer">
       <div ng-controller = "complaintsController as ctrl" >
 
+        <div class="panel">
+        <div class="panel-body">
+
+        <!-- Page Heading -->
+        <div class="row">
+          <div class="col-lg-12">
+              <h1 class="page-header">
+                   Complaints Board
+                  <!--to distinguish the landlord and renter-->
+              </h1>
+              <ol class="breadcrumb">
+
+                <li>
+                    <i class="fa fa-dashboard"></i>  <a href="/dashboard">Dashboard</a>
+                </li>
+
+                <li class="active">
+                    <i class="fa fa-fw fa-newspaper-o"></i> Complaints
+                </li>
+
+                <li class="active">
+                  <!-- <div> -->
+                    <button class="btn btn-default" ng-click="ctrl.setMode('categories')" ng-show="ctrl.mode === 'topics'" ><i class="fa fa-arrow-circle-left"></i> Switch Category</button>
+                  <!-- </div> -->
+
+                  <!-- <div> -->
+                    <button class="btn btn-default" ng-click="ctrl.setMode('topics')" ng-show="ctrl.mode === 'msgs'" ><i class="fa fa-arrow-circle-left"></i> Switch Issue</button>
+                  <!-- </div> -->
+
+                  <!-- <div> -->
+                    <button class="btn btn-success" ng-show="ctrl.mode === 'topics'" data-toggle="modal" data-target="#createTopicModal"><i class="fa fa-file-text-o"></i> Log a New Issue</button>
+                  <!-- </div> -->
+
+                  <!-- <div> -->
+                    <button class="btn btn-success" ng-click="ctrl.setDate()" ng-show="ctrl.mode === 'msgs'" data-toggle="modal" data-target="#createMsgModal"><i class="fa fa-file-text-o"></i> Create a New Message</button>
+                  <!-- </div> -->
+
+                </li>
+
+              </ol>
+          </div>
+        </div>
+
         <!-- buttons -->
-        <div>
-          <button class="btn btn-default" ng-click="ctrl.setMode('categories')" ng-show="ctrl.mode === 'topics'" >Switch Category</button>
+        <div class="panel" ng-show="false">
+            
+          <!-- <div> -->
+            <button class="btn btn-default" ng-click="ctrl.setMode('categories')" ng-show="ctrl.mode === 'topics'" >Switch Category</button>
+          <!-- </div> -->
+
+          <!-- <div> -->
+            <button class="btn btn-default" ng-click="ctrl.setMode('topics')" ng-show="ctrl.mode === 'msgs'" >Switch Issue</button>
+          <!-- </div> -->
+
+          <!-- <div> -->
+            <button class="btn btn-success" ng-show="ctrl.mode === 'topics'" data-toggle="modal" data-target="#createTopicModal">Log a New Issue</button>
+          <!-- </div> -->
+
+          <!-- <div> -->
+            <button class="btn btn-success" ng-show="ctrl.mode === 'msgs'" data-toggle="modal" data-target="#createMsgModal">Create a New Message</button>
+          <!-- </div> -->
+          
         </div>
 
-        <div>
-          <button class="btn btn-default" ng-click="ctrl.setMode('topics')" ng-show="ctrl.mode === 'msgs'" >Switch Issue</button>
-        </div>
-
-        <div>
-          <button class="btn btn-success" ng-show="ctrl.mode === 'topics'" data-toggle="modal" data-target="#createTopicModal">Log New Issue</button>
-        </div>
-
-        <div>
-          <button class="btn btn-success" ng-show="ctrl.mode === 'msgs'" data-toggle="modal" data-target="#createMsgModal">Create New Message</button>
-        </div>
-        
         <!-- Create Topic Modal -->
         <div class="modal fade" id="createTopicModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div class="modal-dialog">
@@ -58,6 +105,46 @@
           </div>
         </div>
 
+        <!-- Topic Deletion Modal -->
+        <div class="modal fade" id="deletionInquiry" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">{{"Confirm deletion of the selected topic?"}}</h4>
+              </div>
+              <div class="modal-body">
+                
+                <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="ctrl.deleteTopic(topic)" >Delete</button>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Change Status Modal -->
+        <div class="modal fade" id="statusInquiry" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">{{"Set Status"}}</h4>
+              </div>
+              <div class="modal-body">
+                
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="ctrl.changeStatus(topic, 0)" >New</button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="ctrl.changeStatus(topic, 1)" >Processing</button>
+
+                <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="ctrl.changeStatus(topic, 2)" >Finished</button>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
 
         <!-- Create Message Modal -->
         <div class="modal fade" id="createMsgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -72,12 +159,12 @@
                 <form>
                   <div class="form-group">
                     <label for="issue">From:</label>
-                    <input type="text"  class="form-control" ng-model="ctrl.from" disabled></input>
+                    <input type="text"  class="form-control" ng-model="ctrl.fromtext" disabled></input>
                   </div>
 
                   <div class="form-group">
                     <label for="issue">To:</label>
-                    <input type="text" class="form-control" ng-model="ctrl.to" disabled></input>
+                    <input type="text" class="form-control" ng-model="ctrl.totext" disabled></input>
                   </div>
 
                   <div class="form-group">
@@ -105,7 +192,7 @@
         </div>
 
         <!-- categories -->
-        <div ng-show="ctrl.mode === 'categories'" ng-repeat="category in categories" class="panel {{category.css}}" ng-click="ctrl.fetchTopics(category)">
+        <div ng-show="ctrl.mode === 'categories'" ng-repeat="category in categories" class="panel {{category.css}} clickable" ng-click="ctrl.fetchTopics(category)">
           <div class="panel-heading ">
             {{category.name}} <span class="badge">{{category.count}}</span>
           </div>
@@ -115,42 +202,90 @@
         </div>
         
 
+
+        <!-- topics -->
+        <!-- <div ng-show="ctrl.mode==='topics'"> -->
+        <!-- <div ng-show="ctrl.mode==='topics'">
+          <div> -->
+          
+          <!-- <div class="panel {{topicstyle[topic.status]}}" ng-repeat="topic in topics">
+              <div class="panel-heading">
+                  <span class="badge clickable" data-toggle="modal" data-target="#statusInquiry" ng-click="ctrl.setTopic(topic)">{{topic.status}}</span>
+                  {{"Created By: " + topic.lastname + ", " + topic.firstname + " <" + topic.userid  + ">" }}
+              </div>
+
+              <div class="panel-body clickable" >
+                <a ng-click="ctrl.fetchMsgs(topic)">{{topic.name}}</a> -->
+                <!-- <em>{{'created on:' + topic.date }}</em> -->
+              <!-- </div>
+
+              <div class="panel-footer" >
+                {{'Created on:  ' + topic.date.substring(2, 10)}}
+                {{'style:  ' + topicstyle[topic.status]}}
+                {{'status:  ' + topic.status}}
+              </div>
+
+            </div> -->
+
+            <!-- <div class="panel {{topicstyle[rptopic.status]}}" ng-show="false" ng-repeat="rptopic in topics">
+              <div class="panel-heading">
+                  <span class="badge clickable" data-toggle="modal" data-target="#statusInquiry" ng-click="ctrl.setTopic(rptopic)">{{rptopic.status}}</span>
+                  {{"Created By: " + rptopic.lastname + ", " + rptopic.firstname + " <" + rptopic.userid  + ">" }}
+              </div>
+
+              <div class="panel-body clickable" >
+                <a ng-click="ctrl.fetchMsgs(rptopic)">{{rptopic.name}}</a> -->
+                <!-- <em>{{'created on:' + topic.date }}</em> -->
+              <!-- </div>
+
+              <div class="panel-footer" >
+                {{'Created on:  ' + rptopic.date.substring(2, 10)}}
+              </div>
+
+            </div>
+          </div>
+
+
+        </div> -->
+
+
         <!-- topics -->
         <div ng-show="ctrl.mode==='topics'">
+        <!-- <div> -->
           <div>
           
-            <div class="panel {{topicstyle[topic.status]}}" ng-show="topic.status==='new'" ng-repeat="topic in topics">
+            <div class="panel {{topicstyle[rptopic.status]}}" ng-show="rptopic.status==='new'" ng-repeat="rptopic in topics">
               <div class="panel-heading">
-                  <span class="badge" ng-click="ctrl.changeStatus(topic)">{{topic.status}}</span>
-                  {{"Created By: " + topic.userid }}
+                  <span class="badge clickable" data-toggle="modal" data-target="#statusInquiry" ng-click="ctrl.setTopic(rptopic)">{{rptopic.status}}</span>
+                  {{"Created By: " + rptopic.lastname + ", " + rptopic.firstname + " <" + rptopic.userid  + ">" }}
               </div>
 
-              <div class="panel-body" >
-                <a ng-click="ctrl.fetchMsgs(topic)">{{topic.name}}</a>
+              <div class="panel-body clickable" >
+                <a ng-click="ctrl.fetchMsgs(rptopic)">{{rptopic.name}}</a>
                 <!-- <em>{{'created on:' + topic.date }}</em> -->
               </div>
 
               <div class="panel-footer" >
-                {{'Created on:  ' + topic.date.substring(2, 10)}}
+                {{'Created on:  ' + rptopic.date.substring(2, 10)}}
               </div>
 
             </div>
           </div>
 
           <div>
-            <div class="panel {{topicstyle[topic.status]}}" ng-show="topic.status==='processing'" ng-repeat="topic in topics">
+            <div class="panel {{topicstyle[rptopic.status]}}" ng-show="rptopic.status==='processing'" ng-repeat="rptopic in topics">
               <div class="panel-heading">
-                  <span class="badge" ng-click="ctrl.changeStatus(topic)">{{topic.status}}</span>
-                  {{"Created By: " + topic.userid }}
+                  <span class="badge clickable" data-toggle="modal" data-target="#statusInquiry" ng-click="ctrl.setTopic(rptopic)">{{rptopic.status}}</span>
+                  {{"Created By: " + rptopic.lastname + ", " + rptopic.firstname + " <" + rptopic.userid  + ">" }}
               </div>
 
-              <div class="panel-body" >
-                <a ng-click="ctrl.fetchMsgs(topic)">{{topic.name}}</a>
+              <div class="panel-body clickable" >
+                <a ng-click="ctrl.fetchMsgs(rptopic)">{{rptopic.name}}</a>
                 <!-- <em>{{'created on:' + topic.date }}</em> -->
               </div>
 
               <div class="panel-footer" >
-                {{'Created on:  ' + topic.date.substring(2, 10)}}
+                {{'Created on:  ' + rptopic.date.substring(2, 10)}}
               </div>
 
             </div>
@@ -158,19 +293,20 @@
 
           <div>
           
-            <div class="panel {{topicstyle[topic.status]}}" ng-show="topic.status==='finished'" ng-repeat="topic in topics">
+            <div class="panel {{topicstyle[rptopic.status]}}" ng-show="rptopic.status==='finished'" ng-repeat="rptopic in topics">
               <div class="panel-heading">
-                  <span class="badge" ng-click="ctrl.changeStatus(topic)">{{topic.status}}</span>
-                  {{"Created By: " + topic.userid }}
+                  <span class="badge clickable" data-toggle="modal" data-target="#statusInquiry" ng-click="ctrl.setTopic(rptopic)">{{rptopic.status}}</span>
+                  {{"Created By: " + rptopic.lastname + ", " + rptopic.firstname + " <" + rptopic.userid  + ">" }}
               </div>
 
               <div class="panel-body" >
-                <a ng-click="ctrl.fetchMsgs(topic)">{{topic.name}}</a>
+                  <button class="btn btn-danger" data-toggle="modal" data-target="#deletionInquiry" ng-show="ctrl.isLandlord()" ng-click="ctrl.setTopic(rptopic)"><i class="fa fa-eraser"></i> Delete</button>
+                <a class="clickable" ng-click="ctrl.fetchMsgs(rptopic)">{{rptopic.name}}</a>
                 <!-- <em>{{'created on:' + topic.date }}</em> -->
               </div>
 
               <div class="panel-footer" >
-                {{'Created on:  ' + topic.date.substring(2, 10)}}
+                {{'Created on:  ' + rptopic.date.substring(2, 10)}}
               </div>
 
             </div>
@@ -185,14 +321,14 @@
             <div class="panel {{ctrl.msgStyle(msg)}}" ng-repeat="msg in msgs | orderBy: '-date'">
 
               <div class="panel-heading">
-                {{"From: " + msg.senderid }}
+                {{"From: " + msg.lastname + "," + msg.firstname + " <" + msg.senderid  + ">"}}
               </div>
 
               <div>
                 <button class="btn btn-info">{{"Created On: " + msg.date.substring(2, 10) }}</button>
               </div>
 
-              <div class="panel-body" ng-click="ctrl.setDate()" data-toggle="modal" data-target="#createMsgModal">
+              <div class="panel-body clickable" ng-click="ctrl.setDate()" data-toggle="modal" data-target="#createMsgModal">
                 <a>{{msg.message}}</a>
               </div>
 
@@ -214,6 +350,9 @@
             </div>
           </div>
 
+        </div>
+
+        </div>
         </div>
 
       </div >

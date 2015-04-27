@@ -1,6 +1,5 @@
 var app = angular.module('complaintsApp', ['angularFileUpload']);
 function fetchCategories() {
-
   categories = [
                   {
                     categoryID: 0,
@@ -73,10 +72,13 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
 
     if ($scope.userType == 'Tenant') {
       $scope.landlordid = data.landlord.email;
+      $scope.landlordfname = data.landlord.firstname;
+      $scope.landlordlname = data.landlord.lastname;
     } else {
       $scope.landlordid = $scope.userid;
+      $scope.landlordfname = $scope.firstName;
+      $scope.landlordlname = $scope.lastName;
     }
-
 
     $scope.fetchTopicCounts();
 
@@ -90,6 +92,20 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
     $scope.userType = "Landlord";
 
   });
+
+  ctrl.isLandlord = function() {
+    if ($scope.userType === 'Landlord') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  ctrl.setTopic = function(topic) {
+    $scope.topic = topic;
+  }
+
+  
 
   $scope.fetchTopicCounts = function() {
     $scope.categories = fetchCategories();
@@ -126,15 +142,23 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
 
   this.setMode = function(mode) {
     this.mode = mode;
-    $mode = mode;
+    $scope.mode = mode;
     $scope.fetchTopicCounts();
+
+    if ($scope.mode === 'topics') {
+      if ($scope.category != undefined ) {
+        ctrl.fetchTopics($scope.category);
+      }
+      
+    }
+
   }
 
 
-  this.changeStatus = function(topic) {
+  this.changeStatus = function(topic, sid) {
     if ($scope.userType === 'Tenant') {
       //remove comment before going to production
-      //return;
+      return;
     }
 
     statuses = ['new', 'processing', 'finished'];
@@ -143,7 +167,7 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
             'finished' :2
           };
 
-    topic.status = statuses[(ids[topic.status]+1) % 3];
+    topic.status = statuses[sid];
 
     var info = {
       _id: topic._id,
@@ -170,21 +194,40 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
     this.tenantid = topic.tenantid;
     this.landlordid = topic.landlordid;
 
-    if (this.userid == topic.landlordid) {
+    if ($scope.userType != 'Tenant') {
       this.to = topic.userid;
       this.from = this.landlordid;
+
+      /*if ($scope.landlordlname == 'undefined') {
+        this.totext = "To:" + $scope.landlordid;
+      } else {
+        this.totext = "To: " + $scope.landlordlname + "," + $scope.landlordfname + " <" + $scope.landlordid  + ">";
+      }*/
+      this.totext = "To: " + $scope.topic.lastname + "," + $scope.topic.firstname + " <" + $scope.topic.userid  + ">";
+      this.fromtext = "From: " + $scope.lastName + "," + $scope.firstName + " <" + $scope.userid  + ">";
+
     } else {
       this.to = topic.landlordid;
       this.from = this.userid;
+
+      if ($scope.landlordlname == 'undefined') {
+        this.totext = "To:" + $scope.landlordid;
+      } else {
+        this.totext = "To: " + $scope.landlordlname + "," + $scope.landlordfname + " <" + $scope.landlordid  + ">";
+      }
+
+      this.fromtext = "From: " + $scope.lastName + "," + $scope.firstName + " <" + $scope.userid  + ">";
+
+
+
     }
 
-    
     this.mode = "msgs";
     $mode = "msgs";
 
-
     var url = "/complaints/msg?" + "topicid=" + $scope.topicid + "&houseid=" 
               + $scope.houseid;
+
     $http.get(url).
     //upon success, refresh the data and update the views
     success(function(data, status, headers, config) {
@@ -227,10 +270,28 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
 
   $scope.fetchTopics = this.fetchTopics;
 
+  ctrl.deleteTopic = function() {
+    var url = "";
+    url = "/complaints/topic?" + "topicid=" + $scope.topic._id; 
+    //fetch tweets using the backend API
+    $http.delete(url)
+      //upon success, refresh the data and update the views
+      .success(function(data, status, headers, config) {
+        ctrl.fetchTopics($scope.category);
+      })
+
+      //error handler
+      .error(function(data, status, headers, config) {
+
+      });
+
+  }
+
   this.setDate = function() {
     this.date = new Date();
     $scope.files = [];
     $scope.fname = "";
+    ctrl.newmsg = "";
   }
 
   this.hasFile = function(msg) {
@@ -284,7 +345,10 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
       date: new Date(),
       category: $scope.selectedCategory,
       status: 'new',
-      houseid: $scope.houseid
+      houseid: $scope.houseid,
+
+      firstname: $scope.firstName,
+      lastname: $scope.lastName
     };
 
     $http.post('/complaints/topic', info).
@@ -313,7 +377,9 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
       senderid: this.userid,
       landlordid: $scope.landlordid,
       date: new Date(),
-      fname: $scope.fname
+      fname: $scope.fname,
+      firstname: $scope.firstName,
+      lastname: $scope.lastName
     };
 
     $http.post('/complaints/msg', info).
