@@ -65,17 +65,16 @@
                     <li>
                         <a href="/settings" id="side-settings" class="animated rotateInDownLeft"><i class="fa fa-fw fa-wrench"></i> Settings</a>
                     </li>
-                    
                     {% if sessionDetail.role == 'Tenant'%}
                     <li>
                         <a href="#" id="pay"  class="animated rotateInDownLeft"><i class="fa fa-fw fa-cc-stripe"></i>Quick Rent Pay </a>
                     </li>
-                    {% elseif sessionDetail.role == 'Landlord'%}
+                        {% elseif sessionDetail.role == 'Landlord'%}
                     <li>
                         <a href="/payments/testLandlord" id = "side-addAccount" class="animated rotateInDownLeft"><i class="fa fa-fw fa-university"></i> Add Bank Account</a>
                     </li>
                     {% endif %}
-                    
+
                     <li>
                         <a href="/payments/payment_history" id="side-payment" class="animated rotateInDownLeft"><i class="fa fa-fw fa-credit-card"></i>Payment History</a>
                     </li>
