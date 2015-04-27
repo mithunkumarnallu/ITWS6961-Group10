@@ -144,7 +144,7 @@ AccountController.prototype.verifyoldpassword=function(email,password,req,res){
           }
           else{
               console.log("lalalaPassword incorrect, please type again!");
-              res.send("icorrect");
+              res.send("incorrect");
               //res.send({success:false});
           }
         });
