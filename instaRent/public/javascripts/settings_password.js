@@ -1,13 +1,14 @@
+var email;
 $(document).ready(function update_password() {
 	//get the email
-	var email;
+
 	 $.get('/settings/getEmail',{},function(res){
 		    email=res.email;
 
 	});
 	console.log("update_password outside");
 	var password_org;
-         
+
 	$('#update_password').bootstrapValidator({
 	feedbackIcons: {
                 valid: 'glyphicon glyphicon-ok',
@@ -49,7 +50,7 @@ $(document).ready(function update_password() {
                         message: 'The password Confirmation must be minimum 5 characters'
                     },
                     identical: {
-                    	field: 'password',
+                    	field: 'password_new',
                     	message:'The new password and its confirm are not the same'
                 	}
               	}
@@ -69,21 +70,25 @@ $(document).ready(function update_password() {
 
 		console.log(password, password_new, password_conf);
 
-
-		if (password != $('#getpassword').val()) {
-			alert("Incorrect password!");
-			return;
-		}
-
 		$.ajax({
 			type: 'POST',
 			url: "/settings/changeUserPassword",  // needed changes in account.js file, not done yet
-			data: "&password=" + password + "&password_new=" +password_new + "&password_conf=" + password_conf,
+			data: //"&password=" + password + "&password_new=" +password_new + "&password_conf=" + password_conf,
 			//dataType: "jsonp",
+			{
+				email:email,
+				password:password,
+				password_new:password_new,
+				password_conf:password_conf
+			},
 			success: function(resp) {
-				if(resp.success=="Success") {
+				if(resp=="Success") {
 					console.log("response success");
 					alert("Updated successfully!");
+				}
+	      else if(resp=="incorrect"){
+					alert("please retype your password!");
+					window.location.href="/settings";
 				}
 			},
 			error: function(xhr, textStatus, err) {

@@ -3,6 +3,8 @@ var invitationHandler = require("../models/invitation_schema");
 
 var userHelper = require("./userHelper");
 userHelper = new userHelper();
+var User=require("../models/user").User;
+var UserHandler=require("../models/user");
 
 var AccountController = function (userModel, session, req) {
 
@@ -15,6 +17,7 @@ var AccountController = function (userModel, session, req) {
     this.session = session;
     //this.mailer = mailer;
 	this.User = require('../models/user.js').User;
+
 };
 
 AccountController.prototype.getSession = function () {
@@ -111,29 +114,44 @@ AccountController.prototype.logoff = function () {
 //verify password function
 AccountController.prototype.verifyoldpassword=function(email,password,req,res){
     var me=this;
-    var ismatched=false;
-    me.userModel.findOne({email:email},function(err,user){
+    //var ismatched;
+    console.log("verifythepasswordnow!");
+    me.User.findOne({email:email},function(err,user){
       if(err){
         //res.send an object
-        res.send({success:false,extras:{msg: me.ApiMessages.DB_ERROR}});
+        console.log("!!!error!!!!");
+        //res.send({success:false,extras:{msg: me.ApiMessages.DB_ERROR}});
       }
       else{
         console.log("This is the passed from client"+password);
         me.hashPassword(password,user.passwordSalt,function(err,passwordHash){
         console.log("passwords:"+passwordHash+" "+user.passwordHash);
           if(passwordHash==user.passwordHash){
+
               console.log("Your old password matched!!");
-                ismatched=true;
+
+              console.log("~~~~~~~~~~~~~~");
+              /********here we add sth**************/
+              var userpwd;
+              userpwd={
+                email: email,
+                //password: req.body.password,
+                //password_new: req.body.password_new,
+                password_conf: req.body.password_conf
+              };
+              UserHandler.updatepassword(userpwd,res);
+
           }
           else{
-              console.log("Password incorrect, please type again!");
-              res.send({success:false});
+              console.log("lalalaPassword incorrect, please type again!");
+              res.send("icorrect");
+              //res.send({success:false});
           }
         });
 
       }
     });
-    return ismatched;
+  //  return ismatched;
 
 
 };

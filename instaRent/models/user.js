@@ -1,4 +1,6 @@
 var mongoose = require('./mongoose_connector').mongoose;
+var crypto = require('crypto');
+var uuid = require('node-uuid');
 var Schema = mongoose.Schema;
 var UserSchema = new Schema({
  facebook_id: String,
@@ -46,9 +48,9 @@ function update(user, res){
 }
 
 //here add the update password function to change the password//
-function updatepassword(userpwd, res){
-    var useremail=userpwd.email;
-    var userpwd=userpwd.password_conf;
+function updatepassword(user, res){
+    var useremail=user.email;
+    var userpwd=user.password_conf;
     var passwordSaltIn = uuid.v4(),
         cryptoIterations = 10, // Must match iterations used in controller#hashPassword.
         cryptoKeyLen = 8,       // Must match keyLen used in controller#hashPassword.
@@ -61,7 +63,7 @@ function updatepassword(userpwd, res){
          {
              console.log("update password: numberAffected: "+numberAffected);
              //it will finally send the message to the front-end screen
-             res.send({success: true, extras: {msg: "Password Successfully reset"}});
+             res.send("Success");
          }
      });
 
@@ -77,4 +79,5 @@ function getUserByEmail(email,callback){
 
 exports.User=User;
 exports.update=update;
+exports.updatepassword=updatepassword;
 exports.getUserByPhoneNo = getUserByPhoneNo;

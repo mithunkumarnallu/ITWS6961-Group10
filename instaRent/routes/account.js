@@ -14,15 +14,15 @@ var express = require('express'),
     //UserPasswordReset = require('../models/user-pwd-reset.js'),
     //UserPasswordResetFinal = require('../models/user-pwd-reset-final.js'),
     session = [];
-	
-	
+
+
 	UserProfileModel = require('../models/user-profile.js');
 	crypto = require('crypto');
     uuid = require('node-uuid');
-	
-	
-	
-   router.route('/account/register').post(function (req, res) { 
+
+
+
+   router.route('/account/register').post(function (req, res) {
 	/*router.post('/account/register',function (req, res) {*/
 	var me = this;
     console.log("received password: "+req.body.password +" "+ req.body.passwordConfirm);
@@ -52,10 +52,10 @@ var express = require('express'),
         passwordHash: crypto.pbkdf2Sync(req.body.password, passwordSaltIn, cryptoIterations, cryptoKeyLen),
         passwordSalt: passwordSaltIn
     });
-	
+
 	console.log("Hello");
 	//////////////////////
-	
+
 	User.findOne({ email: newUser.email }, function (err, user) {
 
         if (err) {
@@ -75,7 +75,7 @@ var express = require('express'),
 					console.log(err);
 					res.send({ success: false, extras: { msg: 2 }});
                 }
-                    
+
                 if (numberAffected === 1) {
 
                     var userProfileModel = {
@@ -101,12 +101,12 @@ var express = require('express'),
 				else {
 					     res.send({ success: false, extras: { msg: me.ApiMessages.COULD_NOT_CREATE_USER } });
 				     }
-         
+
             });
 		}
 	});
-  });	
-	
+  });
+
 router.route('/account/logon').post(function (req, res) {
 
     var accountController = new AccountController(User, req.session, req);
@@ -114,19 +114,22 @@ router.route('/account/logon').post(function (req, res) {
     var userLogon = new UserLogon(req.body);
     console.log("userLogon: "+userLogon.email+" "+userLogon.password)
     accountController.logon(userLogon.email, userLogon.password, req, res);
-        
-        
+    console.log("===================");
+    console.log(res);
+    console.log("===================");
+
+
 });
 
 router.route('/account/sendEmail').post(function(req,res){
-    
+
 });
 
 router.route('/account/logoff').get(function(req,res){
   console.log("inside logoff router");
   var accountController=new AccountController(User, req.session, req);
   accountController.logoff();
-  //res.redirect("/login"); 
+  //res.redirect("/login");
     res.send({success: true});
 });
 
@@ -136,12 +139,12 @@ router.route('/account/reset').post(function(req,res){
 		console.log("inside getUser pass mismatch: "+req.body.password);
         res.send({ success: false, extras: { msg: 10 } });
     }
-        
+
     var passwordSaltIn = uuid.v4(),
         cryptoIterations = 10, // Must match iterations used in controller#hashPassword.
         cryptoKeyLen = 8,       // Must match keyLen used in controller#hashPassword.
         passwordHashIn;
-    
+
    User.update({email: req.session.email}, {passwordHash: crypto.pbkdf2Sync(req.body.password, passwordSaltIn, cryptoIterations, cryptoKeyLen), passwordSalt: passwordSaltIn},{},function(err,numberAffected){
         if(err)
             console.log("setDefaultHome database update error" + err);
@@ -165,7 +168,7 @@ router.get("/account/verify/:token", function (req, res, next) {
          console.log("redirect to reset verify fail route");
        res.redirect("/reset_verify_fail");
      }
-    else 
+    else
     {
          console.log("redirect to forgot pwd route");
        res.redirect("/forgot_password_route");
@@ -178,7 +181,7 @@ router.route('/account/reviews').post(function(req,res){
    ReviewModel.SaveReview(req.session.passport.user.firstName+" "+req.session.passport.user.lastName, req.body.comment, function(err){
            console.log("review saved in db- frm route");
            res.send({success: true});
-                      
+
    });
 });
 
@@ -201,4 +204,3 @@ router.route("/account/getUserId").get(function(req, res) {
 
 
 module.exports = router;
-   
