@@ -229,7 +229,7 @@ router.get('/checkLandlordBankAccount',function(req,res){
     var homeID = userHelper.getDefaultHomeID(req);
     var tenantName = userHelper.getUserName(req);
     var address= userHelper.getUserHomeAddress(req);
-    console.log("Inside payments address" + address);
+    //console.log("Inside payments address" + address);
     MoreHomeInfoHandler.getLandlordemailID(homeID,function(err,landlordEmailID){
 
         if(err) {
@@ -238,7 +238,7 @@ router.get('/checkLandlordBankAccount',function(req,res){
 
         else{
             defaultbankAccDetails.getDefaultToken(landlordEmailID,homeID,function(err,data){
-                console.log("token" + data);
+                //console.log("token" + data);
                 if(err){
                     res.send("false");
                 }
