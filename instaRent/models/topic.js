@@ -9,7 +9,9 @@ var TopicSchema = new Schema({
  date: Date,
  status: String,
  category: String,
- houseid: String
+ houseid: String,
+ firstname: String,
+ lastname: String
  
 });
 

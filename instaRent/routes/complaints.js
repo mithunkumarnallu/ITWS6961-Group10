@@ -61,7 +61,9 @@ router.get("/userinfo", function (req, res) {
                         userInfo.landlord = {
                             name: landlordInfo.firstName,
                             email: landlordInfo.email,
-                            phone: landlordInfo.phoneNo
+                            phone: landlordInfo.phoneNo,
+                            firstname: landlordInfo.firstName,
+                            lastname: landlordInfo.lastName
                         };
                     }
                     else {
@@ -138,6 +140,13 @@ router.get('/topic', function(req,res) {
 	console.log("fetching topics per:");
     console.log(info.query);
 	topicHelper.getTopics(info.query, res);
+});
+
+router.delete('/topic', function(req, res) {
+    var info = url.parse(req.url, true);
+    console.log("deleting topic:");
+    
+    topicHelper.deleteTopic(info.query, res);
 });
 
 router.get('/topiccount', function(req,res) {

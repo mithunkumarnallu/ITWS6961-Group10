@@ -3,6 +3,8 @@ var invitationHandler = require("../models/invitation_schema");
 
 var userHelper = require("./userHelper");
 userHelper = new userHelper();
+var User=require("../models/user").User;
+var UserHandler=require("../models/user");
 
 var AccountController = function (userModel, session, req) {
 
@@ -15,6 +17,7 @@ var AccountController = function (userModel, session, req) {
     this.session = session;
     //this.mailer = mailer;
 	this.User = require('../models/user.js').User;
+
 };
 
 AccountController.prototype.getSession = function () {
@@ -26,7 +29,7 @@ AccountController.prototype.setSession = function (session) {
 }
 
 AccountController.prototype.hashPassword = function (password, salt, callback) {
-    // We use pbkdf2 to hash and iterate 10 times by default 
+    // We use pbkdf2 to hash and iterate 10 times by default
     var iterations = 10,
         keyLen = 8; // 8 bit.
     this.crypto.pbkdf2(password, salt, iterations, keyLen, callback);
@@ -55,10 +58,10 @@ AccountController.prototype.logon = function(email, password,req,res) {
                         email: user.email,
                         firstName: user.firstName,
                         lastName: user.lastName,
-						phoneNo: user.phoneNo,
-						role: user.role,
+						            phoneNo: user.phoneNo,
+						            role: user.role,
                         isVerified: user.isVerified,
-						foreignId: user.foreignId,
+						            foreignId: user.foreignId,
                         facebook_id: user.facebook_id,
                         address:user.address,
                         facebook_token: user.facebook_token,
@@ -107,28 +110,77 @@ AccountController.prototype.logoff = function () {
     return;
 };
 
+
+//verify password function
+AccountController.prototype.verifyoldpassword=function(email,password,req,res){
+    var me=this;
+    //var ismatched;
+    console.log("verifythepasswordnow!");
+    me.User.findOne({email:email},function(err,user){
+      if(err){
+        //res.send an object
+        console.log("!!!error!!!!");
+        //res.send({success:false,extras:{msg: me.ApiMessages.DB_ERROR}});
+      }
+      else{
+        console.log("This is the passed from client"+password);
+        me.hashPassword(password,user.passwordSalt,function(err,passwordHash){
+        console.log("passwords:"+passwordHash+" "+user.passwordHash);
+          if(passwordHash==user.passwordHash){
+
+              console.log("Your old password matched!!");
+
+              console.log("~~~~~~~~~~~~~~");
+              /********here we add sth**************/
+              var userpwd;
+              userpwd={
+                email: email,
+                //password: req.body.password,
+                //password_new: req.body.password_new,
+                password_conf: req.body.password_conf
+              };
+              UserHandler.updatepassword(userpwd,res);
+
+          }
+          else{
+              console.log("lalalaPassword incorrect, please type again!");
+              res.send("incorrect");
+              //res.send({success:false});
+          }
+        });
+
+      }
+    });
+  //  return ismatched;
+
+
+};
+
+
+
+
 /*AccountController.prototype.register = function (newUser, res) {
     var me = this;
     me.userModel.findOne({ email: newUser.email }, function (err, user) {
 
         if (err) {
-           
+
 		   res.send({ success: false, extras: { msg: me.ApiMessages.DB_ERROR } });
         }
 
         if (user) {
-            
+
 			res.send({ success: false, extras: { msg: me.ApiMessages.EMAIL_ALREADY_EXISTS } });
         } else {
 
             newUser.save(function (err, user, numberAffected) {
 
                 if (err) {
-                    
+
 					console.log(err);
 					res.send({ success: false, extras: { msg: me.ApiMessages.DB_ERROR }});
                 }
-                    
+
                 if (numberAffected === 1) {
 
                     var userProfileModel = new me.UserProfileModel({
@@ -140,19 +192,19 @@ AccountController.prototype.logoff = function () {
 						foreignId: user.foreignId
                     });
 
-                    
+
 					return callback(err, new me.ApiResponse({
                         success: true, extras: {
                             userProfileModel: userProfileModel
                         }
                     }));
-					
+
 					console.log("Calling sendAccountConfirmationMail");
                     //Mithun's code to handle email confirmation
                     //mailer.sendAccountConfirmationMail(res, newUser);
 
                     console.log("user profile model created in register: Phone: "+userProfileModel.phoneNo+" foreignId: "+userProfileModel.foreignId );
-					var obj = new me.ApiResponse({ success: true, extras: {userProfileModel: userProfileModel}});					
+					var obj = new me.ApiResponse({ success: true, extras: {userProfileModel: userProfileModel}});
 					console.log("returning from register()");
 					res.set("Access-Control-Allow-Origin", "*");
 					var json_obj=JSON.stringify(obj);
@@ -162,7 +214,7 @@ AccountController.prototype.logoff = function () {
                 } else {
                     /*return callback(err, new me.ApiResponse({ success: false, extras: { msg: me.ApiMessages.COULD_NOT_CREATE_USER } }));
 					res.send({ success: false, extras: { msg: me.ApiMessages.COULD_NOT_CREATE_USER } });
-                }             
+                }
 
             });
         }
