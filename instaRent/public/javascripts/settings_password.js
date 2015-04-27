@@ -58,7 +58,8 @@ $(document).ready(function update_password() {
         }
 
 	});
-	$('#update_password').submit(function() {
+	$('#submit_btn').click(function() {
+	//$('#update_password').submit(function() {
 		console.log("update_password");
 		var $password=$("#password");
 		var $password_new=$("#password_new");
@@ -85,15 +86,16 @@ $(document).ready(function update_password() {
 				if(resp=="Success") {
 					console.log("response success");
 					alert("Updated successfully!");
+					window.location.href ="/settings_password";
 				}
-	      else if(resp=="incorrect"){
-					alert("please retype your password!");
-					window.location.href="/settings";
+	      		else if(resp=="incorrect"){
+					alert("Incorrect password. Please retype your password!");
+					window.location.href="/settings_password";
 				}
 			},
 			error: function(xhr, textStatus, err) {
 				console.log("error log");
-        console.log("readyState: " + xhr.readyState);
+        			console.log("readyState: " + xhr.readyState);
 				console.log("responseText: "+ xhr.responseText);
 				console.log("status: " + xhr.status);
 				console.log("text status: " + textStatus);
