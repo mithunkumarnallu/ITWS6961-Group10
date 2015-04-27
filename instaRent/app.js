@@ -147,18 +147,18 @@ app.get('/reset_verify_fail', function(req,res)
     console.log("in /reset_verify_fail");
     res.render('forgot_password.html',{state: false});
 });
-        
-app.post('/send_mail', function(req,res)   //receives email from client and triggers email 
+
+app.post('/send_mail', function(req,res)   //receives email from client and triggers email
 {
    console.log("in /send_email route");
-   mail.sendPasswordResetMail(req, res, req.body.email); 
+   mail.sendPasswordResetMail(req, res, req.body.email);
    res.send({success: true});
 });
 
 app.get("/reviews_success", function(req,res)
 {
     console.log("in /reviews_success");
-    
+
     userHelper.renderTemplate('review.html',{foo: true},req,res);
     //res.render('review.html',{foo: true});
 });
@@ -167,7 +167,7 @@ app.get("/reviews_success", function(req,res)
 // Amy routes
 app.get('/settings_password', function(req, res) {
     console.log("in settings_password");
-    res.render('settings_password.html',  userHelper.getUserInfo(req));
+    userHelper.renderTemplate('settings_password.html', {},req,res);
 });
 
 

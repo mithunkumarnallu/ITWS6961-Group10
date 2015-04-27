@@ -63,29 +63,10 @@ updated=true;
   UserHandler.update(userInfo, res);
 });
 
-//here we verify the password
-/*
-router.post('/verifypassword',function(req,res,next){
-  //get the password from the user
-    var password=req.body.password;
-    var email=req.body.email;
-    var accountController = new AccountController(User, req.session, req);
-    //and then use the verify password function written in the account.js
-    var ismatched=accountController.verifyoldpassword(email,password);
-    if(ismatched==true){
-      console.log("password matched, could go on and change it!")
-      res.send({success:true});
-    }
-    else{
-      console.log("password incorrect, please type again!");
-      res.send({success:false});
-    }
-});
-
-*/
 
 //add another route to change the user password
 router.post('/changeUserPassword',function(req,res){
+  
   var password=req.body.password;
   var email=req.body.email;
   console.log("=====================");
@@ -93,27 +74,8 @@ router.post('/changeUserPassword',function(req,res){
   console.log("!!!!!!!!!!!!!!!!!!!!!");
   var accountController = new AccountController(User, req.session, req);
   accountController.verifyoldpassword(email,password,req,res);
-  //var ismatched=accountController.ismatched;
-  //console.log("are you matched?"+ismatched);
-  //console.log("I know the answer!");
-  /*if(ismatched==true){
-    console.log("password matched, could go on and change it!")
-    //res.send({success:true});
-    var userpwd;
-    userpwd={
-      email: email,
-      //password: req.body.password,
-      //password_new: req.body.password_new,
-      password_conf: req.body.password_conf
-    };
-    UserHandler.updatepassword(userpwd,res);
+  //here we do some test
 
-  }
-  else if(ismatched==false){
-    console.log("password incorrect, please type again!");
-    res.send("incorrect");
-  }
-*/
 
 });
 
