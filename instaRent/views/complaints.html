@@ -49,7 +49,9 @@
                   <!-- </div> -->
 
                   <!-- <div> -->
-                    <button class="btn btn-success" ng-click="ctrl.setDate()" ng-show="ctrl.mode === 'msgs'" data-toggle="modal" data-target="#createMsgModal"><i class="fa fa-file-text-o"></i> Create a New Message</button>
+                    <button class="btn btn-success" ng-click="ctrl.setDate()" ng-show="ctrl.newMsgButton()" data-toggle="modal" data-target="#createMsgModal"><i class="fa fa-file-text-o"></i> Create a New Message</button>
+
+
                   <!-- </div> -->
 
                 </li>
@@ -255,8 +257,13 @@
           <div>
           
             <div class="panel {{topicstyle[rptopic.status]}}" ng-show="rptopic.status==='new'" ng-repeat="rptopic in topics">
-              <div class="panel-heading">
+              <div class="panel-heading" ng-hide="isTenant()">
                   <span class="badge clickable" data-toggle="modal" data-target="#statusInquiry" ng-click="ctrl.setTopic(rptopic)">{{rptopic.status}}</span>
+                  {{"Created By: " + rptopic.lastname + ", " + rptopic.firstname + " <" + rptopic.userid  + ">" }}
+              </div>
+
+              <div class="panel-heading" ng-show="isTenant()">
+                  <span class="badge">{{rptopic.status}}</span>
                   {{"Created By: " + rptopic.lastname + ", " + rptopic.firstname + " <" + rptopic.userid  + ">" }}
               </div>
 
@@ -274,8 +281,13 @@
 
           <div>
             <div class="panel {{topicstyle[rptopic.status]}}" ng-show="rptopic.status==='processing'" ng-repeat="rptopic in topics">
-              <div class="panel-heading">
+              <div class="panel-heading" ng-hide="isTenant()">
                   <span class="badge clickable" data-toggle="modal" data-target="#statusInquiry" ng-click="ctrl.setTopic(rptopic)">{{rptopic.status}}</span>
+                  {{"Created By: " + rptopic.lastname + ", " + rptopic.firstname + " <" + rptopic.userid  + ">" }}
+              </div>
+
+              <div class="panel-heading" ng-show="isTenant()">
+                  <span class="badge">{{rptopic.status}}</span>
                   {{"Created By: " + rptopic.lastname + ", " + rptopic.firstname + " <" + rptopic.userid  + ">" }}
               </div>
 
@@ -294,8 +306,13 @@
           <div>
           
             <div class="panel {{topicstyle[rptopic.status]}}" ng-show="rptopic.status==='finished'" ng-repeat="rptopic in topics">
-              <div class="panel-heading">
+              <div class="panel-heading" ng-hide="isTenant()">
                   <span class="badge clickable" data-toggle="modal" data-target="#statusInquiry" ng-click="ctrl.setTopic(rptopic)">{{rptopic.status}}</span>
+                  {{"Created By: " + rptopic.lastname + ", " + rptopic.firstname + " <" + rptopic.userid  + ">" }}
+              </div>
+
+              <div class="panel-heading" ng-show="isTenant()">
+                  <span class="badge "  >{{rptopic.status}}</span>
                   {{"Created By: " + rptopic.lastname + ", " + rptopic.firstname + " <" + rptopic.userid  + ">" }}
               </div>
 
@@ -328,7 +345,11 @@
                 <button class="btn btn-info">{{"Created On: " + msg.date.substring(2, 10) }}</button>
               </div>
 
-              <div class="panel-body clickable" ng-click="ctrl.setDate()" data-toggle="modal" data-target="#createMsgModal">
+              <div class="panel-body clickable" ng-show="workingTopic()" ng-click="ctrl.setDate()" data-toggle="modal" data-target="#createMsgModal">
+                <a>{{msg.message}}</a>
+              </div>
+
+              <div class="panel-body clickable" ng-hide="workingTopic()">
                 <a>{{msg.message}}</a>
               </div>
 

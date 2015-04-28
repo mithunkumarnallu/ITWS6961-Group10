@@ -187,6 +187,14 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
 
   }
 
+  $scope.workingTopic = function() {
+    if ($scope.topic.status == 'finished') {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   this.fetchMsgs = function(topic) {
     $scope.topic = topic;
     $scope.topicid = topic._id + "";
@@ -369,6 +377,10 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
 
   this.newMsg = function() {
 
+    if (this.newmsg === '') {
+      return;
+    }
+
     this.topicid = $scope.topicid;
     var info = {
       topicid: $scope.topicid + "",
@@ -397,6 +409,15 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
 
   }
 
+  this.newMsgButton = function() {
+    if (ctrl.mode === 'msgs' && $scope.topic.status != 'finished') {
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   this.msgStyle = function(msg) {
     if (msg.senderid === $scope.userid) {
       return "panel-success";
@@ -410,6 +431,16 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
     $scope.fname = "";
   }
 
+  
+
+  $scope.isTenant = function() {
+    if ($scope.userType == 'Tenant') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   $scope.onFileSelect = function (files) {
     if ($scope.files.length === 0) {
       return;
@@ -417,7 +448,7 @@ app.controller('complaintsController', ['$scope', '$timeout', '$http', '$upload'
 
     var uploadFile = function (fileIndex) {
       var url = "/complaints/upload";
-      //alert(JSON.stringify($scope.files[fileIndex]));
+
       $scope.fname = $scope.files[fileIndex].name;
 
       return $upload
