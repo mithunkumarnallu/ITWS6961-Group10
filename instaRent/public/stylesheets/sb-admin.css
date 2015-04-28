@@ -23,7 +23,7 @@ body {
 /* Content part*/
 #page-wrapper {
     width: 100%;
-    padding: 0;
+    padding: 10px;
     background-color: #fff;
 }
 
@@ -42,14 +42,18 @@ body {
     }
 }
 .navbar {
-  background-color: #009999; /* background color will be black for all browsers */
+  background-color: #918ca5; /* background color will be black for all browsers */
   background-image: none;
   background-repeat: no-repeat;
   filter: none;
 }
+
+.navbar-inverse .navbar-brand, .navbar-inverse .navbar-nav>li>a {
+  text-shadow: 0 0px 0 ;
+}
 .navbar-nav>li {
     /* Color of the sidebar*/
-  background-color: #E6F6F3;/*#ccebeb;*/
+  background-color: #ebe6f6;/*#ccebeb;*/
 }
 
 .navbar-default .navbar-text {
@@ -59,7 +63,7 @@ body {
 /* Username */
 .top-nav {
     padding: 0 15px;
-    background-color: #009999;/*#B74934;*/
+    background-color: #918ca5;/*#B74934;*/
 }
 
 .top-nav>li {
@@ -83,7 +87,7 @@ body {
     /* When click username change the color of word*/
     color: #7FED11;
     /* When click the username button background color*/
-    background-color: #009999;/*#00A188;*/
+    background-color: #918ca5;/*#00A188;*/
 }
 
 .top-nav>.open>.dropdown-menu {
@@ -135,12 +139,12 @@ ul.alert-dropdown {
         top: 51px;
         left: 225px;
         width: 250px;
-       
+        height: 100%;
         margin-left: -225px;
         border: none;
         border-radius: 0;
         overflow-y: auto;
-        background-color: #77f;
+        background: #ebe6f6;
     }
 
     .side-nav>li>a {
@@ -149,18 +153,18 @@ ul.alert-dropdown {
 }
 
 .navbar-inverse .navbar-nav>li>a {
-    color: #00A188;
+    color: #431b4c;/*#00A188;*/
 }
 /* Backgroud color*/
 .side-nav li a:hover,
 .side-nav li a:focus {
     outline: none;
-    background-color: #009999 !important;
+    background-color: #918ca5 !important;
 }
 
 .side-nav li a:focus {
         outline: none;
-        background-color: #333399 !important;
+        background-color: #9e8ca5 !important;
 }
 
 .side-nav>li>ul {
