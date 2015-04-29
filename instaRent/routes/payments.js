@@ -352,4 +352,38 @@ router.get('/getDefaultBankAccno',function(req,res){
         });
     });
 });
+
+router.get("/getRentDueIn", function(req, res) {
+    if(userHelper.isUserLoggedIn(req)) {
+
+        if(userHelper.getUserType(req) == "Landlord")
+            res.send({status: false, response: "Sorry! Feature only available for tenants!"});
+        else
+            MoreHomeInfoHandler.getCurrentHomeObject(userHelper.getUserId(req), res, function (err, data) {
+            if (err) {
+                console.log("Error in getting current home info: " + err);
+                res.status(500).send("Error in fetching data");
+            }
+            else {
+                if (data.leaseStartDate) {
+                    var rentDueIn = MoreHomeInfoHandler.getRentDueIn(data.leaseStartDate, data.leaseEndDate);
+                    MoreHomeInfoHandler.getrentPerMonth(data, userHelper.getUserInfo(req), function (err, data) {
+                        if (err)
+                            res.status(409).send("Error: Getting rent");
+                        else {
+                            console.log(data);
+                            rentDueIn.rent = data;
+                            res.send({status: true, response: rentDueIn});
+                        }
+                    });
+                }
+                else
+                    res.send({status: false, response: "No default home set!"});
+            }
+        });
+    }
+    else
+        res.send({status: false, response: "Please login first"});
+});
+
 module.exports = router;

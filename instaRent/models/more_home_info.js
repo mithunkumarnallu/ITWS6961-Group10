@@ -281,7 +281,7 @@ function getRentDueIn(leastStartDate, leaseEndDate) {
         isProRate: false
     };
     var d = new Date();
-    if(leaseEndDate <= leastStartDate || d > leaseEndDate) {
+    if(leaseEndDate <= leastStartDate || d > leaseEndDate || d < leastStartDate) {
         result.isProRate = true;
         result.rentDueIn = 0;
         result.daysOfStay = 0;

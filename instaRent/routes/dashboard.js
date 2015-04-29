@@ -66,8 +66,15 @@ router.get("/", function (req, res) {
                                 email: data.landlordEmail
                             };
                         }
-                        //res.send(result);
-                        userHelper.renderTemplate("dashboard.html", result, req, res);
+                        //Code to get active complaints count
+                        topicHelper.getTopicCount({userid: currentUserInfo.email, houseid: currentUserInfo.foreignId, nestatus: "finished" }, null,
+                            function(err, obj, data) {
+                                if(!err)
+                                    result.activeComplaints = data;
+                                userHelper.renderTemplate("dashboard.html", result, req, res);
+                            });
+
+                        console.log("Object set for dashboard is : " + JSON.stringify(result));
                     });
                 })
 
@@ -110,6 +117,7 @@ router.get("/", function (req, res) {
                                     tenantUserIds.push({"userID": data[i].email});
                                 }
                                 result.tenants = tenantInfo;
+
 
                                 payment_history.getPaymentHistoryForAllUsers(tenantUserIds,true, function(err, data) {
                                     if(err) {
