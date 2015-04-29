@@ -31,7 +31,7 @@
                         <div style="margin-bottom: 25px" class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                             <input id="submitEmail" type="text" class="form-control" name="username" placeholder="email">                                       </div>
-                        <div id="messages_submit" style="color: red"></div>
+                        <div id="messages_submit" style="color: red; float:left"></div>
 
                         <input type="submit" value="submit" class="btn btn-primary" id="email_button">
                     </form>
@@ -70,15 +70,15 @@
                                 <input id="password" type="password" class="form-control" name="password" placeholder="password">
                             </div>
                             <div class="row">
-                                <div class="col-md-9 col-md-offset-3">
-                                    <div id="messages" style="color: red">
-                                        {% if foo %}
+                                <!--<div class="col-md-9 col-md-offset-3">-->
+                                    <div id="messages" style="color: red; float: left; margin-left: 20px">
+                                        {% if state %}
                                         <span style="color: red">This email is already registered !</span>
                                         {% endif %}
                                     </div>
-                                </div>
+                                <!--</div>-->
                             </div>
-                            <input type="submit" value="login" class="btn btn-primary" id="login">
+                            <input value="login" onclick="loginClick()" class="btn btn-primary" id="login">
                             <div class="input-group">
                                 <div class="checkbox">
                                     <label>
@@ -114,6 +114,8 @@
                     </div>
                 </div>     
            </div>
+    
+
          <div class="col-lg-4">
            <div class="panel panel-default" id="login_qr" >
               <div class="panel-heading">
@@ -127,6 +129,8 @@
                             {% else %}
                             <script type="text/javascript">
                                 new QRCode(document.getElementById("qrcode"), "{{data}}");
+                                var imgTag = document.getElementById("qrcode").getElementsByTagName("img")[0];
+                                imgTag.className = "center-block";
                                 var loginCheckHandler = setInterval(isLoggedIn, 5000);
                                 function isLoggedIn() {
                                     $.ajax({
@@ -150,6 +154,7 @@
             </div>
           </div>
         </div>
+
     </div>
     <!-- </div>-->
 <footer>

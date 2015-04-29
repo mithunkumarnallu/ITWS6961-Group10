@@ -157,74 +157,76 @@ $(document).ready(function register_logon()
 				
    });
    
-   $('#loginform').unbind('submit').submit(function()
-   { 
-      console.log("logon");
-	  var $email=$("#email");
-	  var $password=$("#password");
-	  
-	  var email=$email.val().trim();
-	  var password=$password.val().trim();
+//   $('#loginform').unbind('submit').submit(function()
+//   { 
+//      console.log("logon");
+//	  var $email=$("#email");
+//	  var $password=$("#password");
+//	  
+//	  var email=$email.val().trim();
+//	  var password=$password.val().trim();
+//    
+//      if(!email)
+//       {   console.log("empty email");
+//           document.getElementById("messages").innerText="Please enter email";
+//           return; 
+//       }
+//      if(password.length==0)
+//       {
+//         console.log(password.length+" empty password");
+//         return;
+//       }
+//	  
+//	  $.ajax(
+//		{    
+//		    type: 'POST',
+//			url: "/api/account/logon",
+//			data: { email: email, password: password },
+//			//dataType: "jsonp",
+//			success: function(resp){
+//				    console.log("logon "+resp.success);
+//				if(resp.success==true){
+//					console.log("logon response success");
+//                    if(resp.extras.userProfileModel.foreignId=='')
+//					     window.location.href="/managehome";
+//                    else
+//                    {
+//                        console.log("foreign id exists");
+//                        window.location.href="/dashboard";
+//                    }
+//				}
+//				else if (resp.extras.msg) {
+//                      switch (resp.extras.msg) {
+//                        case 11: console.log("email not found.");
+//                                document.getElementById("messages").innerText="Email entered is not registered"
+//						        break;
+//                         case 2:
+//                         case 5:
+//                              console.log("Oops! BookIt had a problem and could not register you.  Please try again in a few minutes.");
+//                              document.getElementById("messages").innerText="Oops! There was an error. Please try later."
+//                              break;
+//                
+//						 case 1: console.log("invalid password.");
+//                              document.getElementById("messages").innerText="Password Entered is invalid"
+//						      break;
+//						 
+//                        }
+//				}
+//				else console.log("unsuccessful sign-up HTTP response "+resp.extras.msg);
+//			},
+//			error: function(xhr,textStatus,err){ 
+//			    
+//				console.log("error log");
+//                console.log("readyState: " + xhr.readyState);
+//				console.log("responseText: "+ xhr.responseText);
+//				console.log("status: " + xhr.status);
+//				console.log("text status: " + textStatus);
+//				console.log("error: " + err);
+//			}	
+//		});
+//    });
     
-      if(!email)
-       {   console.log("empty email");
-           document.getElementById("messages").innerText="Please enter email";
-           return; 
-       }
-      if(password.length==0)
-       {
-         console.log(password.length+" empty password");
-         return;
-       }
-	  
-	  $.ajax(
-		{    
-		    type: 'POST',
-			url: "/api/account/logon",
-			data: { email: email, password: password },
-			//dataType: "jsonp",
-			success: function(resp){
-				    console.log("logon "+resp.success);
-				if(resp.success==true){
-					console.log("logon response success");
-                    if(resp.extras.userProfileModel.foreignId=='')
-					     window.location.href="/managehome";
-                    else
-                    {
-                        console.log("foreign id exists");
-                        window.location.href="/dashboard";
-                    }
-				}
-				else if (resp.extras.msg) {
-                      switch (resp.extras.msg) {
-                        case 11: console.log("email not found.");
-                                document.getElementById("messages").innerText="Email entered is not registered"
-						        break;
-                         case 2:
-                         case 5:
-                              console.log("Oops! BookIt had a problem and could not register you.  Please try again in a few minutes.");
-                              document.getElementById("messages").innerText="Oops! There was an error. Please try later."
-                              break;
-                
-						 case 1: console.log("invalid password.");
-                              document.getElementById("messages").innerText="Password Entered is invalid"
-						      break;
-						 
-                        }
-				}
-				else console.log("unsuccessful sign-up HTTP response "+resp.extras.msg);
-			},
-			error: function(xhr,textStatus,err){ 
-			    
-				console.log("error log");
-                console.log("readyState: " + xhr.readyState);
-				console.log("responseText: "+ xhr.responseText);
-				console.log("status: " + xhr.status);
-				console.log("text status: " + textStatus);
-				console.log("error: " + err);
-			}	
-		});
-    });
+   
     
     $("#forgot_password").click(function(){
         $("#login_panel").addClass("hide");
@@ -348,3 +350,71 @@ $(document).ready(function register_logon()
     
 });
     
+function loginClick()
+   { 
+      console.log("logon");
+	  var $email=$("#email");
+	  var $password=$("#password");
+	  
+	  var email=$email.val().trim();
+	  var password=$password.val().trim();
+    
+      if(!email)
+       {   console.log("empty email");
+           document.getElementById("messages").innerText="Please enter email";
+           return; 
+       }
+      if(password.length==0)
+       {
+         console.log(password.length+" empty password");
+         return;
+       }
+	  
+	  $.ajax(
+		{    
+		    type: 'POST',
+			url: "/api/account/logon",
+			data: { email: email, password: password },
+			//dataType: "jsonp",
+			success: function(resp){
+				    console.log("logon "+resp.success);
+				if(resp.success==true){
+					console.log("logon response success");
+                    if(resp.extras.userProfileModel.foreignId=='')
+					     window.location.href="/managehome";
+                    else
+                    {
+                        console.log("foreign id exists");
+                        window.location.href="/dashboard";
+                    }
+				}
+				else if (resp.extras.msg) {
+                      switch (resp.extras.msg) {
+                        case 11: console.log("email not found.");
+                                document.getElementById("messages").innerText="Email entered is not registered"
+						        break;
+                         case 2:
+                         case 5:
+                              console.log("Oops! BookIt had a problem and could not register you.  Please try again in a few minutes.");
+                              document.getElementById("messages").innerText="Oops! There was an error. Please try later."
+                              break;
+                
+						 case 1: console.log("invalid password.");
+                              document.getElementById("messages").innerText="Password Entered is invalid"
+						      break;
+						 
+                        }
+				}
+				else console.log("unsuccessful sign-up HTTP response "+resp.extras.msg);
+			},
+			error: function(xhr,textStatus,err){ 
+			    
+				console.log("error log");
+                console.log("readyState: " + xhr.readyState);
+				console.log("responseText: "+ xhr.responseText);
+				console.log("status: " + xhr.status);
+				console.log("text status: " + textStatus);
+				console.log("error: " + err);
+			}	
+		});
+    }

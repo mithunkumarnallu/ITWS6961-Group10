@@ -128,7 +128,27 @@ userHelper.prototype.renderTemplate=function(viewName, obj, req, res){//data- se
     }
     else{
           console.log("rendering page");
+           var pageName='InstaRent';
+          if(viewName=='settings.html')
+              pageName='InstaRent-Settings';
+          else if(viewName=='payment_history.html')
+              pageName='InstaRent- Payments History';
+          else if(viewName=='LandLordAddBank.html')
+              pageName='InstaRent- Add Bank Account';
+          else if(viewName=='Role Selection.html')
+              pageName='InstaRent- Role Selection'
+          else if(viewName=='dashboard.html')
+              pageName='InstaRent- Dashboard'
+          else if(viewName=='complaints.html')
+              pageName='InstaRent- Complaints Forum'
+          else if(viewName=='settings_password.html')
+              pageName='InstaRent- Password Reset'
+          else if(viewName=='review.html')
+              pageName='InstaRent- Review'
+              
+              
           obj['sessionDetail']=req.session.passport.user;
+          obj['title']=pageName;
           res.render(viewName,obj);   
         }
     

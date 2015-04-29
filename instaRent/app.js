@@ -122,8 +122,10 @@ app.get('/login',function(req,res)
 {
     var loginToken = new qrCodeHandler.LoginTokenModel();
     loginToken.createLoginToken(function(err, data) {
-        if(err)
-            res.render("login.html", {foo:false,error: err});
+        if(err) {
+            console.log("Error in createLoginToken " + err);
+            res.render("login.html", {foo:false,error: err});   
+        }
         else
             res.render("login.html", {foo:false,data: data});
     });
@@ -133,7 +135,15 @@ app.get('/login',function(req,res)
 
 app.get('/login_error',function(req,res)
 {
-   res.render('login.html', {foo: true});
+    var loginToken = new qrCodeHandler.LoginTokenModel();
+    loginToken.createLoginToken(function(err, data) {
+        if(err) {
+            console.log("Error in createLoginToken " + err);
+            res.render("login.html", {foo:false,error: err, state: true});   
+        }
+        else
+            res.render("login.html", {foo:false,data: data, state: true});
+    });
 });
 
 app.get('/forgot_password_route',function(req,res) //triggered from api/verify, routes to reset password

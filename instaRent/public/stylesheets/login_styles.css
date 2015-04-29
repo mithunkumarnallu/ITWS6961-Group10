@@ -41,7 +41,6 @@ no-gutter [class*='col-']:not(:first-child),.row.no-gutter [class*='col-']:not(:
 }
 
 #qrcode{
-    padding-left: 25px;
     padding-top: 25px;
 
 }
