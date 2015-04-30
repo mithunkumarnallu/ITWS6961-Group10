@@ -42,7 +42,7 @@ body {
     }
 }
 .navbar {
-  background-color: #918ca5; /* background color will be black for all browsers */
+  background-color: #009999; /* background color will be black for all browsers */
   background-image: none;
   background-repeat: no-repeat;
   filter: none;
@@ -53,7 +53,7 @@ body {
 }
 .navbar-nav>li {
     /* Color of the sidebar*/
-  background-color: #ebe6f6;/*#ccebeb;*/
+  background-color: #e6f6f3;/*#ccebeb;*/
 }
 
 .navbar-default .navbar-text {
@@ -63,7 +63,7 @@ body {
 /* Username */
 .top-nav {
     padding: 0 15px;
-    background-color: #918ca5;/*#B74934;*/
+    background-color: #009999;/*#B74934;*/
 }
 
 .top-nav>li {
@@ -87,7 +87,7 @@ body {
     /* When click username change the color of word*/
     color: #7FED11;
     /* When click the username button background color*/
-    background-color: #918ca5;/*#00A188;*/
+    background-color: #009999;/*#00A188;*/
 }
 
 .top-nav>.open>.dropdown-menu {
@@ -144,7 +144,7 @@ ul.alert-dropdown {
         border: none;
         border-radius: 0;
         overflow-y: auto;
-        background: #ebe6f6;
+        background: #e6f6f3;
     }
 
     .side-nav>li>a {
@@ -153,18 +153,18 @@ ul.alert-dropdown {
 }
 
 .navbar-inverse .navbar-nav>li>a {
-    color: #431b4c;/*#00A188;*/
+    color: #00a188;/*#00A188;*/
 }
 /* Backgroud color*/
 .side-nav li a:hover,
 .side-nav li a:focus {
     outline: none;
-    background-color: #918ca5 !important;
+    background-color: #009999 !important;
 }
 
 .side-nav li a:focus {
         outline: none;
-        background-color: #9e8ca5 !important;
+        background-color: #333399 !important;
 }
 
 .side-nav>li>ul {
@@ -257,13 +257,10 @@ ul.alert-dropdown {
     color: #df8a13;
 }
 
-/* ANIMATIONS */
-/* sidebar */
-    #side-dashboard              { animation-delay:0.1s; -moz-animation-delay:0.1s; -webkit-animation-delay:0.1s; }
-    #side-managehome             { animation-delay:0.2s; -moz-animation-delay:0.2s; -webkit-animation-delay:0.2s; }
-    #side-complaints             { animation-delay:0.3s; -moz-animation-delay:0.3s; -webkit-animation-delay:0.3s; }
-    #side-settings               { animation-delay:0.4s; -moz-animation-delay:0.4s; -webkit-animation-delay:0.4s; }
-    #pay                         { animation-delay:0.5s; -moz-animation-delay:0.5s; -webkit-animation-delay:0.5s; }
-    #side-addAccount             { animation-delay:0.5s; -moz-animation-delay:0.5s; -webkit-animation-delay:0.5s; }
-    #side-payment                { animation-delay:0.6s; -moz-animation-delay:0.6s; -webkit-animation-delay:0.6s; }  
-    #side-feedback               { animation-delay:0.7s; -moz-animation-delay:0.7s; -webkit-animation-delay:0.7s; }     
+#due {
+    color: #f0ad4e;
+}
+
+#info {
+    color: #d9534f;
+}
