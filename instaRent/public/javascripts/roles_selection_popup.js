@@ -196,6 +196,7 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
         var modalInstance = $modal.open({
           templateUrl: 'myModalContent.html',
           controller: 'ModalInstanceCtrl',
+          windowClass:'center-modal',
           scope: $scope,
           size: 'lg',
           resolve: {
@@ -219,6 +220,7 @@ angular.module('ui.managehomes').controller('ModalDemoCtrl', ['$scope', '$http',
         var modalInstance = $modal.open({
           templateUrl: 'myModalContent.html',
           controller: 'ModalInstanceCtrl',
+          windowClass:'center-modal',
           scope: $scope,
           size: size,
           resolve: {
