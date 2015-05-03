@@ -1,14 +1,16 @@
 {% extends 'partials/layout.html' %}
  
 {% block myHead %}
-    <!--<link href="/stylesheets/myStyle.css" rel="stylesheet"/>--->
+    <!--<link href="/stylesheets/myStyle.css" rel="stylesheet"/>-->
     <script src="/javascripts/review.js"></script>
     
 {% endblock %}
 
 {% block myBody %}
+<div id="page-wrapper" class= "Tenant" >
 
-<div class="container">
+  <div class="container-fluid">
+  </br>
  {% if !foo %}
   <h1>What do you think about us? </h1>
   <form role="form" id="reviewform" method="post">
@@ -27,6 +29,7 @@
         </div>
     </div>
  {% endif %}
+</div>
 </div>
 
 {% endblock %}
